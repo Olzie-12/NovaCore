@@ -56,6 +56,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	private PacketManager packetManager;
 
 	private ChunkLoader chunkLoader;
+	private CustomItemAdditionsManager customItemManagerAdditions;
 
 	@Override
 	public ChunkLoader getChunkLoader() {
@@ -1033,7 +1034,10 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	}
 
 	@Override
-	public Block getBlockFromProjectileHitEvent(ProjectileHitEvent e) {
-		return e.getHitBlock();
+	public CustomItemAdditionsManager getCustomItemAdditionsManager() {
+		if (customItemManagerAdditions == null) {
+			customItemManagerAdditions = new CustomManagerItemAdditions();
+		}
+		return customItemManagerAdditions;
 	}
 }

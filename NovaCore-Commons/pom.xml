@@ -9,6 +9,12 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
+		<maven-shade-plugin-version>3.2.4</maven-shade-plugin-version>
+		<maven-source-plugin-version>3.2.0</maven-source-plugin-version>
+		<maven-javadoc-plugin-version>3.2.0</maven-javadoc-plugin-version>
+		<maven-deploy-plugin-version>3.0.0-M1</maven-deploy-plugin-version>
 	</properties>
 
 	<build>
@@ -43,7 +49,7 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- explicitly define maven-deploy-plugin after other to force exec 
+				<!-- explicitly define maven-deploy-plugin after other to force exec
 					order -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>${maven-deploy-plugin-version}</version>
@@ -77,7 +83,7 @@
 			<id>novauniverse2</id>
 			<url>https://nexus2.novauniverse.net/repository/novauniverse-group/</url>
 		</repository>
-		
+
 		<repository>
 			<id>novauniverse-thirdparty</id>
 			<url>https://nexus2.novauniverse.net/repository/thridparty/</url>
@@ -92,7 +98,7 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>

@@ -34,7 +34,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -56,6 +55,7 @@ import java.util.function.Consumer;
 public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils {
 	private ItemBuilderRecordList itemBuilderRecordList;
 	private PacketManager packetManager;
+	private CustomItemAdditionsManager customItemManagerAdditions;
 
 	private ChunkLoader chunkLoader;
 
@@ -1165,7 +1165,10 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	}
 
 	@Override
-	public Block getBlockFromProjectileHitEvent(ProjectileHitEvent e) {
-		return e.getHitBlock();
+	public CustomItemAdditionsManager getCustomItemAdditionsManager() {
+		if (customItemManagerAdditions == null) {
+			customItemManagerAdditions = new CustomItemAdditionsManager();
+		}
+		return customItemManagerAdditions;
 	}
 }

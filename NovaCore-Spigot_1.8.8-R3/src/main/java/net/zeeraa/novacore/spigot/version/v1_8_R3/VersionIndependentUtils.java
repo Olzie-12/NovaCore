@@ -27,7 +27,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -829,22 +828,24 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			return;
 		}
 
+
 		net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound compound = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
 
 		switch (attributeInfo.getAttribute()) {
-		case GENERIC_MAX_HEALTH:
-		case GENERIC_FOLLOW_RANGE:
-		case GENERIC_KNOCKBACK_RESISTANCE:
-		case GENERIC_MOVEMENT_SPEED:
-		case GENERIC_ATTACK_DAMAGE:
-		case HORSE_JUMP_STRENGTH:
-		case ZOMBIE_SPAWN_REINFORCEMENTS:
-			break;
-		default:
-			Log.error("VersionIndependentUtils", "Attribute " + attributeInfo.getAttribute().name() + " (" + attributeInfo.getAttribute().getPre1_16Key() + ") does not exist in current version");
-			return;
+			case GENERIC_MAX_HEALTH:
+			case GENERIC_FOLLOW_RANGE:
+			case GENERIC_KNOCKBACK_RESISTANCE:
+			case GENERIC_MOVEMENT_SPEED:
+			case GENERIC_ATTACK_DAMAGE:
+			case HORSE_JUMP_STRENGTH:
+			case ZOMBIE_SPAWN_REINFORCEMENTS:
+				break;
+			default:
+				Log.error("VersionIndependentUtils", "Attribute " + attributeInfo.getAttribute().name() + " (" + attributeInfo.getAttribute().getPre1_16Key() + ") does not exist in current version");
+				return;
 		}
+
 
 		if (!attributeInfo.getEquipmentSlots().contains(EquipmentSlot.ALL)) {
 			Log.info("VersionIndependentUtils", "equipmentSlot set to ALL since in 1.8 theres only this option");
@@ -893,57 +894,64 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		meta.serialize();
 	}
 
+
+
+
 	@Override
 	public Block getTargetBlockExact(LivingEntity entity, int distance, List<Material> ignore) {
-		Location eye = entity.getEyeLocation();
-		CraftWorld world = (CraftWorld) entity.getWorld();
-		Vector direction = eye.getDirection();
-		direction.multiply(distance);
-		Vector from = eye.toVector();
+			Location eye = entity.getEyeLocation();
+			CraftWorld world = (CraftWorld) entity.getWorld();
+			Vector direction = eye.getDirection();
+			direction.multiply(distance);
+			Vector from = eye.toVector();
 
-		int rayTrace = 1000;
-		Vector parcelled = direction.clone().setX(direction.getX() / rayTrace).setY(direction.getY() / rayTrace).setZ(direction.getZ() / rayTrace);
-		Block foundBlock = null;
 
-		for (int i = 0; i < rayTrace + 1; i++) {
-			Vector current = from.clone();
-			current.add(parcelled.clone().multiply(i));
-			Material type = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ()).getType();
-			if (!ignore.contains(type) && type != Material.AIR) {
 
-				Location blockLoc = new Location(world, current.getX(), current.getY(), current.getZ());
-				BlockPosition bPos = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
-				IBlockData data = world.getHandle().getType(bPos);
-				net.minecraft.server.v1_8_R3.Block b = data.getBlock();
 
-				List<AxisAlignedBB> bbs = new ArrayList<>();
-				AxisAlignedBB cube = AxisAlignedBB.a(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ(), blockLoc.getBlockX() + 1, blockLoc.getBlockY() + 1, blockLoc.getBlockZ() + 1);
-				b.a(world.getHandle(), bPos, data, cube, bbs, null);
+			int rayTrace = 1000;
+			Vector parcelled = direction.clone().setX(direction.getX()/rayTrace).setY(direction.getY()/rayTrace).setZ(direction.getZ()/rayTrace);
+			Block foundBlock = null;
 
-				if (bbs.isEmpty()) {
-					double minX = blockLoc.getBlockX() + b.B();
-					double maxX = blockLoc.getBlockX() + b.C();
-					double minY = blockLoc.getBlockY() + b.D();
-					double maxY = blockLoc.getBlockY() + b.E();
-					double minZ = blockLoc.getBlockZ() + b.F();
-					double maxZ = blockLoc.getBlockZ() + b.G();
-					bbs.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
-				}
+			for (int i = 0; i < rayTrace + 1; i++) {
+				Vector current = from.clone();
+				current.add(parcelled.clone().multiply(i));
+				Material type = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ()).getType();
+				if (!ignore.contains(type) && type != Material.AIR) {
 
-				boolean stop = false;
-				for (AxisAlignedBB aabb : bbs) {
-					if ((current.getX() >= aabb.a && current.getX() <= aabb.d) && (current.getY() >= aabb.b && current.getY() <= aabb.e) && (current.getZ() >= aabb.c && current.getZ() <= aabb.f)) {
-						foundBlock = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());
-						stop = true;
-						break;
+					Location blockLoc = new Location(world, current.getX(), current.getY(), current.getZ());
+					BlockPosition bPos = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
+					IBlockData data = world.getHandle().getType(bPos);
+					net.minecraft.server.v1_8_R3.Block b = data.getBlock();
+
+					List<AxisAlignedBB> bbs = new ArrayList<>();
+					AxisAlignedBB cube = AxisAlignedBB.a(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ(), blockLoc.getBlockX() + 1, blockLoc.getBlockY() + 1, blockLoc.getBlockZ() + 1);
+					b.a(world.getHandle(), bPos, data, cube, bbs, null);
+
+					if (bbs.isEmpty()) {
+						double minX = blockLoc.getBlockX() + b.B();
+						double maxX = blockLoc.getBlockX() + b.C();
+						double minY = blockLoc.getBlockY() + b.D();
+						double maxY = blockLoc.getBlockY() + b.E();
+						double minZ = blockLoc.getBlockZ() + b.F();
+						double maxZ = blockLoc.getBlockZ() + b.G();
+						bbs.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
 					}
+
+
+					boolean stop = false;
+					for (AxisAlignedBB aabb: bbs) {
+						if ((current.getX() >= aabb.a && current.getX() <= aabb.d) && (current.getY() >= aabb.b && current.getY() <= aabb.e) && (current.getZ() >= aabb.c && current.getZ() <= aabb.f)) {
+							foundBlock = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());
+							stop = true;
+							break;
+						}
+					}
+					if (stop)
+						break;
 				}
-				if (stop)
-					break;
 			}
+			return foundBlock;
 		}
-		return foundBlock;
-	}
 
 	@Override
 	public Block getReacheableBlockExact(LivingEntity entity) {
@@ -958,7 +966,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	@Override
 	public FallingBlock spawnFallingBlock(Location location, Material material, byte data, Consumer<FallingBlock> consumer) {
 		@SuppressWarnings("deprecation")
-		EntityFallingBlock fb = new EntityFallingBlock(((CraftWorld) location.getWorld()).getHandle(), location.getX(), location.getY(), location.getZ(), net.minecraft.server.v1_8_R3.Block.getById(material.getId()).fromLegacyData(data));
+		EntityFallingBlock fb = new EntityFallingBlock(((CraftWorld)location.getWorld()).getHandle(), location.getX(), location.getY(), location.getZ(), net.minecraft.server.v1_8_R3.Block.getById(material.getId()).fromLegacyData(data));
 		fb.ticksLived = 1;
 		if (fb.getBukkitEntity() instanceof CraftFallingSand) {
 			CraftFallingSand cfb = (CraftFallingSand) fb.getBukkitEntity();
@@ -992,6 +1000,11 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		Log.error("VersionIndependentUtils", "setPotionColor cannot be handled on current version");
 	}
 
+	@Override
+	public CustomItemAdditionsManager getCustomItemAdditionsManager() {
+		return null;
+	}
+
 	private PotionType getFromEffectType(PotionEffectType type) {
 		PotionType potionType = null;
 		for (PotionType potType : PotionType.values()) {
@@ -1005,12 +1018,5 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		return potionType;
 	}
 
-	@Override
-	public Block getBlockFromProjectileHitEvent(ProjectileHitEvent e) {
-		Projectile projectile = e.getEntity();
-		Location loc = projectile.getLocation();
-		Vector vec = projectile.getVelocity();
-		Location hitLocation = new Location(loc.getWorld(), loc.getX() + vec.getX(), loc.getY() + vec.getY(), loc.getZ() + vec.getZ());
-		return hitLocation.getBlock();
-	}
+
 }

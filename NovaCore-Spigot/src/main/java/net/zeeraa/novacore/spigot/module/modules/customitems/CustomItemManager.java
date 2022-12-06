@@ -6,12 +6,19 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import net.zeeraa.novacore.spigot.abstraction.CustomItemAdditionsManager;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
+import net.zeeraa.novacore.spigot.utils.ProjectileUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -23,6 +30,7 @@ import net.zeeraa.novacore.spigot.module.NovaModule;
 
 public class CustomItemManager extends NovaModule implements Listener {
 	private static CustomItemManager instance = null;
+	private static CustomItemAdditionsManager customItemAdditionsManager;
 
 	private Map<String, CustomItem> customItems = new HashMap<String, CustomItem>();
 
@@ -41,6 +49,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 	@Override
 	public void onLoad() {
 		CustomItemManager.instance = this;
+		customItemAdditionsManager = VersionIndependentUtils.get().getCustomItemAdditionsManager();
 		customItems = new HashMap<>();
 	}
 
@@ -54,7 +63,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Get a map containing all custom items
-	 * 
+	 *
 	 * @return {@link Map} with custom items
 	 */
 	public Map<String, CustomItem> getCustomItems() {
@@ -63,7 +72,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Add a custom item by its class
-	 * 
+	 *
 	 * @param clazz The class of the {@link CustomItem}
 	 * @return <code>true</code> on success
 	 * @throws InstantiationException    .
@@ -101,7 +110,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Check if a custom item has been loaded
-	 * 
+	 *
 	 * @param clazz The class of the {@link CustomItem}
 	 * @return <code>true</code> if the item has been loaded
 	 */
@@ -111,7 +120,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Check if a custom item has been loaded
-	 * 
+	 *
 	 * @param className The name of the class of the {@link CustomItem}
 	 * @return <code>true</code> if the item has been loaded
 	 */
@@ -131,7 +140,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Get the {@link CustomItem} instance by the class
-	 * 
+	 *
 	 * @param clazz The {@link CustomItem} class to get
 	 * @return The {@link CustomItem} instance or <code>null</code> if not loaded or
 	 *         not found
@@ -168,7 +177,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Get an {@link ItemStack} from a {@link CustomItem}
-	 * 
+	 *
 	 * @param clazz  The {@link CustomItem} class to get the {@link ItemStack} from
 	 * @param player The player that the item was created by
 	 * @return An {@link ItemStack} or <code>null</code> if not loaded or not found
@@ -180,7 +189,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Get an {@link ItemStack} from a {@link CustomItem}
-	 * 
+	 *
 	 * @param className The name of the {@link CustomItem} class to get the
 	 *                  {@link ItemStack} from
 	 * @param player    The player that the item was created by
@@ -212,7 +221,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Check if a {@link ItemStack} has the {@link CustomItem} NBT data
-	 * 
+	 *
 	 * @param item The {@link ItemStack} to check
 	 * @return <code>true</code> if the item contains the NBT tag <code>novacore -
 	 *         iscustomitem</code>
@@ -227,13 +236,13 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Try to get the {@link CustomItem} of an {@link ItemStack}
-	 * 
+	 *
 	 * @param item The {@link ItemStack} to check
 	 * @return The {@link CustomItem} instance or <code>null</code> if the
 	 *         {@link CustomItem} has not been loaded or is missing
 	 */
 	@Nullable
-	public CustomItem getCustomItem(ItemStack item) {
+	private CustomItem getCustomItem(ItemStack item) {
 		if (isCustomItem(item)) {
 			String itemId = NBTEditor.getString(item, "novacore", "customitemid");
 
@@ -245,7 +254,7 @@ public class CustomItemManager extends NovaModule implements Listener {
 
 	/**
 	 * Check if a {@link ItemStack} is of the provided {@link CustomItem} class type
-	 * 
+	 *
 	 * @param item            The {@link ItemStack} to check
 	 * @param customItemClass The {@link CustomItem} class to check
 	 * @return <code>true</code> it the item is a custom item of the provided type
@@ -314,6 +323,17 @@ public class CustomItemManager extends NovaModule implements Listener {
 				}
 			}
 		}
+	}
+
+
+	@EventHandler
+	public void onProjectileHit(ProjectileHitEvent event) {
+		if (customItemAdditionsManager ==  null) return;
+		ItemStack projectileItemStack = customItemAdditionsManager.getProjectileItemStack(event);
+		if (!isCustomItem(projectileItemStack) || !(getCustomItem(projectileItemStack) instanceof CustomItemProjectile)) return;
+		CustomItemProjectile customItemProjectile = (CustomItemProjectile) getCustomItem(projectileItemStack);
+		customItemProjectile.onProjectileHit(event);
+
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)

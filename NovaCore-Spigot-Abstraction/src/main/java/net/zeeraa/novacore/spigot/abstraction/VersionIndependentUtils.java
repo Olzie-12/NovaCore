@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -23,6 +22,7 @@ import org.bukkit.map.MapView;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import org.bukkit.potion.PotionEffect;
+
 import java.awt.Color;
 import java.util.function.Consumer;
 
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  * A utility to make your plugins support multiple versions of the game without
  * using reflection. This class contains a lot of functions that changes between
  * versions
- * 
+ *
  * @author Zeeraa
  * @author Bruno
  */
@@ -63,7 +63,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set the last error cause used for debugging purposes
-	 * 
+	 *
 	 * @param error The last {@link VersionIndependenceLayerError} raised
 	 * @author Zeeraa
 	 */
@@ -75,7 +75,7 @@ public abstract class VersionIndependentUtils {
 	 * GEt the last error type caused in the version independent layer. This will
 	 * return null if no errors was encountered or
 	 * {@link VersionIndependentUtils#resetLastError()} was called
-	 * 
+	 *
 	 * @return The {@link VersionIndependenceLayerError} of <code>null</code> if no
 	 *         errors occurred
 	 * @author Zeeraa
@@ -86,7 +86,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Resets the last error variable
-	 * 
+	 *
 	 * @author Zeeraa
 	 */
 	public final void resetLastError() {
@@ -95,7 +95,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the {@link ChunkLoader} implementation
-	 * 
+	 *
 	 * @return {@link ChunkLoader} to use
 	 * @author Zeeraa
 	 */
@@ -104,7 +104,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Get the {@link VersionIndependentUtils} instance that this server uses. Same
 	 * as {@link VersionIndependentUtils#getInstance()}
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 * @author Zeeraa
 	 */
@@ -115,7 +115,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Get the {@link VersionIndependentUtils} instance that this server uses. Same
 	 * as {@link VersionIndependentUtils#get()}
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 * @author Zeeraa
 	 */
@@ -131,7 +131,7 @@ public abstract class VersionIndependentUtils {
 	 * Get the {@link LabyModProtocol} instance to use for this version. If the
 	 * server version is not supported by labymod this will return a fake instance
 	 * that does nothing
-	 * 
+	 *
 	 * @return The {@link LabyModProtocol} instance to use
 	 * @author Zeeraa
 	 */
@@ -139,7 +139,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the {@link NovaCoreGameVersion} nova core is using for the server
-	 * 
+	 *
 	 * @return The {@link NovaCoreGameVersion} for thie server
 	 * @author Zeeraa
 	 */
@@ -147,7 +147,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set a block as a player skull
-	 * 
+	 *
 	 * @param block The {@link Block} to change the type of
 	 * @author Zeeraa
 	 */
@@ -155,7 +155,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the item from the player main hand
-	 * 
+	 *
 	 * @param player The player to get item from
 	 * @return {@link ItemStack} from the players main hand
 	 * @author Zeeraa
@@ -164,7 +164,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set the item in a players main hand
-	 * 
+	 *
 	 * @param player The player
 	 * @param item   The item so place the the players hand
 	 * @author Zeeraa
@@ -173,7 +173,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the item from the player off hand
-	 * 
+	 *
 	 * @param player The player to get item from
 	 * @return {@link ItemStack} or <code>null</code> if the server version does not
 	 *         have a off hand
@@ -183,7 +183,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set the item in a players off hand
-	 * 
+	 *
 	 * @param player The player
 	 * @param item   The item so place the the players hand
 	 * @author Zeeraa
@@ -192,7 +192,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the ping of a player
-	 * 
+	 *
 	 * @param player The player to get the ping of
 	 * @return ping
 	 * @author Zeeraa
@@ -203,7 +203,7 @@ public abstract class VersionIndependentUtils {
 	 * Attempt to damage a player with a specified reason. If this is not correctly
 	 * implemented the player will be damaged using {@link Player#damage(double)}
 	 * instead
-	 * 
+	 *
 	 * @param player The player to damage
 	 * @param reason The {@link PlayerDamageReason} to use
 	 * @param damage The amount of damage to cause
@@ -213,9 +213,9 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the max heath of a {@link LivingEntity}
-	 * 
+	 *
 	 * @param livingEntity The entity to get the max health from
-	 * 
+	 *
 	 * @return The max health of the player
 	 * @author Zeeraa
 	 */
@@ -223,7 +223,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set the max heath of a {@link LivingEntity}
-	 * 
+	 *
 	 * @param livingEntity The entity to reset the set health of
 	 * @param health       The new health value
 	 * @author Zeeraa
@@ -232,7 +232,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Reset the max heath of a {@link LivingEntity}
-	 * 
+	 *
 	 * @param livingEntity The entity to reset the max health of
 	 * @author Zeeraa
 	 */
@@ -240,7 +240,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the recent server TPS
-	 * 
+	 *
 	 * @return Array with recent TPS
 	 * @author Zeeraa
 	 */
@@ -248,7 +248,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Clones the data of 2 blocks
-	 * 
+	 *
 	 * @param source The block to copy the data from
 	 * @param target The block to set the data of
 	 * @author Zeeraa
@@ -257,7 +257,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Send text to display in the tab list
-	 * 
+	 *
 	 * @param player The {@link Player} that should receive the text
 	 * @param header The top text
 	 * @param footer The bottom text
@@ -267,7 +267,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set a block to a {@link ColoredBlockType} with a {@link DyeColor}
-	 * 
+	 *
 	 * @param block The {@link Block} to change
 	 * @param color The {@link DyeColor} to use
 	 * @param type  The {@link ColoredBlockType} to set the block as
@@ -277,7 +277,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Used to add a colored block as ingredient of a {@link ShapedRecipe}
-	 * 
+	 *
 	 * @param recipe     The {@link ShapedRecipe} to modify
 	 * @param ingredient The ingredient char
 	 * @param type       The {@link ColoredBlockType} to use
@@ -288,7 +288,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Used to add a colored block as ingredient of a {@link ShapelessRecipe}
-	 * 
+	 *
 	 * @param recipe     The {@link ShapelessRecipe} to modify
 	 * @param ingredient The ingredient char
 	 * @param type       The {@link ColoredBlockType} to use
@@ -299,7 +299,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Used to add dyes in a {@link ShapedRecipe}
-	 * 
+	 *
 	 * @param recipe     The {@link ShapedRecipe} to modify
 	 * @param ingredient The ingredient char
 	 * @param color      The {@link DyeColor} to use
@@ -309,7 +309,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Used to add dyes in a {@link ShapelessRecipe}
-	 * 
+	 *
 	 * @param recipe The {@link ShapelessRecipe} to modify
 	 * @param count  The amount required
 	 * @param color  The {@link DyeColor} to use
@@ -320,7 +320,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Get an {@link ItemStack} of with the type provided in the form of
 	 * {@link ColoredBlockType}
-	 * 
+	 *
 	 * @param color The {@link DyeColor}
 	 * @param type  The {@link ColoredBlockType}
 	 * @return An {@link ItemStack} of the {@link ColoredBlockType}
@@ -330,7 +330,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * GEt the {@link ItemBuilderRecordList} for this verion
-	 * 
+	 *
 	 * @return {@link ItemBuilderRecordList}
 	 * @author Zeeraa
 	 */
@@ -338,7 +338,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set the {@link MapView} of a map {@link ItemStack}
-	 * 
+	 *
 	 * @param item    The {@link ItemStack} to set the map view of
 	 * @param mapView The {@link MapView} to apply
 	 * @author Zeeraa
@@ -347,7 +347,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the {@link MapView} of a map {@link ItemStack}
-	 * 
+	 *
 	 * @param item The {@link ItemStack} to get the map view of
 	 * @return mapView The {@link MapView} used for that item
 	 * @author Zeeraa
@@ -356,7 +356,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the id number of a {@link MapView}
-	 * 
+	 *
 	 * @param mapView The {@link MapView} to get the id of
 	 * @return id number of the provided {@link MapView}
 	 * @author Zeeraa
@@ -365,7 +365,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Play a sound for a player
-	 * 
+	 *
 	 * @param player   The player to play the sound for
 	 * @param location The location of the sound
 	 * @param sound    The {@link VersionIndependentSound} to play
@@ -379,7 +379,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Play a sound for a player
-	 * 
+	 *
 	 * @param player   The player to play the sound for
 	 * @param location The location of the sound
 	 * @param sound    The {@link VersionIndependentSound} to play
@@ -402,7 +402,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Play a sound at a location
-	 * 
+	 *
 	 * @param location The location of the sound
 	 * @param sound    The {@link VersionIndependentSound} to play
 	 * @return <code>true</code> on success. <code>false</code> if the sound is not
@@ -415,7 +415,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Play a sound at a location
-	 * 
+	 *
 	 * @param location The location of the sound
 	 * @param sound    The {@link VersionIndependentSound} to play
 	 * @param volume   The volume of the sound
@@ -437,7 +437,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the {@link Sound} from a {@link VersionIndependentSound}
-	 * 
+	 *
 	 * @param sound The {@link VersionIndependentSound} to get
 	 * @return resulting {@link Sound}
 	 * @author Zeeraa
@@ -446,7 +446,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Send a title to a player
-	 * 
+	 *
 	 * @param player   The {@link Player} that should receive the title
 	 * @param title    The title text
 	 * @param subtitle The subtitle text
@@ -462,7 +462,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Get an {@link ItemStack} with a skull that has its texture set to the
 	 * provided base64 string
-	 * 
+	 *
 	 * @param b64stringtexture The base64 string containing texture data
 	 * @return {@link ItemStack} with a textured player skull
 	 * @author Zeeraa
@@ -486,7 +486,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Get the instance of {@link VersionIndependentItems} for this version of the
 	 * game
-	 * 
+	 *
 	 * @return {@link VersionIndependentItems} instance
 	 * @author Zeeraa
 	 */
@@ -494,7 +494,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Used to add a player skull as a ingredient in a {@link ShapedRecipe}
-	 * 
+	 *
 	 * @param recipe     The {@link ShapedRecipe} to modify
 	 * @param ingredient The ingredient char
 	 * @author Zeeraa
@@ -503,7 +503,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the {@link Material} from {@link VersionIndependentMaterial}
-	 * 
+	 *
 	 * @param material The {@link VersionIndependentMaterial}
 	 * @return The minecraft {@link Material}
 	 * @author Zeeraa
@@ -515,7 +515,7 @@ public abstract class VersionIndependentUtils {
 	 * {@link VersionIndependentMaterial}. Can return null if the
 	 * {@link VersionIndependentUtils} instance used is outdated. In case of missing
 	 * materials please contact the devs
-	 * 
+	 *
 	 * @param material The {@link VersionIndependentMaterial} the item should be of
 	 * @return {@link ItemStack} of provided type or <code>null</code> if the
 	 *         material has not been implemented by the devs
@@ -533,7 +533,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get an {@link ItemStack} of a player skull
-	 * 
+	 *
 	 * @return Player skull {@link ItemStack}
 	 * @author Zeeraa
 	 */
@@ -541,7 +541,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Check if a block is a sign
-	 * 
+	 *
 	 * @param block The block to check
 	 * @return <code>true</code> if the block is a sign
 	 * @author Zeeraa
@@ -554,7 +554,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Send a message to a player in their action bar
-	 * 
+	 *
 	 * @param player  The {@link Player} that should receive the message
 	 * @param message The message to send
 	 * @author Zeeraa
@@ -569,7 +569,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Modify the unbreakable parameter of the provided {@link ItemMeta}
-	 * 
+	 *
 	 * @param meta        The {@link ItemMeta} to change
 	 * @param unbreakable <code>true</code> to make the item unbreakable
 	 * @return the {@link ItemMeta} instance
@@ -586,7 +586,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set the item in the main hand of a {@link Creature}
-	 * 
+	 *
 	 * @param creature The {@link Creature} to use
 	 * @param item     The {@link ItemStack} to place in the main hand
 	 * @author Zeeraa
@@ -595,7 +595,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Get the body rotation of a {@link Player} using NMS
-	 * 
+	 *
 	 * @param player The {@link Player} to get the rotation of
 	 * @return Player body rotation
 	 * @author Zeeraa
@@ -605,7 +605,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Set the custom model data int of {@link ItemMeta}. If the server does not
 	 * support custom model data this will get no oped
-	 * 
+	 *
 	 * @param meta The {@link ItemMeta} to modify
 	 * @param data The custom model data
 	 * @author Bruno
@@ -615,7 +615,7 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Secure way to modify gamerules since the 1.8 way got deprecated in newer
 	 * versions of spigot
-	 * 
+	 *
 	 * @param world The {@link World} to set the rule in
 	 * @param rule  The rule to set
 	 * @param value The value of the game rule
@@ -625,7 +625,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Check if a {@link PlayerInteractEvent} is in the main hand
-	 * 
+	 *
 	 * @param event The {@link PlayerInteractEvent} to check
 	 * @return <code>true</code> if the event was triggered by the main hand
 	 * @author Zeeraa
@@ -634,7 +634,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * GEt an {@link Entity} by its {@link UUID}
-	 * 
+	 *
 	 * @param uuid The {@link UUID} of the entity
 	 * @return The {@link Entity} or <code>null</code> if not found
 	 * @author Zeeraa
@@ -643,7 +643,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Set if the AI should be enabled or disabled on a {@link LivingEntity}
-	 * 
+	 *
 	 * @param entity The entity
 	 * @param ai     <code>false</code> to disable the ai
 	 * @author Zeeraa
@@ -652,7 +652,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Check if a block is a bed
-	 * 
+	 *
 	 * @param block The {@link Block} to check
 	 * @return <code>true</code> if its a bed
 	 * @author Zeeraa
@@ -663,7 +663,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Check if a material is a bed
-	 * 
+	 *
 	 * @param material The {@link Material} to check
 	 * @return <code>true</code> if its a bed
 	 * @author Zeeraa
@@ -674,7 +674,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Sets an entity as silent
-	 * 
+	 *
 	 * @param entity The {@link LivingEntity}
 	 * @param silent boolean
 	 * @author Zeeraa
@@ -683,23 +683,23 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Predicts what {@link DeathType} would get if they died from that damage
-	 * 
+	 *
 	 * @param e           The {@link EntityDamageEvent} (could be any of its
 	 *                    children)
 	 * @param lastDamager The last damager
 	 * @author Bruno
-	 * 
+	 *
 	 * @return DeathType from {@link EntityDeathEvent}
 	 */
 	public abstract DeathType getDeathTypeFromDamage(EntityDamageEvent e, Entity lastDamager);
 
 	/**
 	 * Colorizes the message with one of 16 million RGB colors
-	 * 
+	 *
 	 * @param color   The {@link Color}
 	 * @param message The message
 	 * @author Bruno
-	 * 
+	 *
 	 * @return Colorized message
 	 */
 	public abstract String colorize(Color color, String message);
@@ -707,11 +707,11 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Colorizes the message as a gradient (transitioning from the start of the
 	 * {@link Color[]} array to the end)
-	 * 
+	 *
 	 * @param colors  The {@link Color[]} array
 	 * @param message The message
 	 * @author Bruno
-	 * 
+	 *
 	 * @return Colorized message
 	 */
 	public abstract String colorizeGradient(Color[] colors, String message);
@@ -719,12 +719,12 @@ public abstract class VersionIndependentUtils {
 	/**
 	 * Colorizes the message in a rainbow pattern (changes from 1 color to another,
 	 * always looping) with changeable intervals between them
-	 * 
+	 *
 	 * @param colors        The {@link Color[]} array
 	 * @param charsPerColor How many characters before going to next color
 	 * @param message       The message
 	 * @author Bruno
-	 * 
+	 *
 	 * @return Colorized message
 	 */
 	public abstract String colorizeRainbow(Color[] colors, int charsPerColor, String message);
@@ -752,6 +752,6 @@ public abstract class VersionIndependentUtils {
 	public abstract void setPotionEffect(ItemStack item, ItemMeta meta, PotionEffect effect, boolean color);
 
 	public abstract void setPotionColor(ItemMeta meta, org.bukkit.Color color);
-	
-	public abstract Block getBlockFromProjectileHitEvent(ProjectileHitEvent e);
+
+	public abstract CustomItemAdditionsManager getCustomItemAdditionsManager();
 }
