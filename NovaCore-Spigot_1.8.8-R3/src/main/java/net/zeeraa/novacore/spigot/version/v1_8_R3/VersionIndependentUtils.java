@@ -1173,6 +1173,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		return item;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void registerCustomEntity(Class<?> entity, String name) {
 		if (net.minecraft.server.v1_8_R3.Entity.class.isAssignableFrom(entity)) {

@@ -16,7 +16,6 @@ import net.minecraft.server.v1_12_R1.IBlockAccess;
 import net.minecraft.server.v1_12_R1.IBlockData;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.MinecraftKey;
 import net.minecraft.server.v1_12_R1.MinecraftServer;
 import net.minecraft.server.v1_12_R1.NBTBase;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
@@ -1183,6 +1182,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	public ItemStack getColoredBannerItemStack(DyeColor color) {
 		return new ItemStack(Material.BANNER, 1, color.getWoolData());
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public void registerCustomEntity(Class<?> entity, String name) {
 		if (net.minecraft.server.v1_12_R1.Entity.class.isAssignableFrom(entity)) {
