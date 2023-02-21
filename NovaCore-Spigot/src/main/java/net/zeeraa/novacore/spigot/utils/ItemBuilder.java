@@ -305,8 +305,19 @@ public class ItemBuilder {
 	 * @return This item stack
 	 */
 	public ItemStack build() {
+		return this.build(false);
+	}
+
+	/**
+	 * Create an item stack from the builder
+	 * 
+	 * @param clone If true the item will be cloned before its returned
+	 * 
+	 * @return This item stack
+	 */
+	public ItemStack build(boolean clone) {
 		this.item.setItemMeta(meta);
-		return this.item;
+		return clone ? this.item.clone() : this.item;
 	}
 
 	/**
@@ -584,6 +595,14 @@ public class ItemBuilder {
 
 	public static String getItemsAdderGUIBackgroundItem() {
 		return itemsAdderGUIBackgroundItem;
+	}
+
+	public static ItemBuilder coloredBanner(DyeColor color) {
+		return new ItemBuilder(VersionIndependentUtils.get().getColoredBannerItemStack(color));
+	}
+
+	public static ItemStack coloredBannerItemStack(DyeColor color) {
+		return VersionIndependentUtils.get().getColoredBannerItemStack(color);
 	}
 
 	public static void setItemsAdderGUIBackgroundItem(String itemsAdderGUIBackgroundItem) {
