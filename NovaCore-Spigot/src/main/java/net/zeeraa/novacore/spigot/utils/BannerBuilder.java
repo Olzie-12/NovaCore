@@ -29,6 +29,11 @@ public class BannerBuilder {
 		item = bannerItemStack;
 		meta = (BannerMeta) bannerItemStack.getItemMeta();
 	}
+	
+	public BannerBuilder setAmount(int amount) {
+		item.setAmount(amount);
+		return this;
+	}
 
 	public BannerBuilder addPattern(Pattern pattern) {
 		meta.addPattern(pattern);
