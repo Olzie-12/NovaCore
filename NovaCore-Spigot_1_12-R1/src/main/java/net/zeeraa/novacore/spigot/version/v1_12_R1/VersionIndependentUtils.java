@@ -1190,7 +1190,6 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
 			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
 			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, entityId);
-			System.out.println("Registered " + entity.getClass().getSimpleName() + " With entity id " + entityId);
 		} else {
 			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
@@ -1203,6 +1202,17 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			((CraftWorld)location.getWorld()).getHandle().addEntity(nmsEntity);
 		} else {
 			Log.error("VersionIndependentUtils", "Object isnt instance of Entity.");
+		}
+	}
+
+	@Override
+	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
+		if (net.minecraft.server.v1_12_R1.Entity.class.isAssignableFrom(entity)) {
+			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
+			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
+			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
+		} else {
+			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
 	}
 }

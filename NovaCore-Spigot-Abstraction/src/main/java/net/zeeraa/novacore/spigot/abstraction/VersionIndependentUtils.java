@@ -816,31 +816,126 @@ public abstract class VersionIndependentUtils {
 		Bukkit.getServer().getOnlinePlayers().stream().filter(player -> player.getWorld().equals(world)).forEach(player -> this.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut));
 	}
 
+	/**
+	 * Converts Bungeecord's {@link ChatColor} to java.awt's {@link Color}
+	 *
+	 * @param color the Bungeecord color
+	 * @return The java.awt color
+	 *
+	 * @author Zeeraa
+	 */
 	public Color bungeecordChatColorToJavaColor(ChatColor color) {
 		return DefaultBungeecordColorMapper.getColorOfChatcolor(color);
 	}
 
+	/**
+	 * Displays a totem of undying to player if version has
+	 *
+	 * @param player Player to display
+	 *
+	 * @author Bruno
+	 */
 	public abstract void displayTotem(Player player);
 
+	/**
+	 * Displays a custom totem with custom model data to player
+	 *
+	 * @param player Player to display
+	 * @param cmd The Custom Model Data
+	 *
+	 * @author Bruno
+	 */
 	public abstract void displayCustomTotem(Player player, int cmd);
 
+	/**
+	 * Sets an {@link ArmorStand} as a marker
+	 *
+	 * @param stand the Armor Stand to modify
+	 * @param value true if change to marker, false if normal armor stand
+	 *
+	 * @author Bruno
+	 */
 	public abstract void setMarker(ArmorStand stand, boolean value);
 
+	/**
+	 * Checks if {@link ArmorStand} is a marker
+	 *
+	 * @param stand The {@link ArmorStand} to check
+	 * @return If it's a marker
+	 *
+	 * @author Bruno
+	 */
 	public abstract boolean isMarker(ArmorStand stand);
 
+	/**
+	 * Sets the player as a custom spectator depending on the value
+	 *
+	 * @param player The player to be set
+	 * @param value If player will be removed or set as a custom spectator
+	 *
+	 * @author Bruno
+	 */
 	public void setCustomSpectator(Player player, boolean value) {
 		setCustomSpectator(player, value, Bukkit.getOnlinePlayers());
 	}
-
+	/**
+	 * Sets the player as a custom spectator depending on the value
+	 *
+	 * @param player The player to be set
+	 * @param value If player will be removed or set as a custom spectator
+	 * @param players The player to hide from
+	 *
+	 * @author Bruno
+	 */
 	public abstract void setCustomSpectator(Player player, boolean value, Collection<? extends Player> players);
 
+	/**
+	 * Gets the bounding box of an entity
+	 * @param entity The entity to get
+	 * @return The {@link EntityBoundingBox} from the entity
+	 *
+	 * @author Bruno
+	 */
 	public abstract EntityBoundingBox getEntityBoundingBox(Entity entity);
 
+	/**
+	 * Sets the source of a tnt
+	 * @param tnt The {@link TNTPrimed} to be changed
+	 * @param source The {@link LivingEntity} to be set as source
+	 */
 	public abstract void setSource(TNTPrimed tnt, LivingEntity source);
-	
+
+	/**
+	 * Gets the {@link ItemStack} for a colored banner
+	 *
+	 * @param color The color to set the banner
+	 * @return The banner item stack
+	 *
+	 * @author Zeeraa
+	 */
 	public abstract ItemStack getColoredBannerItemStack(DyeColor color);
 
+	/**
+	 * Registers a custom NMS entity (There's no need to do this on versions 1.14+)
+	 *
+	 * @param entity The entity class (Must extend nms's Entity)
+	 * @param name The name to give the entity
+	 */
 	public abstract void registerCustomEntity(Class<?> entity, String name);
 
+	/**
+	 * Spawns a custom NMS entity
+	 *
+	 * @param entity The entity class (Must extend nms's Entity)
+	 * @param location The {@link Location} to spawn
+	 */
 	public abstract void spawnCustomEntity(Object entity, Location location);
+
+	/**
+	 * Registers a custom NMS entity with custom entity id (There's no need to do this on versions 1.14+)
+	 * @param entity The entity class (Must extend nms's Entity)
+	 * @param name The name to give the entity
+	 * @param id the Entity ID to give the entity <a href="https://mcreator.net/wiki/entity-ids">CLICK HERE FOR REFERENCE</a>
+	 */
+	public abstract void registerCustomEntityWithEntityId(Class<?> entity, String name, int id);
 }
