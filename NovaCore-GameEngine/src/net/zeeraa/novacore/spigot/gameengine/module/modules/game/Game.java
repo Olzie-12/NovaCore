@@ -919,7 +919,7 @@ public abstract class Game {
 	/**
 	 * Called when a player respawns
 	 * 
-	 * @param player The player that respawned
+	 * @param event The {@link PlayerRespawnEvent}
 	 */
 	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
 	}
