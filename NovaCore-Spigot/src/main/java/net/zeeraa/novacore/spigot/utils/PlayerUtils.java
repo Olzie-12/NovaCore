@@ -3,6 +3,7 @@ package net.zeeraa.novacore.spigot.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -162,10 +163,30 @@ public class PlayerUtils {
 
 	/**
 	 * Check if the player is at full health
+	 * 
 	 * @param player The {@link Player} to check
 	 * @return <code>true</code> if the player is at full health
 	 */
 	public static boolean isAtMaxHealth(Player player) {
 		return player.getHealth() == PlayerUtils.getPlayerMaxHealth(player);
+	}
+
+	/**
+	 * Check if a player is online and if so call a {@link Consumer} of type
+	 * {@link Player}
+	 * 
+	 * @param uuid     The {@link UUID} of the player to check
+	 * @param consumer The {@link Consumer} to use
+	 * @return <code>true</code> if the player is online
+	 */
+	public static boolean ifOnline(UUID uuid, Consumer<Player> consumer) {
+		Player player = Bukkit.getServer().getPlayer(uuid);
+		if (player != null) {
+			if (player.isOnline()) {
+				consumer.accept(player);
+				return true;
+			}
+		}
+		return false;
 	}
 }

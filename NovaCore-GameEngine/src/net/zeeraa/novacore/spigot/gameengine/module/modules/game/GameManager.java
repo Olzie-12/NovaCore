@@ -1010,6 +1010,7 @@ public class GameManager extends NovaModule implements Listener {
 		if (callOnRespawn.contains(p.getUniqueId())) {
 			if (hasGame()) {
 				getActiveGame().onPlayerRespawn(p);
+				getActiveGame().onPlayerRespawnEvent(e);
 				callOnRespawn.remove(p.getUniqueId());
 			}
 		}

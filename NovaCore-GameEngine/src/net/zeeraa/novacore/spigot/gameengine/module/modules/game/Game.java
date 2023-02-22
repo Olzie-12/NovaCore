@@ -14,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.Plugin;
 
@@ -913,6 +914,14 @@ public abstract class Game {
 	 * @param player The player that respawned
 	 */
 	public void onPlayerRespawn(Player player) {
+	}
+	
+	/**
+	 * Called when a player respawns
+	 * 
+	 * @param player The player that respawned
+	 */
+	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
 	}
 
 	/**
