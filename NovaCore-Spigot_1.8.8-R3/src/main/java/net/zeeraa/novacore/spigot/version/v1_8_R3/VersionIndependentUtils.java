@@ -1207,4 +1207,15 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		}
 	}
 
+	@Override
+	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
+		if (net.minecraft.server.v1_8_R3.Entity.class.isAssignableFrom(entity)) {
+			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
+			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
+			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
+		} else {
+			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
+		}
+	}
+
 }
