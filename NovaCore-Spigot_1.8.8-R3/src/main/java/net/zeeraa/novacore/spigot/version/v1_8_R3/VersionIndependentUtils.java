@@ -402,6 +402,9 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		case CLICK:
 			return Sound.CLICK;
 
+		case BLAZE_HIT:
+			return Sound.BLAZE_HIT;
+
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_SOUND);
 			AbstractionLogger.getLogger().error("VersionIndependentUtils", "VersionIndependantSound " + sound.name() + " is not defined in this version. Please add it to " + this.getClass().getName());
@@ -1178,7 +1181,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	public void registerCustomEntity(Class<?> entity, String name) {
 		if (net.minecraft.server.v1_8_R3.Entity.class.isAssignableFrom(entity)) {
 			int entityId = -1;
-			for (Map.Entry<Class<?>, Integer> entry : ((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).entrySet()) {
+			for (Map.Entry<Class<?>, Integer> entry : ((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).entrySet()) {
 				if (entry.getKey().isAssignableFrom(entity)) {
 					entityId = entry.getValue();
 					break;
@@ -1188,9 +1191,9 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 				Log.error("VersionIndependentUtils", "Could not find sub-class for " + entity.getSimpleName() + " and get Entity ID.");
 				return;
 			}
-			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
-			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
-			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, entityId);
+			((Map<String, Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
+			((Map<Class<?>, String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
+			((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, entityId);
 		} else {
 			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
@@ -1201,18 +1204,19 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		if (net.minecraft.server.v1_8_R3.Entity.class.isAssignableFrom(entity.getClass())) {
 			net.minecraft.server.v1_8_R3.Entity nmsEntity = (net.minecraft.server.v1_8_R3.Entity) entity;
 			nmsEntity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-			((CraftWorld)location.getWorld()).getHandle().addEntity(nmsEntity);
+			((CraftWorld) location.getWorld()).getHandle().addEntity(nmsEntity);
 		} else {
 			Log.error("VersionIndependentUtils", "Object isnt instance of Entity.");
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
 		if (net.minecraft.server.v1_8_R3.Entity.class.isAssignableFrom(entity)) {
-			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
-			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
-			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
+			((Map<String, Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
+			((Map<Class<?>, String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
+			((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
 		} else {
 			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}

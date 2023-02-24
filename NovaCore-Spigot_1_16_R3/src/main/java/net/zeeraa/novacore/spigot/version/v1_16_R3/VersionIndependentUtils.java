@@ -637,6 +637,9 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 		case CLICK:
 			return Sound.BLOCK_LEVER_CLICK;
+			
+		case BLAZE_HIT:
+			return Sound.ENTITY_BLAZE_HURT;
 
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_SOUND);

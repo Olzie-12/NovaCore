@@ -408,6 +408,9 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 		case CLICK:
 			return Sound.BLOCK_LEVER_CLICK;
+			
+		case BLAZE_HIT:
+			return Sound.ENTITY_BLAZE_HURT;
 
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_SOUND);
@@ -1205,6 +1208,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
 		if (net.minecraft.server.v1_12_R1.Entity.class.isAssignableFrom(entity)) {

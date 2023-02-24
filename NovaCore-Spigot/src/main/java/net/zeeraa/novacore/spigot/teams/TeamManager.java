@@ -208,4 +208,28 @@ public abstract class TeamManager {
 	public static TeamManager getTeamManager() {
 		return NovaCore.getInstance().getTeamManager();
 	}
+
+	@Nullable
+	public String tryGetTeamDisplayName(OfflinePlayer player) {
+		return this.tryGetTeamDisplayName(player.getUniqueId(), null);
+	}
+
+	@Nullable
+	public String tryGetTeamDisplayName(UUID uuid) {
+		return this.tryGetTeamDisplayName(uuid, null);
+	}
+
+	@Nullable
+	public String tryGetTeamDisplayName(OfflinePlayer player, @Nullable String fallback) {
+		return this.tryGetTeamDisplayName(player.getUniqueId(), fallback);
+	}
+
+	@Nullable
+	public String tryGetTeamDisplayName(UUID uuid, @Nullable String fallback) {
+		Team team = getPlayerTeam(uuid);
+		if (team != null) {
+			return team.getDisplayName();
+		}
+		return fallback;
+	}
 }
