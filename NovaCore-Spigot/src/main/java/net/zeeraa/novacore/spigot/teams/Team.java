@@ -10,10 +10,12 @@ import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import net.md_5.bungee.api.ChatColor;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
+import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 
 /**
  * Represents a team used by games
@@ -149,8 +151,31 @@ public abstract class Team {
 				}
 			}
 		}
-
 		return count;
+	}
+	
+	public void playSound(VersionIndependentSound sound) {
+		this.playSound(sound, 1F, 1F);
+	}
+
+	public void playSound(VersionIndependentSound sound, float volume) {
+		this.playSound(sound, volume, 1F);
+	}
+
+	public void playSound(VersionIndependentSound sound, float volume, float pitch) {
+		getOnlinePlayers().forEach(player -> sound.play(player, volume, pitch));
+	}
+
+	public void playSound(Sound sound) {
+		this.playSound(sound, 1F, 1F);
+	}
+
+	public void playSound(Sound sound, float volume) {
+		this.playSound(sound, volume, 1F);
+	}
+
+	public void playSound(Sound sound, float volume, float pitch) {
+		getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, volume, pitch));
 	}
 
 	/**
