@@ -18,6 +18,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import net.brunogamer.novacore.spigot.utils.ColorUtils;
+import net.md_5.bungee.api.ChatColor;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
@@ -296,6 +298,18 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder setLeatherArmorColor(Color color) {
 		((LeatherArmorMeta) meta).setColor(color);
+		return this;
+	}
+
+	/**
+	 * Set the color of leather armor. Do not call this if the item is not a piece
+	 * of leather armor.
+	 * 
+	 * @param color The {@link ChatColor} to set
+	 * @return This item builder instance
+	 */
+	public ItemBuilder setLeatherArmorColor(ChatColor color) {
+		((LeatherArmorMeta) meta).setColor(ColorUtils.getColorByChatColor(color));
 		return this;
 	}
 
