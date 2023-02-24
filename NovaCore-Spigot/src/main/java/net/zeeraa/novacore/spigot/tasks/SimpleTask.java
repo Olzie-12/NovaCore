@@ -83,6 +83,31 @@ public class SimpleTask extends Task {
 		this.taskExecutionMode = taskExecutionMode;
 	}
 
+	/**
+	 * Update the interval the task run at. This also calls
+	 * {@link SimpleTask#restart()} if the task is running
+	 * 
+	 * @param delay The delay
+	 */
+	public void updateInterval(long delay) {
+		this.updateInterval(delay, delay);
+	}
+
+	/**
+	 * Update the interval the task run at. This also calls
+	 * {@link SimpleTask#restart()} if the task is running
+	 * 
+	 * @param delay  The delay
+	 * @param period The period
+	 */
+	public void updateInterval(long delay, long period) {
+		this.delay = delay;
+		this.period = period;
+		if (isRunning()) {
+			restart();
+		}
+	}
+
 	@Override
 	public boolean start() {
 		if (bukkitTask != null) {
