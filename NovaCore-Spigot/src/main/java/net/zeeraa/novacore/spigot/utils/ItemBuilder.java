@@ -309,7 +309,11 @@ public class ItemBuilder {
 	 * @return This item builder instance
 	 */
 	public ItemBuilder setLeatherArmorColor(ChatColor color) {
-		((LeatherArmorMeta) meta).setColor(VersionIndependentUtils.get().bungeecordChatColorToBukkitColor(color));
+		if (NovaCore.getInstance().isNoNMSMode()) {
+			((LeatherArmorMeta) meta).setColor(ColorUtils.getColorByChatColor(color));
+		} else {
+			((LeatherArmorMeta) meta).setColor(VersionIndependentUtils.get().bungeecordChatColorToBukkitColor(color));
+		}
 		return this;
 	}
 
