@@ -829,6 +829,19 @@ public abstract class VersionIndependentUtils {
 	}
 
 	/**
+	 * Converts Bungeecord's {@link ChatColor} to bukkit {@link org.bukkit.Color}
+	 *
+	 * @param color the Bungeecord color
+	 * @return The org.bukkit.Color
+	 *
+	 * @author Zeeraa
+	 */
+	public org.bukkit.Color bungeecordChatColorToBukkitColor(ChatColor color) {
+		Color awt = this.bungeecordChatColorToJavaColor(color);
+		return org.bukkit.Color.fromBGR(awt.getRed(), awt.getGreen(), awt.getBlue());
+	}
+
+	/**
 	 * Displays a totem of undying to player if version has
 	 *
 	 * @param player Player to display
@@ -841,7 +854,7 @@ public abstract class VersionIndependentUtils {
 	 * Displays a custom totem with custom model data to player
 	 *
 	 * @param player Player to display
-	 * @param cmd The Custom Model Data
+	 * @param cmd    The Custom Model Data
 	 *
 	 * @author Bruno
 	 */
@@ -871,18 +884,19 @@ public abstract class VersionIndependentUtils {
 	 * Sets the player as a custom spectator depending on the value
 	 *
 	 * @param player The player to be set
-	 * @param value If player will be removed or set as a custom spectator
+	 * @param value  If player will be removed or set as a custom spectator
 	 *
 	 * @author Bruno
 	 */
 	public void setCustomSpectator(Player player, boolean value) {
 		setCustomSpectator(player, value, Bukkit.getOnlinePlayers());
 	}
+
 	/**
 	 * Sets the player as a custom spectator depending on the value
 	 *
-	 * @param player The player to be set
-	 * @param value If player will be removed or set as a custom spectator
+	 * @param player  The player to be set
+	 * @param value   If player will be removed or set as a custom spectator
 	 * @param players The player to hide from
 	 *
 	 * @author Bruno
@@ -891,6 +905,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Gets the bounding box of an entity
+	 * 
 	 * @param entity The entity to get
 	 * @return The {@link EntityBoundingBox} from the entity
 	 *
@@ -900,7 +915,8 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Sets the source of a tnt
-	 * @param tnt The {@link TNTPrimed} to be changed
+	 * 
+	 * @param tnt    The {@link TNTPrimed} to be changed
 	 * @param source The {@link LivingEntity} to be set as source
 	 */
 	public abstract void setSource(TNTPrimed tnt, LivingEntity source);
@@ -919,23 +935,27 @@ public abstract class VersionIndependentUtils {
 	 * Registers a custom NMS entity (There's no need to do this on versions 1.14+)
 	 *
 	 * @param entity The entity class (Must extend nms's Entity)
-	 * @param name The name to give the entity
+	 * @param name   The name to give the entity
 	 */
 	public abstract void registerCustomEntity(Class<?> entity, String name);
 
 	/**
 	 * Spawns a custom NMS entity
 	 *
-	 * @param entity The entity class (Must extend nms's Entity)
+	 * @param entity   The entity class (Must extend nms's Entity)
 	 * @param location The {@link Location} to spawn
 	 */
 	public abstract void spawnCustomEntity(Object entity, Location location);
 
 	/**
-	 * Registers a custom NMS entity with custom entity id (There's no need to do this on versions 1.14+)
+	 * Registers a custom NMS entity with custom entity id (There's no need to do
+	 * this on versions 1.14+)
+	 * 
 	 * @param entity The entity class (Must extend nms's Entity)
-	 * @param name The name to give the entity
-	 * @param id the Entity ID to give the entity <a href="https://mcreator.net/wiki/entity-ids">CLICK HERE FOR REFERENCE</a>
+	 * @param name   The name to give the entity
+	 * @param id     the Entity ID to give the entity
+	 *               <a href="https://mcreator.net/wiki/entity-ids">CLICK HERE FOR
+	 *               REFERENCE</a>
 	 */
 	public abstract void registerCustomEntityWithEntityId(Class<?> entity, String name, int id);
 }
