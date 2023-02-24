@@ -108,6 +108,14 @@ public class SimpleTask extends Task {
 		}
 	}
 
+	public long getDelay() {
+		return delay;
+	}
+
+	public long getPeriod() {
+		return period;
+	}
+
 	@Override
 	public boolean start() {
 		if (bukkitTask != null) {
