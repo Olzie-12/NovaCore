@@ -27,6 +27,9 @@ MapDisplayManager:
 # To not spam the chat op players this should never be set to anything lower than INFO unless you are trying to debug things
 DefaultOpLogLevel: "ERROR"
 
+# Disable the built in log level colors
+DisableBuiltInLogColors: false
+
 # Enable to show more debug messages
 ExtendedDebugging: false
 

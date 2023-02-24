@@ -16,6 +16,27 @@ import net.zeeraa.novacore.commons.NovaCommons;
 public class Log {
 	private static LogLevel consoleLogLevel = LogLevel.INFO;
 
+	private static boolean disableColors = false;
+
+	/**
+	 * Check if built in colors are disabled
+	 * 
+	 * @return <code>true</code> if built in colors are disabled
+	 */
+	public static boolean isDisableColors() {
+		return disableColors;
+	}
+
+	/**
+	 * Disable the built in colors to the log messages. If the message printed is
+	 * using colors it will still print that color to the console
+	 * 
+	 * @param disableColors <code>true</code> to disable built in colors
+	 */
+	public static void setDisableColors(boolean disableColors) {
+		Log.disableColors = disableColors;
+	}
+
 	public static HashMap<UUID, LogLevel> subscribedPlayers = new HashMap<>();
 
 	public static void trace(String message) {
@@ -81,7 +102,14 @@ public class Log {
 		 * message, logLevel)); return; } }
 		 */
 
-		String fullMessage = "[" + logLevel.getMessagePrefix() + ChatColor.RESET + "]" + (source == null ? "" : " [" + ChatColor.GOLD + source + ChatColor.RESET + "]") + ": " + message;
+		String fullMessage;
+
+		if (disableColors) {
+			fullMessage = "[" + logLevel.getMessagePrefix(false) + "]" + (source == null ? "" : " [" + ChatColor.stripColor(source) + "]") + ": " + message;
+		} else {
+			fullMessage = "[" + logLevel.getMessagePrefix(true) + ChatColor.RESET + "]" + (source == null ? "" : " [" + ChatColor.GOLD + source + ChatColor.RESET + "]") + ": " + message;
+		}
+
 		if (logLevel.shouldLog(consoleLogLevel)) {
 			if (NovaCommons.getAbstractConsoleSender() == null) {
 				System.out.println(ChatColor.stripColor(message));

@@ -296,7 +296,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.error("NovaCore", "Cant run selftest in no nms mode");
 			return false;
 		}
-		
+
 		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
 
 		try {
@@ -437,6 +437,11 @@ public class NovaCore extends JavaPlugin implements Listener {
 		NovaCommons.setPlatformIndependentPlayerAPI(new SpigotPlatformIndependentPlayerAPI());
 		NovaCommons.setServerType(ServerType.SPIGOT);
 		NovaCommons.setExtendedDebugging(getConfig().getBoolean("ExtendedDebugging"));
+
+		if (getConfig().getBoolean("DisableBuiltInLogColors")) {
+			Log.setDisableColors(true);
+			Log.info("Logger", "Log colors disabled");
+		}
 
 		Log.setConsoleLogLevel(LogLevel.INFO);
 
