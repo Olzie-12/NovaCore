@@ -309,7 +309,7 @@ public class ItemBuilder {
 	 * @return This item builder instance
 	 */
 	public ItemBuilder setLeatherArmorColor(ChatColor color) {
-		((LeatherArmorMeta) meta).setColor(ColorUtils.getColorByChatColor(color));
+		((LeatherArmorMeta) meta).setColor(VersionIndependentUtils.get().bungeecordChatColorToBukkitColor(color));
 		return this;
 	}
 
