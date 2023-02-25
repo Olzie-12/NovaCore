@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import net.zeeraa.novacore.spigot.command.AllowedSenders;
+import net.zeeraa.novacore.spigot.command.NovaCommand;
 import net.zeeraa.novacore.spigot.command.NovaSubCommand;
 import net.zeeraa.novacore.spigot.mapdisplay.MapDisplay;
 import net.zeeraa.novacore.spigot.mapdisplay.MapDisplayManager;
@@ -21,16 +22,17 @@ public class MDDeleteSubCommand extends NovaSubCommand {
 		setDescription("Delete a map display");
 		setFilterAutocomplete(true);
 		setAllowedSenders(AllowedSenders.ALL);
+		setAliases(NovaCommand.generateAliasList("remove"));
 		setUsage("/mapdisplay delete <name>");
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-		if(!MapDisplayManager.getInstance().isEnabled()) {
+		if (!MapDisplayManager.getInstance().isEnabled()) {
 			sender.sendMessage(ChatColor.DARK_RED + "MapDisplayManager is not enabled");
 			return false;
 		}
-		
+
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.RED + "Please provide a name");
 			return false;

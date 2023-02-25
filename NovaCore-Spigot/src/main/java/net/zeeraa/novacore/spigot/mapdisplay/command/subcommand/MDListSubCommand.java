@@ -23,11 +23,12 @@ public class MDListSubCommand extends NovaSubCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-		if(!MapDisplayManager.getInstance().isEnabled()) {
+		if (!MapDisplayManager.getInstance().isEnabled()) {
 			sender.sendMessage(ChatColor.DARK_RED + "MapDisplayManager is not enabled");
 			return false;
 		}
-		
+
+		sender.sendMessage(ChatColor.AQUA.toString() + MapDisplayManager.getInstance().getMapDisplays().size() + ChatColor.GOLD + " displays found");
 		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> sender.sendMessage(ChatColor.AQUA + display.getName() + ChatColor.GOLD + " in world " + ChatColor.AQUA + display.getWorld().getName()));
 		return true;
 	}
