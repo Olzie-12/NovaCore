@@ -838,7 +838,7 @@ public abstract class VersionIndependentUtils {
 	 */
 	public org.bukkit.Color bungeecordChatColorToBukkitColor(ChatColor color) {
 		Color awt = this.bungeecordChatColorToJavaColor(color);
-		return org.bukkit.Color.fromBGR(awt.getRed(), awt.getGreen(), awt.getBlue());
+		return org.bukkit.Color.fromRGB(awt.getRed(), awt.getGreen(), awt.getBlue());
 	}
 
 	/**
