@@ -1,5 +1,9 @@
 # 👨‍💻 NovaCore
 [![Java CI with Maven](https://github.com/NovaUniverse/NovaCore/actions/workflows/maven.yml/badge.svg)](https://github.com/NovaUniverse/NovaCore/actions/workflows/maven.yml)
+![bStats Servers](https://img.shields.io/bstats/servers/15987)
+![bStats Players](https://img.shields.io/bstats/players/15987)
+![GitHub contributors](https://img.shields.io/github/contributors/NovaUniverse/NovaCore)
+![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.novauniverse.net%2Fjob%2FNovaCore%2F)
 
 A plugin with a lot of useful features to make plugins with less code and better compatibility between versions
 
