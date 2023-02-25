@@ -70,6 +70,7 @@ public class ChestLoot extends MapModule {
 			}
 		});
 		trigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
+		trigger.setDescription("Refills chests");
 	}
 
 	public String getEnderChestLootTable() {

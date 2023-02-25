@@ -124,6 +124,7 @@ public class WorldborderMapModule extends MapModule {
 
 			start();
 		});
+		this.startTrigger.setDescription("Starts the worldborder shrinking");
 		this.startTrigger.addFlag(TriggerFlag.RUN_ONLY_ONCE);
 		this.startTrigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
 	}

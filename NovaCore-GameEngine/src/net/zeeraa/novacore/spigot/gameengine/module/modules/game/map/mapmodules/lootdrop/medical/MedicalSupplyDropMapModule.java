@@ -72,6 +72,7 @@ public class MedicalSupplyDropMapModule extends MapModule {
 
 		trigger = new DelayedGameTrigger("novacore.medicalsupplydrop", minDropTime, (trigger2, reason) -> onTrigger(reason));
 		trigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
+		trigger.setDescription("Spawns a medical supply drop");
 	}
 
 	private void onTrigger(TriggerFlag reason) {

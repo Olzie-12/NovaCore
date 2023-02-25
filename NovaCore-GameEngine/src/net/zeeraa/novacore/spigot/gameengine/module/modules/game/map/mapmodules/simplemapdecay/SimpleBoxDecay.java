@@ -44,8 +44,8 @@ public class SimpleBoxDecay extends MapModule {
 		int beginAfter = json.getInt("begin_after");
 
 		trigger = new RepeatingGameTrigger("novauniverse.simpleboxdecay.simpleboxdecay", 20L, 60L, (trigger2, reason) -> execDecayStep());
-
 		trigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
+		trigger.setDescription("Handles decay step");
 
 		startTrigger = new DelayedGameTrigger("novauniverse.simpleboxdecay.begin_simpleboxdecay", beginAfter * 20L, (trigger2, reason) -> {
 			Bukkit.getServer().getOnlinePlayers().forEach(p -> {
@@ -59,6 +59,7 @@ public class SimpleBoxDecay extends MapModule {
 
 		startTrigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
 		startTrigger.addFlag(TriggerFlag.RUN_ONLY_ONCE);
+		startTrigger.setDescription("Starts the decay of an area");
 
 		Log.debug("SimpleBoxDecay", "Decay area contains " + area.getArea() + " blocks");
 	}

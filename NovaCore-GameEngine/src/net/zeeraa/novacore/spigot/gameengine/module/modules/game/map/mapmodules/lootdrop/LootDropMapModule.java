@@ -72,6 +72,7 @@ public class LootDropMapModule extends MapModule {
 
 		trigger = new DelayedGameTrigger("novacore.lootdrop", minDropTime, (trigger2, reason) -> onTrigger(reason));
 		trigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
+		trigger.setDescription("Spawns a loot drop");
 	}
 
 	private void onTrigger(TriggerFlag reason) {
