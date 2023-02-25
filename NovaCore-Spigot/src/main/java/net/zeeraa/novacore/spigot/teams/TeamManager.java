@@ -31,6 +31,15 @@ public abstract class TeamManager {
 	}
 
 	/**
+	 * Get the amount of teams
+	 * 
+	 * @return team count
+	 */
+	public int getTeamCount() {
+		return teams.size();
+	}
+
+	/**
 	 * Get a list of all {@link Team}s
 	 * 
 	 * @return List of teams
