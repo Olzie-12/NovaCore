@@ -8,6 +8,7 @@ import java.util.Random;
  * @author Zeeraa
  */
 public class RandomGenerator {
+	private static final String alphanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final Random DEFAULT_RANDOM_INSTACE = new Random();
 
 	/**
@@ -118,4 +119,15 @@ public class RandomGenerator {
 		return (long) (random.nextDouble() * (max - min) + min);
 	}
 
+	public static String randomAlphanumericString(int length) {
+		return RandomGenerator.randomAlphanumericString(length, DEFAULT_RANDOM_INSTACE);
+	}
+
+	public static String randomAlphanumericString(int length, Random random) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			sb.append(alphanum.charAt(random.nextInt(alphanum.length())));
+		}
+		return sb.toString();
+	}
 }
