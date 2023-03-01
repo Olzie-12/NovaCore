@@ -8,6 +8,7 @@ import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandl
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -712,7 +713,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.info("NovaCore", "Metrics disabled");
 		} else {
 			Log.info("NovaCore", "Starting metrics provided by bStats. This can be disabled in config.yml");
-			new Metrics(this, 15987);
+			Metrics metrics =  new Metrics(this, 15987);
+			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> {
+		        return NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No";
+		    }));
 		}
 	}
 
