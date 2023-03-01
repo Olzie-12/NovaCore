@@ -7,6 +7,7 @@ import java.io.InvalidClassException;
 import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
 import org.apache.commons.io.FileUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -28,7 +29,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 
-import net.novauniverse.novacore.bstats.Metrics;
 import net.zeeraa.novacore.commons.NovaCommons;
 import net.zeeraa.novacore.commons.ServerType;
 import net.zeeraa.novacore.commons.api.novauniverse.NovaUniverseAPI;
