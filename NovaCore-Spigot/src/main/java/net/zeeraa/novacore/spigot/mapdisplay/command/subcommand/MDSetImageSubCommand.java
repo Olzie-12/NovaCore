@@ -19,7 +19,9 @@ import net.zeeraa.novacore.spigot.mapdisplay.MapDisplay;
 import net.zeeraa.novacore.spigot.mapdisplay.MapDisplayManager;
 
 public class MDSetImageSubCommand extends NovaSubCommand {
-	public static final int IMAGE_FETCH_TIMEOUT = 10000;
+	public static int IMAGE_FETCH_TIMEOUT = 10000;
+	public static String useragent = "NovaCore 2.0.0 MapImageDisplays";
+	public static boolean disableWebInteractions = false;
 
 	public MDSetImageSubCommand() {
 		super("setimage");
@@ -36,6 +38,11 @@ public class MDSetImageSubCommand extends NovaSubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!MapDisplayManager.getInstance().isEnabled()) {
 			sender.sendMessage(ChatColor.DARK_RED + "MapDisplayManager is not enabled");
+			return false;
+		}
+		
+		if(disableWebInteractions) {
+			sender.sendMessage(ChatColor.RED + "The server does not allow fetching images from external urls");
 			return false;
 		}
 
@@ -58,7 +65,7 @@ public class MDSetImageSubCommand extends NovaSubCommand {
 					final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 					connection.setConnectTimeout(IMAGE_FETCH_TIMEOUT);
 					connection.setReadTimeout(IMAGE_FETCH_TIMEOUT);
-					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+					connection.setRequestProperty("User-Agent", useragent);
 					image = ImageIO.read(connection.getInputStream());
 					// image = ImageIO.read(url);
 					Log.trace("Image loaded from url");

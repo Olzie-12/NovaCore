@@ -18,6 +18,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class Hastebin {
 	private String baseUrl;
+	private String useragent;
 	private int timeout;
 
 	/**
@@ -29,11 +30,11 @@ public class Hastebin {
 	 * @since 2.0.0
 	 */
 	public Hastebin(String baseUrl) {
-		this(baseUrl, 10 * 1000);
+		this(baseUrl, 10 * 1000, "NovaCore 2.0.0 Hastebin Java Api");
 	}
 
 	/**
-	 * Create a hastebin client and define a custom timeout
+	 * Create a hastebin client
 	 * 
 	 * @param baseUrl The url of the hastebin server
 	 * @param timeout The timeout in milliseconds
@@ -42,6 +43,21 @@ public class Hastebin {
 	 * @since 2.0.0
 	 */
 	public Hastebin(String baseUrl, int timeout) {
+		this(baseUrl, timeout, "NovaCore 2.0.0 Hastebin Java Api");
+	}
+
+	/**
+	 * Create a hastebin client
+	 * 
+	 * @param baseUrl   The url of the hastebin server
+	 * @param timeout   The timeout in milliseconds
+	 * @param useragent The useragent to use when making requests
+	 * 
+	 * @throws IllegalArgumentException If the url is not valid
+	 * @since 2.0.0
+	 */
+	public Hastebin(String baseUrl, int timeout, String useragent) {
+		this.useragent = useragent;
 		if (baseUrl.endsWith("/")) {
 			this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 		} else {
@@ -78,6 +94,15 @@ public class Hastebin {
 	}
 
 	/**
+	 * Get the useragent in use
+	 * 
+	 * @return useragent string
+	 */
+	public String getUseragent() {
+		return useragent;
+	}
+
+	/**
 	 * Post data to the hastebin server. This sets the data as raw, see
 	 * {@link Hastebin#post(String, boolean)} for posting non raw data
 	 * 
@@ -111,7 +136,7 @@ public class Hastebin {
 		conn.setDoOutput(true);
 		conn.setInstanceFollowRedirects(false);
 		conn.setRequestMethod("POST");
-		conn.setRequestProperty("User-Agent", "NovaCore 2.0.0 Hastebin Java Api");
+		conn.setRequestProperty("User-Agent", useragent);
 		conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
 		conn.setUseCaches(false);
 

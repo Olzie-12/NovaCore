@@ -3,6 +3,7 @@ package net.zeeraa.novacore.spigot;
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.util.List;
 
 import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
@@ -67,6 +68,7 @@ import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootTableLoaderV1Legac
 import net.zeeraa.novacore.spigot.loottable.loottables.randomiser.RandomizerLootTableLoader;
 import net.zeeraa.novacore.spigot.mapdisplay.MapDisplayManager;
 import net.zeeraa.novacore.spigot.mapdisplay.command.MapDisplayCommand;
+import net.zeeraa.novacore.spigot.mapdisplay.command.subcommand.MDSetImageSubCommand;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.event.ModuleDisabledEvent;
 import net.zeeraa.novacore.spigot.module.event.ModuleEnableEvent;
@@ -80,6 +82,7 @@ import net.zeeraa.novacore.spigot.module.modules.gui.GUIManager;
 import net.zeeraa.novacore.spigot.module.modules.jumppad.JumpPadManager;
 import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
+import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
 import net.zeeraa.novacore.spigot.particles.DefaultNovaParticleProvider;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
@@ -446,16 +449,36 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		Log.setConsoleLogLevel(LogLevel.INFO);
 
+		ConfigurationSection webServicesSettings = getConfig().getConfigurationSection("WebServices");
+
 		Hastebin defaultHastebinInstance;
 		try {
-			String defaultHastebinURL = getConfig().getString("HastebinURL");
-			defaultHastebinInstance = new Hastebin(defaultHastebinURL);
-			Log.info("NovaCore", "Configured hastebin url is " + defaultHastebinInstance.getBaseUrl());
+			ConfigurationSection hastebinSettings = webServicesSettings.getConfigurationSection("Hastebin");
+			String defaultHastebinURL = hastebinSettings.getString("URL");
+			int defaultHastebinTimeout = hastebinSettings.getInt("Timeout");
+			String defaultHastebinUseragent = hastebinSettings.getString("UserAgent");
+			defaultHastebinInstance = new Hastebin(defaultHastebinURL, defaultHastebinTimeout, defaultHastebinUseragent);
+			Log.info("NovaCore", "Configured hastebin url is " + defaultHastebinInstance.getBaseUrl() + " with useragent " + defaultHastebinInstance.getUseragent() + " and a timeout of " + defaultHastebinInstance.getTimeout());
 		} catch (IllegalArgumentException e) {
 			Log.error("NovaCore", "The HastebinURL in config.yml is not valid. Using https://hastebin.novauniverse.net instead");
 			defaultHastebinInstance = new Hastebin("https://hastebin.novauniverse.net");
 		}
+
 		NovaCommons.setDefaultHastebinInstance(defaultHastebinInstance);
+
+		try {
+			ConfigurationSection mojangAPIProxySettings = webServicesSettings.getConfigurationSection("MojangAPIProxy");
+			NovaUniverseAPI.setFetchTimeout(mojangAPIProxySettings.getInt("Timeout"));
+			NovaUniverseAPI.setUseragent(mojangAPIProxySettings.getString("UserAgent"));
+			NovaUniverseAPI.setMojangAPIProxyBaseURL(mojangAPIProxySettings.getString("URL"));
+		} catch (IllegalArgumentException e) {
+			Log.error("NovaCore", "The MojangAPIProxyURL in config.yml is not valid. Using https://mojangapi.novauniverse.net as the default one instead");
+		}
+
+		ConfigurationSection mapDisplaySettings = webServicesSettings.getConfigurationSection("MapDisplays");
+		MDSetImageSubCommand.disableWebInteractions = mapDisplaySettings.getBoolean("Disable");
+		MDSetImageSubCommand.useragent = mapDisplaySettings.getString("UserAgent");
+		MDSetImageSubCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
 
 		novaParticleProvider = new DefaultNovaParticleProvider();
 
@@ -614,12 +637,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 
-		try {
-			NovaUniverseAPI.setMojangAPIProxyBaseURL(getConfig().getString("MojangAPIProxyURL"));
-		} catch (IllegalArgumentException e) {
-			Log.error("NovaCore", "The MojangAPIProxyURL in config.yml is not valid. Using https://mojangapi.novauniverse.net as the default one instead");
-		}
-
 		lootTableManager = new LootTableManager();
 
 		lootTableManager.addLoader(new LootTableLoaderV1());
@@ -647,7 +664,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		ModuleManager.loadModule(this, GUIManager.class);
 		ModuleManager.loadModule(this, LootDropManager.class);
 		ModuleManager.loadModule(this, ChestLootManager.class);
-		ModuleManager.loadModule(this, MultiverseManager.class);
+		ModuleManager.loadModule(this, MultiverseManager.class, true);
 		ModuleManager.loadModule(this, CompassTracker.class);
 		ModuleManager.loadModule(this, NetherBoardScoreboard.class);
 		ModuleManager.loadModule(this, JumpPadManager.class);
@@ -713,11 +730,19 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.info("NovaCore", "Metrics disabled");
 		} else {
 			Log.info("NovaCore", "Starting metrics provided by bStats. This can be disabled in config.yml");
-			Metrics metrics =  new Metrics(this, 15987);
+			Metrics metrics = new Metrics(this, 15987);
 			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> {
-		        return NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No";
-		    }));
+				return NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No";
+			}));
 		}
+
+		ConfigurationSection multiverseSettings = getConfig().getConfigurationSection("Multiverse");
+		List<String> loadWorlds = multiverseSettings.getStringList("AutoLoadWorlds");
+		Log.info("NovaCore", loadWorlds.size() + " worlds configured in config.yml");
+		loadWorlds.forEach(name -> {
+			Log.info("NovaCore", "Loading world " + name + " since its configured in config.yml");
+			MultiverseManager.getInstance().createWorld(new WorldOptions(name));
+		});
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import net.zeeraa.novacore.commons.async.AsyncManager;
 public class NovaUniverseAPI {
 	private static int fetchTimeout = 10 * 1000;
 	private static String mojangAPIProxyBaseURL = "https://mojangapi.novauniverse.net";
+	private static String useragent = "NovaCore 2.0.0";
 
 	/**
 	 * Get the base url used by the mojang api proxy. To self host this api check
@@ -62,6 +63,14 @@ public class NovaUniverseAPI {
 		}
 
 		NovaUniverseAPI.mojangAPIProxyBaseURL = mojangAPIProxyBaseURL;
+	}
+
+	public static String getUseragent() {
+		return useragent;
+	}
+
+	public static void setUseragent(String useragent) {
+		NovaUniverseAPI.useragent = useragent;
 	}
 
 	/**
@@ -96,7 +105,7 @@ public class NovaUniverseAPI {
 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestProperty("accept", "application/json");
-		connection.setRequestProperty("User-Agent", "NovaCore");
+		connection.setRequestProperty("User-Agent", useragent);
 
 		connection.setConnectTimeout(fetchTimeout);
 		connection.setReadTimeout(fetchTimeout);
@@ -184,7 +193,7 @@ public class NovaUniverseAPI {
 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestProperty("accept", "application/json");
-		connection.setRequestProperty("User-Agent", "NovaCore");
+		connection.setRequestProperty("User-Agent", useragent);
 
 		connection.setConnectTimeout(fetchTimeout);
 		connection.setReadTimeout(fetchTimeout);
