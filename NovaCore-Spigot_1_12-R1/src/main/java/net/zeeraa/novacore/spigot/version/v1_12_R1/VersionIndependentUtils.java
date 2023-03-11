@@ -1221,4 +1221,23 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
 	}
+
+	@Override
+	public float getBlockBlastResistance(Material material) {
+		if (material.isBlock()) {
+			net.minecraft.server.v1_12_R1.Block block = CraftMagicNumbers.getBlock(material);
+			try {
+				Field str = net.minecraft.server.v1_12_R1.Block.class.getDeclaredField("strength");
+				str.setAccessible(true);
+				return str.getFloat(block);
+			} catch (Exception e) {
+				Log.error("VersionIndependentUtils", "An error occured");
+				e.printStackTrace();
+				return 0;
+			}
+		} else {
+			Log.warn("VersionIndependentUtils", "Material isnt a block.");
+			return 0;
+		}
+	}
 }

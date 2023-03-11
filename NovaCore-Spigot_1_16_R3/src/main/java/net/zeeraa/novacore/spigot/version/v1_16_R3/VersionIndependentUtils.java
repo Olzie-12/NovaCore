@@ -1358,4 +1358,23 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
 		// there is no need to register custom entities on 1.14+
 	}
+
+	@Override
+	public float getBlockBlastResistance(Material material) {
+		if (material.isBlock()) {
+			net.minecraft.server.v1_16_R3.Block block = CraftMagicNumbers.getBlock(material);
+			try {
+				Field str = net.minecraft.server.v1_16_R3.BlockBase.class.getDeclaredField("durability");
+				str.setAccessible(true);
+				return str.getFloat(block);
+			} catch (Exception e) {
+				Log.error("VersionIndependentUtils", "An error occured");
+				e.printStackTrace();
+				return 0;
+			}
+		} else {
+			Log.warn("VersionIndependentUtils", "Material isnt a block.");
+			return 0;
+		}
+	}
 }
