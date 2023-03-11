@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -958,4 +959,9 @@ public abstract class VersionIndependentUtils {
 	 *               REFERENCE</a>
 	 */
 	public abstract void registerCustomEntityWithEntityId(Class<?> entity, String name, int id);
+
+	public float getBlockBlastResistance(Block block) {
+		return getBlockBlastResistance(block.getType());
+	}
+	public abstract float getBlockBlastResistance(Material material);
 }

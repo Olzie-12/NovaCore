@@ -67,6 +67,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftTNTPrimed;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -1222,4 +1223,22 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		}
 	}
 
+	@Override
+	public float getBlockBlastResistance(Material material) {
+		if (material.isBlock()) {
+			net.minecraft.server.v1_8_R3.Block block = CraftMagicNumbers.getBlock(material);
+			try {
+				Field str = net.minecraft.server.v1_8_R3.Block.class.getDeclaredField("strength");
+				str.setAccessible(true);
+				return str.getFloat(block);
+			} catch (Exception e) {
+				Log.error("VersionIndependentUtils", "An error occured");
+				e.printStackTrace();
+				return 0;
+			}
+		} else {
+			Log.warn("VersionIndependentUtils", "Material isnt a block.");
+			return 0;
+		}
+	}
 }
