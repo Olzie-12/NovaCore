@@ -30,7 +30,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
-import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.ReflectUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
@@ -1162,7 +1161,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			f.setAccessible(true);
 			f.set(etp, el);
 		} catch (Exception e) {
-			Log.error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
 			e.printStackTrace();
 		}
 	}
@@ -1188,14 +1187,14 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 				}
 			}
 			if (entityId == -1) {
-				Log.error("VersionIndependentUtils", "Could not find sub-class for " + entity.getSimpleName() + " and get Entity ID.");
+				AbstractionLogger.getLogger().error("VersionIndependentUtils", "Could not find sub-class for " + entity.getSimpleName() + " and get Entity ID.");
 				return;
 			}
 			((Map<String, Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
 			((Map<Class<?>, String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
 			((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, entityId);
 		} else {
-			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
 	}
 
@@ -1206,7 +1205,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			nmsEntity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 			((CraftWorld) location.getWorld()).getHandle().addEntity(nmsEntity);
 		} else {
-			Log.error("VersionIndependentUtils", "Object isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Object isnt instance of Entity.");
 		}
 	}
 
@@ -1218,8 +1217,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			((Map<Class<?>, String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
 			((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
 		} else {
-			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
 	}
-
 }

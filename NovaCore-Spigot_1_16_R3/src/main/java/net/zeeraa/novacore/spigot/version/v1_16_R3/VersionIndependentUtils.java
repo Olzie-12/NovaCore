@@ -20,7 +20,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayOutEntityStatus;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_16_R3.PlayerConnection;
 import net.novauniverse.spigot.version.shared.v1_16plus.SharedBannerItemStackCreator;
-import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.ListUtils;
 import net.zeeraa.novacore.commons.utils.LoopableIterator;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
@@ -637,7 +636,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 		case CLICK:
 			return Sound.BLOCK_LEVER_CLICK;
-			
+
 		case BLAZE_HIT:
 			return Sound.ENTITY_BLAZE_HURT;
 
@@ -1329,7 +1328,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			f.setAccessible(true);
 			f.set(etp, el);
 		} catch (Exception e) {
-			Log.error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
 			e.printStackTrace();
 		}
 	}
@@ -1343,14 +1342,15 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	public void registerCustomEntity(Class<?> entity, String name) {
 		// there is no need to register custom entities on 1.14+
 	}
+
 	@Override
 	public void spawnCustomEntity(Object entity, Location location) {
 		if (net.minecraft.server.v1_16_R3.Entity.class.isAssignableFrom(entity.getClass())) {
 			net.minecraft.server.v1_16_R3.Entity nmsEntity = (net.minecraft.server.v1_16_R3.Entity) entity;
 			nmsEntity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-			((CraftWorld)location.getWorld()).getHandle().addEntity(nmsEntity);
+			((CraftWorld) location.getWorld()).getHandle().addEntity(nmsEntity);
 		} else {
-			Log.error("VersionIndependentUtils", "Object isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Object isnt instance of Entity.");
 		}
 	}
 

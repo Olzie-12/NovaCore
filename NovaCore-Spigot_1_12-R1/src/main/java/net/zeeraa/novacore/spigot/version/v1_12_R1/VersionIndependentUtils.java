@@ -28,7 +28,6 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityStatus;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_12_R1.PlayerConnection;
-import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.ListUtils;
 import net.zeeraa.novacore.commons.utils.ReflectUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
@@ -408,7 +407,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 		case CLICK:
 			return Sound.BLOCK_LEVER_CLICK;
-			
+
 		case BLAZE_HIT:
 			return Sound.ENTITY_BLAZE_HURT;
 
@@ -421,7 +420,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 	@Override
 	public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-		if(title.length() == 0) {
+		if (title.length() == 0) {
 			title = " ";
 		}
 		player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
@@ -1165,6 +1164,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		float height = Float.parseFloat(df.format(currentHeight).replace(',', '.'));
 		return new EntityBoundingBox(height, width);
 	}
+
 	@Override
 	public void setSource(TNTPrimed tnt, LivingEntity source) {
 		EntityTNTPrimed etp = ((CraftTNTPrimed) tnt).getHandle();
@@ -1174,7 +1174,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			f.setAccessible(true);
 			f.set(etp, el);
 		} catch (Exception e) {
-			Log.error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
 			e.printStackTrace();
 		}
 
@@ -1185,26 +1185,28 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	public ItemStack getColoredBannerItemStack(DyeColor color) {
 		return new ItemStack(Material.BANNER, 1, color.getWoolData());
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void registerCustomEntity(Class<?> entity, String name) {
 		if (net.minecraft.server.v1_12_R1.Entity.class.isAssignableFrom(entity)) {
 			int entityId = EntityTypes.b.a((Class<? extends net.minecraft.server.v1_12_R1.Entity>) entity);
-			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
-			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
-			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, entityId);
+			((Map<String, Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
+			((Map<Class<?>, String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
+			((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, entityId);
 		} else {
-			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
 	}
+
 	@Override
 	public void spawnCustomEntity(Object entity, Location location) {
 		if (net.minecraft.server.v1_12_R1.Entity.class.isAssignableFrom(entity.getClass())) {
 			net.minecraft.server.v1_12_R1.Entity nmsEntity = (net.minecraft.server.v1_12_R1.Entity) entity;
 			nmsEntity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-			((CraftWorld)location.getWorld()).getHandle().addEntity(nmsEntity);
+			((CraftWorld) location.getWorld()).getHandle().addEntity(nmsEntity);
 		} else {
-			Log.error("VersionIndependentUtils", "Object isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Object isnt instance of Entity.");
 		}
 	}
 
@@ -1212,11 +1214,11 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 	@Override
 	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
 		if (net.minecraft.server.v1_12_R1.Entity.class.isAssignableFrom(entity)) {
-			((Map<String,Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
-			((Map<Class<?>,String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
-			((Map<Class<?>,Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
+			((Map<String, Class<?>>) ReflectUtils.getPrivateField("c", EntityTypes.class, null)).put(name, entity);
+			((Map<Class<?>, String>) ReflectUtils.getPrivateField("d", EntityTypes.class, null)).put(entity, name);
+			((Map<Class<?>, Integer>) ReflectUtils.getPrivateField("f", EntityTypes.class, null)).put(entity, id);
 		} else {
-			Log.error("VersionIndependentUtils", "Class isnt instance of Entity.");
+			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Class isnt instance of Entity.");
 		}
 	}
 }
