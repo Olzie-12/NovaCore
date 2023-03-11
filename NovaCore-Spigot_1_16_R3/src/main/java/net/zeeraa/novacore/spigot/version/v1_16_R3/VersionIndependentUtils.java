@@ -1368,12 +1368,12 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 				str.setAccessible(true);
 				return str.getFloat(block);
 			} catch (Exception e) {
-				Log.error("VersionIndependentUtils", "An error occured");
+				AbstractionLogger.getLogger().error("VersionIndependentUtils", "An error occured");
 				e.printStackTrace();
 				return 0;
 			}
 		} else {
-			Log.warn("VersionIndependentUtils", "Material isnt a block.");
+			AbstractionLogger.getLogger().warning("VersionIndependentUtils", "Material isnt a block.");
 			return 0;
 		}
 	}
