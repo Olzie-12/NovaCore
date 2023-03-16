@@ -60,7 +60,7 @@ WebServices:
     # docker run --restart=unless-stopped --name mojangapiproxy -d -p 80:80 novauniverse/mojangapiproxy
     MojangAPIProxy:    
         URL: "https://mojangapi.novauniverse.net/"
-        UserAgent: "NovaCore 2.0.0 Hastebin Java Api"
+        UserAgent: "NovaCore 2.0.0"
         Timeout: 10000
     # Map display web request settings
     MapDisplays:
