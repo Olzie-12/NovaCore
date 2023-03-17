@@ -3,6 +3,7 @@ package net.zeeraa.novacore.spigot.gameengine;
 import java.io.File;
 import java.io.IOException;
 
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.buildlimit.BuildLimit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
@@ -114,6 +115,7 @@ public class NovaCoreGameEngine extends NovaPlugin {
 		MapModuleManager.addMapModule("novacore.infiniteoxygen", InfiniteOxygen.class);
 		MapModuleManager.addMapModule("novacore.infinitefood", InfiniteFood.class);
 		MapModuleManager.addMapModule("novacore.disablespectatechests", DisableSpectateChests.class);
+		MapModuleManager.addMapModule("novacore.buildlimit", BuildLimit.class);
 
 		// Legacy modules
 		MapModuleManager.addMapModule("novauniverse.survivalgames.medicalsupplydrop", MedicalSupplyDropMapModule.class);
