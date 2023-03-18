@@ -1,14 +1,10 @@
-package net.zeeraa.novacore.spigot.particles;
+package net.zeeraa.novacore.spigot.abstraction.particle;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import net.zeeraa.novacore.spigot.abstraction.particle.NovaDustOptions;
-import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
-import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 
 public class NullParticleProvider extends NovaParticleProvider {
 	@Override

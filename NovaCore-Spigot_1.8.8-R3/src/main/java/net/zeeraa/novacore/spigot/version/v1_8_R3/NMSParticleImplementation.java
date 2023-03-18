@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
-import net.zeeraa.novacore.spigot.abstraction.NMSBasedParticleProvider;
+import net.zeeraa.novacore.spigot.abstraction.particle.NMSBasedParticleProvider;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaDustOptions;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
