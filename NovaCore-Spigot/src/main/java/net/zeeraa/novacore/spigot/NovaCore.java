@@ -51,6 +51,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
+import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 import net.zeeraa.novacore.spigot.abstraction.particle.NullParticleProvider;
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
@@ -91,6 +92,7 @@ import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentP
 import net.zeeraa.novacore.spigot.tasks.abstraction.BukkitSimpleTaskCreator;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
+import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
 public class NovaCore extends JavaPlugin implements Listener {
 	private static NovaCore instance;
@@ -347,6 +349,14 @@ public class NovaCore extends JavaPlugin implements Listener {
 				Log.error("NovaCore", "Errors detected while running selftest: Particle provider is of type " + NullParticleProvider.class.getName() + ". This is probably caused by the version not yet supporting particles");
 				VersionIndependentUtils.get().resetLastError();
 				ok = false;
+			} else if (novaParticleProvider instanceof NMSParticleImplementation) {
+				NMSParticleImplementation nmsImplementation = (NMSParticleImplementation) novaParticleProvider;
+				for (NovaParticleEffect effect : NovaParticleEffect.values()) {
+					if (!nmsImplementation.runNovaParticleEffectConversionTest(effect)) {
+						Log.warn("NMSBasedParticleProvider", "Failure to map NovaParticleEffect with name " + effect.name() + " to a valid particle. This version needs to be updated to support that effect");
+						ok = false;
+					}
+				}
 			}
 
 			VersionIndependentUtils.get().resetLastError();

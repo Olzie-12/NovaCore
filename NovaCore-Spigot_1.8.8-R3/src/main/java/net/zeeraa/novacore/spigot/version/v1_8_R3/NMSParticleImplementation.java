@@ -15,12 +15,10 @@ import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 
 public class NMSParticleImplementation extends NovaParticleProvider implements NMSBasedParticleProvider {
-	@Override
 	public PacketPlayOutWorldParticles constructRedstoneDustParticle(Location location, NovaDustOptions options) {
 		return new PacketPlayOutWorldParticles(EnumParticle.REDSTONE, true, (float) location.getX(), (float) location.getY(), (float) location.getZ(), options.getColor().getRed(), options.getColor().getGreen(), options.getColor().getBlue(), 0, 0, 0);
 	}
 
-	@Override
 	public PacketPlayOutWorldParticles constructNormalParticle(Location location, NovaParticleEffect effect) {
 		if (effect == NovaParticleEffect.REDSTONE) {
 			return constructRedstoneDustParticle(location, NovaDustOptions.RED);
@@ -31,7 +29,6 @@ public class NMSParticleImplementation extends NovaParticleProvider implements N
 		return new PacketPlayOutWorldParticles(particle, true, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 0, 0);
 	}
 
-	@Override
 	public EnumParticle novaToNMSParticle(NovaParticleEffect effect) {
 		switch (effect) {
 		case CRIT_MAGIC:
@@ -50,8 +47,13 @@ public class NMSParticleImplementation extends NovaParticleProvider implements N
 			return EnumParticle.SMOKE_LARGE;
 
 		default:
-			return EnumParticle.BARRIER;
+			return null;
 		}
+	}
+	
+	@Override
+	public boolean runNovaParticleEffectConversionTest(NovaParticleEffect effect) {
+		return novaToNMSParticle(effect) != null;
 	}
 
 	@Override
