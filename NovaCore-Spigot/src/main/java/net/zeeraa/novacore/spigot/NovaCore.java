@@ -84,7 +84,7 @@ import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
-import net.zeeraa.novacore.spigot.particles.DefaultNovaParticleProvider;
+import net.zeeraa.novacore.spigot.particles.NullParticleProvider;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentPlayerAPI;
@@ -480,8 +480,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		MDSetImageSubCommand.useragent = mapDisplaySettings.getString("UserAgent");
 		MDSetImageSubCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
 
-		novaParticleProvider = new DefaultNovaParticleProvider();
-
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
@@ -565,6 +563,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 					this.novaParticleProvider = versionSpecificParticleProvider;
 				}
 
+				NovaParticleProvider nmsParticleProvider = versionIndependantLoader.getVersionSpecificParticleProvider();
+				if(nmsParticleProvider != null) {
+					Log.warn("NovaCore", "This version has not yet got support for particles. Please contact the developers of Novacore about this");
+				} else {
+					this.novaParticleProvider = nmsParticleProvider;
+				}
 			} else {
 				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
 			}
@@ -574,6 +578,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 			if (this.getConfig().getBoolean("IgnoreMissingNMS")) {
 				noNMSMode = true;
 				Log.warn("NovaCore", "Ignoring missing NMS support due to IgnoreMissingNMS being set to true. The error above can be ignored but some parts of this plugin wont work");
+				Log.warn("NovaCore", "Particles wont display since nms is unavailable");
+				novaParticleProvider = new NullParticleProvider();
 			} else {
 				Bukkit.getPluginManager().disablePlugin(this);
 				return;

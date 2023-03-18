@@ -29,37 +29,22 @@ public class NovaDustOptions {
 
 	private final Color color;
 	private final java.awt.Color awtColor;
-	private final float size;
 
-	public NovaDustOptions(java.awt.Color color, float size) {
+	public NovaDustOptions(java.awt.Color color) {
 		this.color = Color.fromRGB(color.getRed(), color.getGreen(), color.getBlue());
 		this.awtColor = color;
-		this.size = size;
 	}
 
-	public NovaDustOptions(Color color, float size) {
+	public NovaDustOptions(Color color) {
 		this.color = color;
 		this.awtColor = new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue());
-		this.size = size;
 	}
 
 	public java.awt.Color getAwtColor() {
 		return awtColor;
 	}
 
-	public NovaDustOptions(java.awt.Color color) {
-		this(color, 1);
-	}
-
-	public NovaDustOptions(Color color) {
-		this(color, 1);
-	}
-
 	public Color getColor() {
 		return color;
-	}
-
-	public float getSize() {
-		return size;
 	}
 }

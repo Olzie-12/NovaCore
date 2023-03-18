@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.md_5.bungee.api.ChatColor;
-import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
