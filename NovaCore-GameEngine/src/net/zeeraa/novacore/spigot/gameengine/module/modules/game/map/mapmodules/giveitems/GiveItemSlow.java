@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.tasks.Task;
+import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
@@ -51,20 +52,11 @@ public class GiveItemSlow extends MapModule {
 		if (json.has("material")) {
 			material = Material.valueOf(json.getString("material"));
 		} else {
-			material = Material.SNOW_BALL;
+			material = VersionIndependentMaterial.SNOWBALL.toBukkitVersion();
 		}
 
-		if (json.has("max_items")) {
-			maxItems = json.getInt("max_items");
-		} else {
-			maxItems = 16;
-		}
-
-		if (json.has("delay")) {
-			delay = json.getInt("delay");
-		} else {
-			delay = 5;
-		}
+		maxItems = json.optInt("max_items", 16);
+		delay = json.optInt("delay", 5);
 
 		this.task = new SimpleTask(new Runnable() {
 			@Override

@@ -29,32 +29,12 @@ public class ChestLoot extends MapModule {
 	public ChestLoot(JSONObject json) {
 		super(json);
 
-		this.chestLootTable = null;
-		this.enderChestLootTable = null;
-		this.minRefillTime = -1;
-		this.maxRefillTime = -1;
-		this.announceRefills = true;
+		this.chestLootTable = json.optString("chest_loot");
+		this.enderChestLootTable = json.optString("ender_chest_loot");
+		this.minRefillTime =  json.optInt("min_refill_time", -1);
+		this.maxRefillTime =  json.optInt("min_refill_time", -1);
+		this.announceRefills =json.optBoolean("announce_refills", true);
 		this.trigger = null;
-
-		if (json.has("ender_chest_loot")) {
-			this.enderChestLootTable = json.getString("ender_chest_loot");
-		}
-
-		if (json.has("chest_loot")) {
-			this.chestLootTable = json.getString("chest_loot");
-		}
-
-		if (json.has("min_refill_time")) {
-			this.minRefillTime = json.getInt("min_refill_time");
-		}
-
-		if (json.has("max_refill_time")) {
-			this.maxRefillTime = json.getInt("max_refill_time");
-		}
-
-		if (json.has("announce_refills")) {
-			this.announceRefills = json.getBoolean("announce_refills");
-		}
 
 		if (minRefillTime != -1 && maxRefillTime == -1) {
 			maxRefillTime = minRefillTime;

@@ -13,11 +13,7 @@ public class StartMessage extends MapModule {
 	public StartMessage(JSONObject json) {
 		super(json);
 
-		this.message = ChatColor.DARK_RED + "error: missing json value: message";
-
-		if (json.has("message")) {
-			this.message = json.getString("message");
-		}
+		this.message =  json.optString("message", ChatColor.DARK_RED + "error: missing json value: message");
 	}
 
 	@Override

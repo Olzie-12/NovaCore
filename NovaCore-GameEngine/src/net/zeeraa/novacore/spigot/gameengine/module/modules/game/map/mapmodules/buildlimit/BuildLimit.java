@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.buildlimit;
 
+import net.zeeraa.novacore.spigot.NovaCore;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
@@ -12,50 +14,37 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.json.JSONObject;
 
 public class BuildLimit extends MapModule implements Listener {
+	private int maxLimit;
+	private int minLimit;
+	private boolean sendMessage;
+	private String message;
 
-    private int maxLimit;
-    private int minLimit;
-    private boolean sendMessage;
-    private String message;
+	@Override
+	public void onGameStart(Game game) {
+		Bukkit.getServer().getPluginManager().registerEvents(this, NovaCoreGameEngine.getInstance());
+	}
 
-    @Override
-    public void onGameStart(Game game) {
-        Bukkit.getServer().getPluginManager().registerEvents(this, NovaCoreGameEngine.getInstance());
-    }
+	@Override
+	public void onGameEnd(Game game) {
+		HandlerList.unregisterAll(this);
+	}
 
-    @Override
-    public void onGameEnd(Game game) {
-        HandlerList.unregisterAll(this);
-    }
+	public BuildLimit(JSONObject json) {
+		super(json);
+		maxLimit = json.optInt("max", 256);
+		minLimit = json.optInt("min", NovaCore.getInstance().isNoNMSMode() ? VersionIndependentUtils.get().getMinY() : 0);
+		sendMessage = json.optBoolean("send_message", true);
+		message = json.optString("message", ChatColor.RED + "Reached build limit.");
+	}
 
-    public BuildLimit(JSONObject json) {
-        super(json);
-        maxLimit = 256;
-        minLimit = 0;
-        sendMessage = true;
-        message = ChatColor.RED + "Reached build limit.";
-        if (json.has("max")) {
-            maxLimit = json.getInt("max");
-        }
-        if (json.has("min")) {
-            minLimit = json.getInt("min");
-        }
-        if (json.has("send_message")) {
-            sendMessage = json.getBoolean("send_message");
-        }
-        if (json.has("message")) {
-            message = json.getString("message");
-        }
-    }
+	@EventHandler
+	public void onPlace(BlockPlaceEvent e) {
+		if (e.getBlock().getLocation().getBlockY() > maxLimit || e.getBlock().getLocation().getBlockY() < minLimit) {
+			e.setCancelled(true);
+			if (sendMessage) {
+				e.getPlayer().sendMessage(message);
+			}
 
-    @EventHandler
-    public void onPlace(BlockPlaceEvent e) {
-        if (e.getBlock().getLocation().getBlockY() > maxLimit || e.getBlock().getLocation().getBlockY() < minLimit) {
-            e.setCancelled(true);
-            if (sendMessage) {
-                e.getPlayer().sendMessage(message);
-            }
-
-        }
-    }
+		}
+	}
 }

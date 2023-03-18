@@ -23,11 +23,8 @@ public class FireReistance extends MapModule implements Listener {
 	public FireReistance(JSONObject json) {
 		super(json);
 
-		extinguish = false;
+		extinguish = json.optBoolean("extinguish", false);
 		task = null;
-		if (json.has("extinguish")) {
-			extinguish = json.getBoolean("extinguish");
-		}
 	}
 
 	@Override

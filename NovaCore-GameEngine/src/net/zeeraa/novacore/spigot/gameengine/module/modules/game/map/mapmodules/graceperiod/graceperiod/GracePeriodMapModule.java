@@ -71,10 +71,7 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 			Log.warn("GracePeriodMapModule", "No time defined. Using the default of 15 seconds");
 		}
 
-		boolean legacyMode = false;
-		if (json.has("legacy_mode")) {
-			legacyMode = json.getBoolean("legacy_mode");
-		}
+		boolean legacyMode = json.optBoolean("legacy_mode", false);
 
 		if (!legacyMode) {
 			for (DamageCause cause : DamageCause.values()) {

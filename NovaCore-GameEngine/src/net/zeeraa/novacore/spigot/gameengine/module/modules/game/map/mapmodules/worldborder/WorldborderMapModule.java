@@ -47,13 +47,13 @@ public class WorldborderMapModule extends MapModule {
 		this.startSize = 501;
 		this.endSize = 51;
 
-		this.damage = 5;
-		this.damageBuffer = 2;
+		this.damage = json.optDouble("damage", 5);
+		this.damageBuffer = json.optDouble("damage_buffer", 2);
 
 		this.shrinkDuration = 900;
 		this.startDelay = 600;
 
-		this.stepTime = 30;
+		this.stepTime = json.optInt("step_time", 30);
 
 		this.taskId = -1;
 
@@ -91,18 +91,6 @@ public class WorldborderMapModule extends MapModule {
 			this.startDelay = json.getInt("start_delay");
 		} else {
 			Log.warn("Missing start_delay for wordborder map module");
-		}
-
-		if (json.has("damage")) {
-			this.damage = json.getDouble("damage");
-		}
-
-		if (json.has("damage_buffer")) {
-			this.damageBuffer = json.getDouble("damage_buffer");
-		}
-
-		if (json.has("step_time")) {
-			this.stepTime = json.getInt("step_time");
 		}
 
 		this.totalSteps = shrinkDuration / stepTime;
@@ -177,7 +165,7 @@ public class WorldborderMapModule extends MapModule {
 			Log.fatal("Worldborder cant set initial size because the game does not have a world set");
 		}
 	}
-	
+
 	@Override
 	public void onGameBegin(Game game) {
 		startTrigger.start();

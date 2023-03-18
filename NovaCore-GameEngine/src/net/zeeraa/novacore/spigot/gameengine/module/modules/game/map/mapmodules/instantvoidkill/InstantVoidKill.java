@@ -20,15 +20,7 @@ public class InstantVoidKill extends MapModule {
 	public InstantVoidKill(JSONObject json) {
 		super(json);
 
-		y = 0;
-
-		if (!NovaCore.getInstance().isNoNMSMode()) {
-			y = VersionIndependentUtils.get().getMinY();
-		}
-
-		if (json.has("y")) {
-			y = json.getInt("y");
-		}
+		y = json.optInt("y", NovaCore.getInstance().isNoNMSMode() ? VersionIndependentUtils.get().getMinY() : 0);
 
 		this.taks = new SimpleTask(() -> Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 			if (player.getLocation().getBlockY() < y) {

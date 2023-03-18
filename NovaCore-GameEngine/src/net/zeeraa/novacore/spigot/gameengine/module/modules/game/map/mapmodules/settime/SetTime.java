@@ -14,16 +14,8 @@ public class SetTime extends MapModule {
 	public SetTime(JSONObject json) {
 		super(json);
 
-		this.delay = 0;
-		this.time = 6000;
-
-		if (json.has("time")) {
-			this.time = json.getInt("time");
-		}
-
-		if (json.has("delay")) {
-			this.delay = json.getInt("delay");
-		}
+		this.delay = json.optInt("delay", 0);
+		this.time = json.optInt("time", 6000);
 	}
 
 	@Override
