@@ -8,34 +8,34 @@ import org.bukkit.entity.Player;
 
 public class NullParticleProvider extends NovaParticleProvider {
 	@Override
-	public void showColoredRedstoneParticle(Location location, NovaDustOptions options) {
+	public final void showColoredRedstoneParticle(Location location, NovaDustOptions options) {
 	}
 
 	@Override
-	public void showColoredRedstoneParticle(Location location, NovaDustOptions options, Player receiver) {
+	public final void showColoredRedstoneParticle(Location location, NovaDustOptions options, Player receiver) {
 	}
 
 	@Override
-	public void showColoredRedstoneParticle(Location location, NovaDustOptions options, Collection<Player> receivers) {
+	public final void showColoredRedstoneParticle(Location location, NovaDustOptions options, Collection<Player> receivers) {
 	}
 
 	@Override
-	public void showColoredRedstoneParticle(Location location, NovaDustOptions options, Predicate<Player> predicate) {
+	public final void showColoredRedstoneParticle(Location location, NovaDustOptions options, Predicate<Player> predicate) {
 	}
 
 	@Override
-	public void showParticle(Location location, NovaParticleEffect effect) {
+	public final void showParticle(Location location, NovaParticleEffect effect) {
 	}
 
 	@Override
-	public void showParticle(Location location, NovaParticleEffect effect, Player receiver) {
+	public final void showParticle(Location location, NovaParticleEffect effect, Player receiver) {
 	}
 
 	@Override
-	public void showParticle(Location location, NovaParticleEffect effect, Collection<Player> receivers) {
+	public final void showParticle(Location location, NovaParticleEffect effect, Collection<Player> receivers) {
 	}
 
 	@Override
-	public void showParticle(Location location, NovaParticleEffect effect, Predicate<Player> predicate) {
+	public final void showParticle(Location location, NovaParticleEffect effect, Predicate<Player> predicate) {
 	}
 }

@@ -343,6 +343,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 			}
 
+			if (novaParticleProvider instanceof NullParticleProvider) {
+				Log.error("NovaCore", "Errors detected while running selftest: Particle provider is of type " + NullParticleProvider.class.getName() + ". This is probably caused by the version not yet supporting particles");
+				VersionIndependentUtils.get().resetLastError();
+				ok = false;
+			}
+
 			VersionIndependentUtils.get().resetLastError();
 			return ok;
 		} catch (Exception e) {
@@ -564,7 +570,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 
 				NovaParticleProvider nmsParticleProvider = versionIndependantLoader.getVersionSpecificParticleProvider();
-				if(nmsParticleProvider != null) {
+				if (nmsParticleProvider != null) {
 					Log.warn("NovaCore", "This version has not yet got support for particles. Please contact the developers of Novacore about this");
 				} else {
 					this.novaParticleProvider = nmsParticleProvider;
