@@ -51,7 +51,9 @@ import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
+import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
+import net.zeeraa.novacore.spigot.abstraction.particle.NullParticleProvider;
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
 import net.zeeraa.novacore.spigot.command.commands.dumplanguagenodes.DumpLanguageNodesCommand;
 import net.zeeraa.novacore.spigot.command.commands.novacore.NovaCoreCommand;
@@ -84,13 +86,13 @@ import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
-import net.zeeraa.novacore.spigot.particles.DefaultNovaParticleProvider;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentPlayerAPI;
 import net.zeeraa.novacore.spigot.tasks.abstraction.BukkitSimpleTaskCreator;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
+import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
 public class NovaCore extends JavaPlugin implements Listener {
 	private static NovaCore instance;
@@ -343,6 +345,20 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 			}
 
+			if (novaParticleProvider instanceof NullParticleProvider) {
+				Log.error("NovaCore", "Errors detected while running selftest: Particle provider is of type " + NullParticleProvider.class.getName() + ". This is probably caused by the version not yet supporting particles");
+				VersionIndependentUtils.get().resetLastError();
+				ok = false;
+			} else if (novaParticleProvider instanceof NMSParticleImplementation) {
+				NMSParticleImplementation nmsImplementation = (NMSParticleImplementation) novaParticleProvider;
+				for (NovaParticleEffect effect : NovaParticleEffect.values()) {
+					if (!nmsImplementation.runNovaParticleEffectConversionTest(effect)) {
+						Log.warn("NMSBasedParticleProvider", "Failure to map NovaParticleEffect with name " + effect.name() + " to a valid particle. This version needs to be updated to support that effect");
+						ok = false;
+					}
+				}
+			}
+
 			VersionIndependentUtils.get().resetLastError();
 			return ok;
 		} catch (Exception e) {
@@ -480,8 +496,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		MDSetImageSubCommand.useragent = mapDisplaySettings.getString("UserAgent");
 		MDSetImageSubCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
 
-		novaParticleProvider = new DefaultNovaParticleProvider();
-
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
@@ -565,6 +579,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 					this.novaParticleProvider = versionSpecificParticleProvider;
 				}
 
+				NovaParticleProvider nmsParticleProvider = versionIndependantLoader.getVersionSpecificParticleProvider();
+				if (nmsParticleProvider != null) {
+					Log.warn("NovaCore", "This version has not yet got support for particles. Please contact the developers of Novacore about this");
+				} else {
+					this.novaParticleProvider = nmsParticleProvider;
+				}
 			} else {
 				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
 			}
@@ -574,6 +594,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 			if (this.getConfig().getBoolean("IgnoreMissingNMS")) {
 				noNMSMode = true;
 				Log.warn("NovaCore", "Ignoring missing NMS support due to IgnoreMissingNMS being set to true. The error above can be ignored but some parts of this plugin wont work");
+				Log.warn("NovaCore", "Particles wont display since nms is unavailable");
+				novaParticleProvider = new NullParticleProvider();
 			} else {
 				Bukkit.getPluginManager().disablePlugin(this);
 				return;
