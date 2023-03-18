@@ -46,9 +46,11 @@ public class NMSParticleImplementation extends NovaParticleProvider implements N
 		case SMOKE_LARGE:
 			return EnumParticle.SMOKE_LARGE;
 
-		default:
-			return null;
+		case SMOKE_NORMAL:
+			return EnumParticle.SMOKE_NORMAL;
 		}
+		
+		return null;
 	}
 	
 	@Override

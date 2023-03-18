@@ -46,6 +46,8 @@ public class NativeParticleImplementation extends NovaParticleProvider {
 			return Particle.SMOKE_LARGE;
 		case HEART:
 			return Particle.HEART;
+		case SMOKE_NORMAL:
+			return Particle.SMOKE_NORMAL;
 		}
 		return null;
 	}
