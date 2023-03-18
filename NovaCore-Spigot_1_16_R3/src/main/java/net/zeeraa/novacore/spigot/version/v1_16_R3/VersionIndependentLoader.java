@@ -1,5 +1,6 @@
 package net.zeeraa.novacore.spigot.version.v1_16_R3;
 
+import net.novauniverse.spigot.version.shared.v1_16plus.NativeParticleImplementation;
 import net.zeeraa.novacore.spigot.abstraction.CommandRegistrator;
 import net.zeeraa.novacore.spigot.abstraction.Listeners;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
@@ -22,7 +23,6 @@ public class VersionIndependentLoader extends net.zeeraa.novacore.spigot.abstrac
 	
 	@Override
 	public NovaParticleProvider getVersionSpecificParticleProvider() {
-		//TODO: Implement
-		return null;
+		return new NativeParticleImplementation();
 	}
 }
