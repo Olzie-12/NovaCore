@@ -575,15 +575,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 				if (versionSpecificParticleProvider == null) {
 					Log.info("NovaCore", "No version specific particle provider found. Using default implementation");
 				} else {
-					Log.info("NovaCore", "Using particle provider " + versionIndependantLoader.getClass().getName());
+					Log.info("NovaCore", "Using particle provider " + versionSpecificParticleProvider.getClass().getName());
 					this.novaParticleProvider = versionSpecificParticleProvider;
-				}
-
-				NovaParticleProvider nmsParticleProvider = versionIndependantLoader.getVersionSpecificParticleProvider();
-				if (nmsParticleProvider != null) {
-					Log.warn("NovaCore", "This version has not yet got support for particles. Please contact the developers of Novacore about this");
-				} else {
-					this.novaParticleProvider = nmsParticleProvider;
 				}
 			} else {
 				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
@@ -602,6 +595,11 @@ public class NovaCore extends JavaPlugin implements Listener {
 			}
 		}
 
+		if(novaParticleProvider == null) {
+			Log.warn("NovaCore", "No particle proivider was loaded during startup. Particles spawned by NovaCore will not be visible");
+			novaParticleProvider = new NullParticleProvider();
+		}
+		
 		if (forceReflectionCommandRegistrator) {
 			Log.info("NovaCore", "Using reflection based command registrator since ForceUseReflectionBasedRegistrator is set to true in config.yml");
 			bukkitCommandRegistrator = reflectionBasedCommandRegistrator;
