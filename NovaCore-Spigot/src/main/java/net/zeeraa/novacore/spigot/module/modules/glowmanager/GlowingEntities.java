@@ -29,7 +29,7 @@ import io.netty.channel.ChannelPromise;
 /**
  * A Spigot util to easily make entities glow.
  * <p>
- * <b>1.17 -> 1.19.3</b>
+ * <b>1.17 - 1.19.3</b>
  * 
  * @version 1.1.3
  * @author SkytAsul
@@ -112,7 +112,7 @@ public class GlowingEntities implements Listener {
 	 * 
 	 * @param entity   entity to make glow
 	 * @param receiver player which will see the entity glowing
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException .
 	 */
 	public void setGlowing(Entity entity, Player receiver) throws ReflectiveOperationException {
 		setGlowing(entity, receiver, null);
@@ -124,7 +124,7 @@ public class GlowingEntities implements Listener {
 	 * @param entity   entity to make glow
 	 * @param receiver player which will see the entity glowing
 	 * @param color    color of the glowing effect
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException .
 	 */
 	public void setGlowing(Entity entity, Player receiver, ChatColor color) throws ReflectiveOperationException {
 		String teamID = entity instanceof Player ? entity.getName() : entity.getUniqueId().toString();
@@ -137,7 +137,7 @@ public class GlowingEntities implements Listener {
 	 * @param entityID entity id of the entity to make glow
 	 * @param teamID   internal string used to add the entity to a team
 	 * @param receiver player which will see the entity glowing
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException .
 	 */
 	public void setGlowing(int entityID, String teamID, Player receiver) throws ReflectiveOperationException {
 		setGlowing(entityID, teamID, receiver, null, (byte) 0);
@@ -150,7 +150,7 @@ public class GlowingEntities implements Listener {
 	 * @param teamID   internal string used to add the entity to a team
 	 * @param receiver player which will see the entity glowing
 	 * @param color    color of the glowing effect
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException .
 	 */
 	public void setGlowing(int entityID, String teamID, Player receiver, ChatColor color)
 			throws ReflectiveOperationException {
@@ -168,8 +168,8 @@ public class GlowingEntities implements Listener {
 	 * @param otherFlags internal flags that must be kept (on fire, crouching...).
 	 *                   See <a href=
 	 *                   "https://wiki.vg/Entity_metadata#Entity">wiki.vg</a> for
-	 *                   more informations.
-	 * @throws ReflectiveOperationException
+	 *                   more informations. 
+	 * @throws ReflectiveOperationException .
 	 */
 	public void setGlowing(int entityID, String teamID, Player receiver, ChatColor color, byte otherFlags)
 			throws ReflectiveOperationException {
@@ -220,7 +220,7 @@ public class GlowingEntities implements Listener {
 	 * 
 	 * @param entity   entity to remove glowing effect from
 	 * @param receiver player which will no longer see the glowing effect
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException .
 	 */
 	public void unsetGlowing(Entity entity, Player receiver) throws ReflectiveOperationException {
 		unsetGlowing(entity.getEntityId(), receiver);
@@ -235,7 +235,7 @@ public class GlowingEntities implements Listener {
 	 * 
 	 * @param entityID entity id of the entity to remove glowing effect from
 	 * @param receiver player which will no longer see the glowing effect
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException .
 	 */
 	public void unsetGlowing(int entityID, Player receiver) throws ReflectiveOperationException {
 		ensureEnabled();

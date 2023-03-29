@@ -68,6 +68,7 @@ public class NovaAwaiter implements NovaAwaitable, NovaAwaitableContainer {
 
 	/**
 	 * Cancel the awaiter. This will also flag this awaiter as finished
+	 * @return <code>true</code> if canceled, <code>false</code> if already finished
 	 */
 	public boolean cancel() {
 		if (finished) {

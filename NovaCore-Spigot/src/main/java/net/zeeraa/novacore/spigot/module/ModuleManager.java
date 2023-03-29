@@ -39,6 +39,7 @@ public class ModuleManager {
 	 * 
 	 * @since 1.0
 	 * @param clazz The class of the module
+	 * @param <T> The class type to return
 	 * @return {@link NovaModule} or null if not loaded
 	 */
 	@SuppressWarnings("unchecked")
