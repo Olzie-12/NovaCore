@@ -25,7 +25,7 @@ public class NovaCoreSubCommandPacketsDebug extends NovaSubCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-		String againImLazy = MinecraftChannelDuplexHandler.isDebug() ? ChatColor.RED + "Packet Debugging Disabled." : ChatColor.GREEN + "Packet Debugging Enabled, remember to run \"nova log set DEBUG\" on the CONSOLE (not in game)";
+		String againImLazy = MinecraftChannelDuplexHandler.isDebug() ? ChatColor.GREEN + "Packet Debugging Enabled, remember to run \"nova log set DEBUG\" on the CONSOLE (not in game)" : ChatColor.RED + "Packet Debugging Disabled.";
 		Player player = (Player) sender;
 
 		boolean b = MinecraftChannelDuplexHandler.isDebug() ? NovaCore.getInstance().disablePacketDebugging() : NovaCore.getInstance().enablePacketDebugging();
