@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import net.zeeraa.novacore.spigot.command.AllowedSenders;
 import net.zeeraa.novacore.spigot.command.NovaSubCommand;
@@ -37,7 +39,7 @@ public class MDDebugFrames extends NovaSubCommand {
 		}
 
 		for (MapDisplay display : MapDisplayManager.getInstance().getMapDisplays()) {
-			if (display.getName().equalsIgnoreCase(args[0])) {
+			if (display.getNamespace().equalsIgnoreCase(args[0])) {
 				display.debugFrames();
 				
 				return true;
@@ -53,7 +55,12 @@ public class MDDebugFrames extends NovaSubCommand {
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<>();
 
-		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> result.add(display.getName()));
+		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> result.add(display.getNamespace()));
+		if(sender instanceof Player) {
+			Player player = (Player) sender;
+			World world = player.getWorld();
+			MapDisplayManager.getInstance().getMapDisplaysInWorld(world).forEach(display -> result.add(display.getName()));
+		}
 
 		return result;
 	}

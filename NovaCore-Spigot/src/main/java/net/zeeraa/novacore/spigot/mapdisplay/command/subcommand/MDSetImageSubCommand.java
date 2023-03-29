@@ -9,7 +9,9 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import net.zeeraa.novacore.commons.log.Log;
@@ -40,8 +42,8 @@ public class MDSetImageSubCommand extends NovaSubCommand {
 			sender.sendMessage(ChatColor.DARK_RED + "MapDisplayManager is not enabled");
 			return false;
 		}
-		
-		if(disableWebInteractions) {
+
+		if (disableWebInteractions) {
 			sender.sendMessage(ChatColor.RED + "The server does not allow fetching images from external urls");
 			return false;
 		}
@@ -56,38 +58,46 @@ public class MDSetImageSubCommand extends NovaSubCommand {
 			return false;
 		}
 
-		for (MapDisplay display : MapDisplayManager.getInstance().getMapDisplays()) {
-			if (display.getName().equalsIgnoreCase(args[0])) {
-				BufferedImage image = null;
-
-				try {
-					URL url = new URL(args[1]);
-					final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-					connection.setConnectTimeout(IMAGE_FETCH_TIMEOUT);
-					connection.setReadTimeout(IMAGE_FETCH_TIMEOUT);
-					connection.setRequestProperty("User-Agent", useragent);
-					image = ImageIO.read(connection.getInputStream());
-					// image = ImageIO.read(url);
-					Log.trace("Image loaded from url");
-				} catch (Exception e) {
-					sender.sendMessage(ChatColor.RED + "Could not read image from url. " + e.getClass().getName() + " " + e.getMessage());
-					e.printStackTrace();
-				}
-
-				if (image != null) {
-					try {
-						display.setImage(image);
-					} catch (Exception e) {
-						sender.sendMessage(ChatColor.RED + "Failed to set the display image. " + e.getClass().getName() + " " + e.getMessage());
-						e.printStackTrace();
-					}
-				}
-
-				return true;
+		String name = args[0];
+		if (!name.contains(":")) {
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
+				name = player.getWorld().getName() + ":" + name;
 			}
 		}
 
-		sender.sendMessage(ChatColor.RED + "Could not find map display named " + args[0]);
+		name = name.toLowerCase();
+
+		MapDisplay display = MapDisplayManager.getInstance().getMapDisplay(name);
+		if (display != null) {
+			BufferedImage image = null;
+
+			try {
+				URL url = new URL(args[1]);
+				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.setConnectTimeout(IMAGE_FETCH_TIMEOUT);
+				connection.setReadTimeout(IMAGE_FETCH_TIMEOUT);
+				connection.setRequestProperty("User-Agent", useragent);
+				image = ImageIO.read(connection.getInputStream());
+				// image = ImageIO.read(url);
+				Log.trace("Image loaded from url: " + url);
+			} catch (Exception e) {
+				sender.sendMessage(ChatColor.RED + "Could not read image from url " + args[1] + ". " + e.getClass().getName() + " " + e.getMessage());
+				e.printStackTrace();
+			}
+
+			if (image != null) {
+				try {
+					display.setImage(image);
+				} catch (Exception e) {
+					sender.sendMessage(ChatColor.RED + "Failed to set the display image. " + e.getClass().getName() + " " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+
+			return true;
+		}
+		sender.sendMessage(ChatColor.RED + "Could not find map display named " + args[0] + ". If the display is in another world make sure you provide the world name like this: world:display_1");
 
 		return false;
 	}
@@ -96,8 +106,13 @@ public class MDSetImageSubCommand extends NovaSubCommand {
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<>();
 
-		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> result.add(display.getName()));
-		
+		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> result.add(display.getNamespace()));
+		if(sender instanceof Player) {
+			Player player = (Player) sender;
+			World world = player.getWorld();
+			MapDisplayManager.getInstance().getMapDisplaysInWorld(world).forEach(display -> result.add(display.getName()));
+		}
+
 		return result;
 	}
 }

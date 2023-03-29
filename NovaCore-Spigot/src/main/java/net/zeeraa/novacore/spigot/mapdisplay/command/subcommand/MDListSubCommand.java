@@ -29,7 +29,7 @@ public class MDListSubCommand extends NovaSubCommand {
 		}
 
 		sender.sendMessage(ChatColor.AQUA.toString() + MapDisplayManager.getInstance().getMapDisplays().size() + ChatColor.GOLD + " displays found");
-		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> sender.sendMessage(ChatColor.AQUA + display.getName() + ChatColor.GOLD + " in world " + ChatColor.AQUA + display.getWorld().getName()));
+		MapDisplayManager.getInstance().getMapDisplays().forEach(display -> sender.sendMessage(ChatColor.AQUA + display.getNamespace() + ChatColor.GOLD + " in world " + ChatColor.AQUA + display.getWorld().getName()));
 		return true;
 	}
 }

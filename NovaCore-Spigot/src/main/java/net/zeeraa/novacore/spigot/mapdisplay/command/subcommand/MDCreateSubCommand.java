@@ -65,7 +65,7 @@ public class MDCreateSubCommand extends NovaSubCommand {
 
 			if (frame != null) {
 				try {
-					MapDisplay display = MapDisplayManager.getInstance().createMapDisplay(frame, true, args[0]);
+					MapDisplay display = MapDisplayManager.getInstance().createMapDisplay(frame, true, args[0].toLowerCase());
 					try {
 						display.setImage(null);
 					} catch (Exception e) {

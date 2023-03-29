@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -150,22 +151,29 @@ public class MapDisplayManager extends NovaModule implements Listener {
 	public List<MapDisplay> getMapDisplays() {
 		return mapDisplays;
 	}
-
-	public MapDisplay getMapDisplay(String name) {
-		for (MapDisplay display : mapDisplays) {
-			if (display.getName().equalsIgnoreCase(name)) {
-				return display;
-			}
-		}
-		return null;
+	
+	public List<MapDisplay> getMapDisplaysInWorld(World world) {
+		return mapDisplays.stream().filter(d -> d.getWorld().equals(world)).collect(Collectors.toList());
 	}
 
-	public boolean hasMapDisplay(String name) {
-		return getMapDisplay(name) != null;
+	public MapDisplay getMapDisplayByNameOnly(String name) {
+		return mapDisplays.stream().filter(d -> d.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
+	public boolean hasMapDisplayByNameOnly(String name) {
+		return mapDisplays.stream().anyMatch(d -> d.getName().equalsIgnoreCase(name));
+	}
+
+	public MapDisplay getMapDisplay(String namespace) {
+		return mapDisplays.stream().filter(d -> d.getNamespace().equalsIgnoreCase(namespace)).findFirst().orElse(null);
+	}
+
+	public boolean hasMapDisplay(String namespace) {
+		return mapDisplays.stream().anyMatch(d -> d.getNamespace().equalsIgnoreCase(namespace));
 	}
 
 	public MapDisplay createMapDisplay(ItemFrame frame, boolean persistent, String name) {
-		if (hasMapDisplay(name)) {
+		if (hasMapDisplay(frame.getLocation().getWorld().getName() + ":" + name)) {
 			throw new MapDisplayNameAlreadyExistsException("A map display with the name " + name + " already exist");
 		}
 
