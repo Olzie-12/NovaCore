@@ -54,6 +54,7 @@ import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 import net.zeeraa.novacore.spigot.abstraction.particle.NullParticleProvider;
+import net.zeeraa.novacore.spigot.abstraction.particle.StaticParticleProviderInstance;
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
 import net.zeeraa.novacore.spigot.command.commands.dumplanguagenodes.DumpLanguageNodesCommand;
 import net.zeeraa.novacore.spigot.command.commands.novacore.NovaCoreCommand;
@@ -295,6 +296,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	public void setNovaParticleProvider(NovaParticleProvider novaParticleProvider) {
 		this.novaParticleProvider = novaParticleProvider;
+		StaticParticleProviderInstance.setInstance(novaParticleProvider);
 	}
 
 	public boolean runVersionIndependentLayerSelftest() {
@@ -433,7 +435,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		MinecraftChannelDuplexHandler.setDebug(false);
 		return true;
 	}
-
+	
 	@Override
 	public void onEnable() {
 		NovaCore.instance = this;
@@ -599,6 +601,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.warn("NovaCore", "No particle proivider was loaded during startup. Particles spawned by NovaCore will not be visible");
 			novaParticleProvider = new NullParticleProvider();
 		}
+		StaticParticleProviderInstance.setInstance(novaParticleProvider);
 		
 		if (forceReflectionCommandRegistrator) {
 			Log.info("NovaCore", "Using reflection based command registrator since ForceUseReflectionBasedRegistrator is set to true in config.yml");
