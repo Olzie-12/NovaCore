@@ -38,18 +38,33 @@ public class NativeParticleImplementation extends NovaParticleProvider {
 		switch (effect) {
 		case CRIT_MAGIC:
 			return Particle.CRIT_MAGIC;
+			
 		case REDSTONE:
 			return Particle.REDSTONE;
+			
 		case FIREWORKS_SPARK:
 			return Particle.FIREWORKS_SPARK;
+			
 		case SMOKE_LARGE:
 			return Particle.SMOKE_LARGE;
+			
 		case HEART:
 			return Particle.HEART;
+			
 		case SMOKE_NORMAL:
 			return Particle.SMOKE_NORMAL;
+			
+		case EXPLOSION_NORMAL:
+			return Particle.EXPLOSION_NORMAL;
+			
 		case EXPLOSION_LARGE:
 			return Particle.EXPLOSION_LARGE;
+			
+		case EXPLOSION_HUGE:
+			return Particle.EXPLOSION_HUGE;
+			
+		case FOOTSTEP:
+			return Particle.BLOCK_CRACK; //TODO: check if this is the valid one
 		}
 		return null;
 	}
