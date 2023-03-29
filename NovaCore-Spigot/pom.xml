@@ -33,8 +33,12 @@
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
-							<!-- Replace this with your package! -->
-							<shadedPattern>net.novauniverse.novacore.bstats</shadedPattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.org.bstats</shadedPattern>
+						</relocation>
+						
+						<relocation>
+							<pattern>net.coobird</pattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.net.coobird</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -159,7 +163,7 @@
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
-			<version>0.4.17</version>
+			<version>0.4.19</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
