@@ -35,7 +35,6 @@
 							<pattern>org.bstats</pattern>
 							<shadedPattern>net.novauniverse.novacore.thridparty.org.bstats</shadedPattern>
 						</relocation>
-						
 						<relocation>
 							<pattern>net.coobird</pattern>
 							<shadedPattern>net.novauniverse.novacore.thridparty.net.coobird</shadedPattern>
@@ -147,13 +146,13 @@
 			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Mixed dependencies -->
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
 			<version>3.0.0</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
-		<!-- Mixed dependencies -->
 		<dependency>
 			<groupId>org.bstats</groupId>
 			<artifactId>bstats-bukkit</artifactId>

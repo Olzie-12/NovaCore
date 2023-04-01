@@ -41,6 +41,7 @@ import net.zeeraa.novacore.spigot.language.LanguageManager;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.NovaModule;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
+import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseWorld;
 import net.zeeraa.novacore.spigot.teams.Team;
 import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 
@@ -94,6 +95,26 @@ public class GameLobby extends NovaModule implements Listener {
 	 */
 	public boolean isIgnoreNoTeam() {
 		return ignoreNoTeam;
+	}
+
+	public void unloadActiveMap() {
+		this.unloadActiveMap(false);
+	}
+
+	public void unloadActiveMap(boolean unloadWorld) {
+		if (unloadWorld) {
+			if (ModuleManager.isEnabled(MultiverseManager.class)) {
+				MultiverseWorld world = MultiverseManager.getInstance().worldToMultiverse(activeMap.getWorld());
+				if (world != null) {
+					MultiverseManager.getInstance().unload(world);
+				}
+			}
+		}
+		activeMap = null;
+	}
+
+	public void setActiveMap(GameLobbyMap activeMap) {
+		this.activeMap = activeMap;
 	}
 
 	@Override

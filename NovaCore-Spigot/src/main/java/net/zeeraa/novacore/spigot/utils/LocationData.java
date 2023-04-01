@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 import org.json.JSONObject;
+
+import net.zeeraa.novacore.commons.utils.Rotation;
 
 /**
  * Represents a location without a world. This can be used in config files for
@@ -49,6 +52,18 @@ public class LocationData {
 
 	public LocationData(double x, double y, double z) {
 		this(x, y, z, 0, 0);
+	}
+
+	public LocationData(Vector vector) {
+		this(vector.getX(), vector.getY(), vector.getZ());
+	}
+
+	public LocationData(Vector vector, float yaw, float pitch) {
+		this(vector.getX(), vector.getY(), vector.getZ(), yaw, pitch);
+	}
+
+	public LocationData(Vector vector, Rotation rotation) {
+		this(vector.getX(), vector.getY(), vector.getZ(), rotation.getYaw(), rotation.getPitch());
 	}
 
 	public LocationData(double x, double y, double z, float yaw, float pitch) {
