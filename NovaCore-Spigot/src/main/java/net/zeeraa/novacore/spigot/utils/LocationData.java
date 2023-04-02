@@ -115,6 +115,10 @@ public class LocationData {
 		return yaw;
 	}
 
+	public Vector toVector() {
+		return new Vector(x, y, z);
+	}
+	
 	/**
 	 * Get the pitch of the location
 	 * 
