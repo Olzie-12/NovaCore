@@ -476,4 +476,12 @@ public class LocationUtils {
 		}
 	}
 
+	public static Rotation locationToRotation(LocationData locationData) {
+		return new Rotation(locationData.getYaw(), locationData.getPitch());
+	}
+	
+	public static Rotation locationToRotation(Location location) {
+		return new Rotation(location.getYaw(), location.getPitch());
+	}
+
 }

@@ -65,6 +65,10 @@ public class LocationData {
 	public LocationData(Vector vector, Rotation rotation) {
 		this(vector.getX(), vector.getY(), vector.getZ(), rotation.getYaw(), rotation.getPitch());
 	}
+	
+	public Rotation getRotation() {
+		return new Rotation(this.getYaw(), this.getPitch());
+	}
 
 	public LocationData(double x, double y, double z, float yaw, float pitch) {
 		this.x = x;

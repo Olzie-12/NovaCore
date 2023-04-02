@@ -17,7 +17,7 @@ import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldUnloadOption;
 import net.zeeraa.novacore.spigot.utils.LocationData;
 
 public class GameLobbyMapData extends AbstractMapData {
-	private LocationData spawnLocation;
+	protected LocationData spawnLocation;
 
 	public GameLobbyMapData(LocationData spawnLocation, String mapName, String displayName, String description, File worldFile, List<HologramData> holograms) {
 		super(mapName, displayName, description, worldFile, holograms);
