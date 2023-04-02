@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -181,12 +183,12 @@ public abstract class Game {
 			Log.warn("Game", "Tried to call Game#sendBeginEvent() twice");
 			return;
 		}
-		
-		if(hasEnded()) {
+
+		if (hasEnded()) {
 			Log.warn("Game", "Tried to call Game#sendBeginEvent() after the game ended");
 			return;
 		}
-		
+
 		beginEventCalled = true;
 		GameBeginEvent event = new GameBeginEvent(this);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -345,7 +347,11 @@ public abstract class Game {
 	 * @param trigger The {@link GameTrigger} to add
 	 * @return <code>true</code> on success
 	 */
-	public boolean addTrigger(GameTrigger trigger) {
+	public boolean addTrigger(@Nonnull GameTrigger trigger) {
+		if (trigger == null) {
+			throw new IllegalArgumentException("trigger cant be null");
+		}
+		
 		if (!triggerExist(trigger)) {
 			if (trigger.hasValidName()) {
 				triggers.add(trigger);
@@ -780,8 +786,8 @@ public abstract class Game {
 		if (autoWinnerCheckCompleted) {
 			return;
 		}
-		
-		if(NovaCoreGameEngine.getInstance().isDebugDisableAutoEndGame()) {
+
+		if (NovaCoreGameEngine.getInstance().isDebugDisableAutoEndGame()) {
 			return;
 		}
 
@@ -915,7 +921,7 @@ public abstract class Game {
 	 */
 	public void onPlayerRespawn(Player player) {
 	}
-	
+
 	/**
 	 * Called when a player respawns
 	 * 
