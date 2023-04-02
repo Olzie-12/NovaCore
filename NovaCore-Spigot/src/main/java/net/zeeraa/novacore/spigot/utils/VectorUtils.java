@@ -3,6 +3,8 @@ package net.zeeraa.novacore.spigot.utils;
 import org.bukkit.util.Vector;
 import org.json.JSONObject;
 
+import net.zeeraa.novacore.commons.utils.Pair;
+
 /**
  * Utilities for {@link Vector}s
  * 
@@ -43,6 +45,27 @@ public class VectorUtils {
 		double z = json.getDouble("z");
 
 		return new Vector(x, y, z);
+	}
+
+	/**
+	 * Get a {@link Pair} of {@link Vector}s from a json object.
+	 * <p>
+	 * The input json should look like this
+	 * <code>{"x1:" 0.0, "y1:" 0.0, "z1:" 0.0, "x2:" 0.0, "y2:" 0.0, "z2:" 0.0}</code>
+	 * 
+	 * @param json The {@link JSONObject} to read
+	 * @return {@link Pair} with {@link Vector}s
+	 */
+	public static Pair<Vector> vectorPairFromJSON(JSONObject json) {
+		double x1 = json.getDouble("x1");
+		double y1 = json.getDouble("y1");
+		double z1 = json.getDouble("z1");
+
+		double x2 = json.getDouble("x2");
+		double y2 = json.getDouble("y2");
+		double z2 = json.getDouble("z2");
+
+		return new Pair<Vector>(new Vector(x1, y1, z1), new Vector(x2, y2, z2));
 	}
 
 	/**
