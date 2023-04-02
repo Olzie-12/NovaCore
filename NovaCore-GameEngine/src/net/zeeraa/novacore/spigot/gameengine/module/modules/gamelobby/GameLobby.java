@@ -27,6 +27,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.zeeraa.novacore.commons.log.Log;
+import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
@@ -42,6 +43,7 @@ import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.NovaModule;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseWorld;
+import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 import net.zeeraa.novacore.spigot.teams.Team;
 import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 
@@ -58,7 +60,7 @@ public class GameLobby extends NovaModule implements Listener {
 	private GameLobbyReader mapReader;
 	private LobbyMapSelector mapSelector;
 
-	private int taskId;
+	private Task task;
 
 	private List<UUID> waitingPlayers;
 
@@ -132,7 +134,7 @@ public class GameLobby extends NovaModule implements Listener {
 
 		this.maps = new ArrayList<>();
 
-		this.taskId = -1;
+		this.task = null;
 	}
 
 	public void setDisableAutoAddPlayers(boolean disableAutoAddPlayers) {
@@ -150,6 +152,10 @@ public class GameLobby extends NovaModule implements Listener {
 		this.addDependency(GameManager.class);
 
 		this.activeMap = null;
+	}
+	
+	public boolean stopPlayerMonitoringTask() {
+		return Task.tryStartTask(task);
 	}
 
 	@Override
@@ -171,36 +177,30 @@ public class GameLobby extends NovaModule implements Listener {
 			return;
 		}
 
-		this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(NovaCore.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				if (hasActiveMap()) {
-					getActiveMap().getWorld().getPlayers().forEach(player -> {
-						if (GameManager.getInstance().hasGame()) {
-							if (GameManager.getInstance().getActiveGame().hasStarted()) {
-								GameManager.getInstance().getActiveGame().tpToSpectator(player);
-								return;
-							}
+		this.task = new SimpleTask(NovaCore.getInstance(), () -> {
+			if (hasActiveMap()) {
+				getActiveMap().getWorld().getPlayers().forEach(player -> {
+					if (GameManager.getInstance().hasGame()) {
+						if (GameManager.getInstance().getActiveGame().hasStarted()) {
+							GameManager.getInstance().getActiveGame().tpToSpectator(player);
+							return;
 						}
+					}
 
-						player.setFoodLevel(20);
+					player.setFoodLevel(20);
 
-						if (player.getLocation().getY() < 0) {
-							player.setFallDistance(0);
-							player.teleport(activeMap.getSpawnLocation());
-						}
-					});
-				}
+					if (player.getLocation().getY() < 0) {
+						player.setFallDistance(0);
+						player.teleport(activeMap.getSpawnLocation());
+					}
+				});
 			}
 		}, 5L, 5L);
 	}
 
 	@Override
 	public void onDisable() {
-		if (taskId != -1) {
-			Bukkit.getScheduler().cancelTask(taskId);
-			taskId = -1;
-		}
+		Task.tryStartTask(task);
 	}
 
 	public List<UUID> getWaitingPlayers() {
@@ -241,30 +241,22 @@ public class GameLobby extends NovaModule implements Listener {
 		}
 
 		try {
-			for (UUID uuid : waitingPlayers) {
-				Player player = Bukkit.getServer().getPlayer(uuid);
-
-				if (player != null) {
-					if (player.isOnline()) {
-						// Prevent players from joining if teams are enabled and the player does not
-						// have a team
-						if (!ignoreNoTeam) {
-							if (NovaCore.getInstance().hasTeamManager()) {
-								Team team = NovaCore.getInstance().getTeamManager().getPlayerTeam(player);
-								if (team == null) {
-									player.sendMessage(LanguageManager.getString(player, "novacore.game.lobby.spectator_no_team"));
-									continue;
-								}
-							}
-						}
-
-						if (!disableAutoAddPlayers) {
-							GameManager.getInstance().getActiveGame().addPlayer(player);
+			waitingPlayers.forEach(uuid -> PlayerUtils.ifOnline(uuid, (player) -> {
+				if (!ignoreNoTeam) {
+					if (NovaCore.getInstance().hasTeamManager()) {
+						Team team = NovaCore.getInstance().getTeamManager().getPlayerTeam(player);
+						if (team == null) {
+							player.sendMessage(LanguageManager.getString(player, "novacore.game.lobby.spectator_no_team"));
+							return;
 						}
 					}
 				}
-			}
 
+				if (!disableAutoAddPlayers) {
+					GameManager.getInstance().getActiveGame().addPlayer(player);
+				}
+			}));
+			
 			waitingPlayers.clear();
 
 			GameManager.getInstance().start();
