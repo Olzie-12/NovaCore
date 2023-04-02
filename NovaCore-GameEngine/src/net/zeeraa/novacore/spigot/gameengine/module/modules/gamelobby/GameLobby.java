@@ -196,11 +196,12 @@ public class GameLobby extends NovaModule implements Listener {
 				});
 			}
 		}, 5L, 5L);
+		Task.tryStartTask(task);
 	}
 
 	@Override
 	public void onDisable() {
-		Task.tryStartTask(task);
+		Task.tryStopTask(task);
 	}
 
 	public List<UUID> getWaitingPlayers() {
@@ -392,7 +393,6 @@ public class GameLobby extends NovaModule implements Listener {
 						return;
 					}
 				}
-
 				e.setCancelled(true);
 			}
 		}
