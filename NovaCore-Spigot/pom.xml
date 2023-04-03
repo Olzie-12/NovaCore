@@ -151,7 +151,7 @@
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
 			<version>3.0.0</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bstats</groupId>
