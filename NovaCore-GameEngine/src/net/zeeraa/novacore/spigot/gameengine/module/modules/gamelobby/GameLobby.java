@@ -31,6 +31,7 @@ import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.GameLobbyMapActivatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.PlayerJoinGameLobbyEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.map.GameLobbyMap;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.map.GameLobbyMapData;
@@ -117,6 +118,7 @@ public class GameLobby extends NovaModule implements Listener {
 
 	public void setActiveMap(GameLobbyMap activeMap) {
 		this.activeMap = activeMap;
+		Bukkit.getServer().getPluginManager().callEvent(new GameLobbyMapActivatedEvent(activeMap));
 	}
 
 	@Override
@@ -153,7 +155,7 @@ public class GameLobby extends NovaModule implements Listener {
 
 		this.activeMap = null;
 	}
-	
+
 	public boolean stopPlayerMonitoringTask() {
 		return Task.tryStartTask(task);
 	}
@@ -169,7 +171,7 @@ public class GameLobby extends NovaModule implements Listener {
 		}
 
 		try {
-			this.activeMap = (GameLobbyMap) map.load();
+			setActiveMap((GameLobbyMap) map.load());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.fatal("GameLobby", "Failed to load the map to use for game lobby");
@@ -257,7 +259,7 @@ public class GameLobby extends NovaModule implements Listener {
 					GameManager.getInstance().getActiveGame().addPlayer(player);
 				}
 			}));
-			
+
 			waitingPlayers.clear();
 
 			GameManager.getInstance().start();
