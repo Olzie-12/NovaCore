@@ -2,6 +2,7 @@
 	"language_code": "en-us",
 	"language_name": "English",
 	"content": {
+		"novacore.game.starting_in.title": "§b§lStarting in",
 		"novacore.game.starting_in": "§6§lStarting in§b§l %s",
 		"novacore.game.countdown": "§6§lThe game will start in§b§l %s §6§lseconds!",
 		
