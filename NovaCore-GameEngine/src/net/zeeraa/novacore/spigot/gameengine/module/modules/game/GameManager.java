@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -172,6 +174,25 @@ public class GameManager extends NovaModule implements Listener {
 
 		mapReaders.add(new LegacyMapReader());
 		mapReaders.add(new NovaMapReader());
+	}
+
+	/**
+	 * Try to get the display name of the active map
+	 * 
+	 * @return the display name of the active map or <code>null</code> if game is
+	 *         not a map based game or if no map is loaded
+	 */
+	@Nullable
+	public String tryGetActiveMapDisplayName() {
+		if(hasGame()) {
+			if(activeGame instanceof MapGame) {
+				MapGame game = (MapGame)activeGame;
+				if(game.hasActiveMap()) {
+					return game.getActiveMap().getDisplayName();
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
