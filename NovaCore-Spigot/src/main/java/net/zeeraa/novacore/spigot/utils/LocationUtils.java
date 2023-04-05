@@ -15,6 +15,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.json.JSONObject;
 
@@ -345,10 +346,10 @@ public class LocationUtils {
 
 		return newLocation;
 	}
-	
+
 	/**
-	 * Get a copy of the provided location with its x, y and z centered. This will not
-	 * modify the provided {@link Location} object
+	 * Get a copy of the provided location with its x, y and z centered. This will
+	 * not modify the provided {@link Location} object
 	 * 
 	 * @param location The location to get a centered copy of
 	 * @return New location with centered x, y and z
@@ -433,12 +434,11 @@ public class LocationUtils {
 		return location.add(newX, newY, newZ);
 	}
 
-
 	/**
 	 * Checks if the player is inside a block location, since it needs to count for
 	 * the players hitbox
 	 *
-	 * @param block The block to be checked
+	 * @param block  The block to be checked
 	 * @param entity The entity to be checked
 	 * @return If player is inside the block location
 	 */
@@ -452,7 +452,7 @@ public class LocationUtils {
 		for (int x = blockBottom.getX(); x <= blockTop.getX(); x++) {
 			for (int y = blockBottom.getY(); y <= blockTop.getY(); y++) {
 				for (int z = blockBottom.getZ(); z <= blockTop.getZ(); z++) {
-					avaliableBlocks.add(entity.getWorld().getBlockAt(x,y,z));
+					avaliableBlocks.add(entity.getWorld().getBlockAt(x, y, z));
 				}
 			}
 		}
@@ -479,9 +479,32 @@ public class LocationUtils {
 	public static Rotation locationToRotation(LocationData locationData) {
 		return new Rotation(locationData.getYaw(), locationData.getPitch());
 	}
-	
+
 	public static Rotation locationToRotation(Location location) {
 		return new Rotation(location.getYaw(), location.getPitch());
 	}
 
+	/**
+	 * Same as {@link Location#distance(Location)} but this version does not check
+	 * if the locations are in the same world
+	 * 
+	 * @param location1 the first location
+	 * @param location2 the second location to check distance for
+	 * @return distance
+	 */
+	public static double distanceNoWorldCheck(Location location1, Location location2) {
+		return Math.sqrt(distanceSquaredNoWorldCheck(location1, location2));
+	}
+
+	/**
+	 * Same as {@link Location#distanceSquared(Location)} but this version does not
+	 * check if the locations are in the same world
+	 * 
+	 * @param location1 the first location
+	 * @param location2 the second location to check distance for
+	 * @return distance
+	 */
+	public static double distanceSquaredNoWorldCheck(Location location1, Location location2) {
+		return NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getY() - location2.getY()) + NumberConversions.square(location1.getZ() - location2.getZ());
+	}
 }
