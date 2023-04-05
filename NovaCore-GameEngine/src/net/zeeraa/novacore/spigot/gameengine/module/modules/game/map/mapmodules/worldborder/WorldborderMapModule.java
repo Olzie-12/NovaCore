@@ -4,14 +4,17 @@ import org.bukkit.Bukkit;
 import org.json.JSONObject;
 
 import net.zeeraa.novacore.commons.log.Log;
-import net.zeeraa.novacore.spigot.NovaCore;
+import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
+import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.worldborder.event.NovaWorldborderEstimatedFinishedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.DelayedGameTrigger;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.TriggerFlag;
 import net.zeeraa.novacore.spigot.language.LanguageManager;
+import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 
 public class WorldborderMapModule extends MapModule {
 	private double centerX;
@@ -30,13 +33,20 @@ public class WorldborderMapModule extends MapModule {
 
 	private Game game;
 
-	private int taskId;
-
 	private int stepTime;
 	private double stepShrinkValue;
 	private int totalSteps;
 	private int activeStep;
 	private double lastSize;
+
+	private int estimatedShrinkTimeLeft;
+
+	private Task shrinkTask;
+	private Task shrinkEstimatedTimeTask;
+
+	private boolean isShrinking;
+
+	private boolean shouldSendEvent;
 
 	public WorldborderMapModule(JSONObject json) {
 		super(json);
@@ -53,9 +63,9 @@ public class WorldborderMapModule extends MapModule {
 		this.shrinkDuration = 900;
 		this.startDelay = 600;
 
-		this.stepTime = json.optInt("step_time", 30);
+		this.shouldSendEvent = false;
 
-		this.taskId = -1;
+		this.stepTime = json.optInt("step_time", 30);
 
 		if (json.has("center_x")) {
 			this.centerX = json.getDouble("center_x");
@@ -99,7 +109,6 @@ public class WorldborderMapModule extends MapModule {
 
 		this.lastSize = startSize;
 
-		this.taskId = -1;
 		this.activeStep = 0;
 
 		this.startTrigger = new DelayedGameTrigger("novacore.worldborder.start", startDelay * 20L, (trigger, reason) -> {
@@ -115,6 +124,47 @@ public class WorldborderMapModule extends MapModule {
 		this.startTrigger.setDescription("Starts the worldborder shrinking");
 		this.startTrigger.addFlag(TriggerFlag.RUN_ONLY_ONCE);
 		this.startTrigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
+
+		this.shrinkTask = new SimpleTask(NovaCoreGameEngine.getInstance(), () -> {
+			if (activeStep >= totalSteps) {
+				cancel();
+				isShrinking = true; // Because last step is not finished yet (probably)
+				return;
+			}
+
+			if (game == null) {
+				return;
+			}
+
+			if (game.getWorld() == null) {
+				return;
+			}
+
+			estimatedShrinkTimeLeft = (totalSteps - activeStep) * stepTime;
+
+			game.getWorld().getWorldBorder().setSize(lastSize - stepShrinkValue, stepTime);
+
+			lastSize -= stepShrinkValue;
+
+			activeStep++;
+		}, 0, stepTime * 20L);
+
+		shrinkEstimatedTimeTask = new SimpleTask(NovaCoreGameEngine.getInstance(), () -> {
+			if (estimatedShrinkTimeLeft > 0) {
+				shouldSendEvent = true;
+				estimatedShrinkTimeLeft--;
+			} else {
+				if (shouldSendEvent) {
+					isShrinking = false;
+					shouldSendEvent = false;
+					Bukkit.getServer().getPluginManager().callEvent(new NovaWorldborderEstimatedFinishedEvent());
+				}
+			}
+		}, 20L);
+	}
+
+	public int getEstimatedShrinkTimeLeft() {
+		return estimatedShrinkTimeLeft;
 	}
 
 	public double getCenterX() {
@@ -149,9 +199,15 @@ public class WorldborderMapModule extends MapModule {
 		return startTrigger;
 	}
 
+	public boolean isShrinking() {
+		return isShrinking;
+	}
+
 	@Override
 	public void onGameStart(Game game) {
 		this.game = game;
+
+		Task.tryStartTask(shrinkEstimatedTimeTask);
 
 		game.addTrigger(startTrigger);
 
@@ -173,49 +229,29 @@ public class WorldborderMapModule extends MapModule {
 
 	@Override
 	public void onGameEnd(Game game) {
+		Task.tryStopTask(shrinkEstimatedTimeTask);
 		this.game = null;
 	}
 
 	public boolean cancel() {
-		if (taskId != -1) {
-			Bukkit.getScheduler().cancelTask(taskId);
-			taskId = -1;
+		if (shrinkTask.isRunning()) {
+			isShrinking = false;
+			shrinkTask.stop();
 			return true;
 		}
 		return false;
 	}
 
 	public boolean start() {
-		if (taskId == -1) {
-			taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(NovaCore.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					if (activeStep >= totalSteps) {
-						cancel();
-						return;
-					}
-
-					if (game == null) {
-						return;
-					}
-
-					if (game.getWorld() == null) {
-						return;
-					}
-
-					game.getWorld().getWorldBorder().setSize(lastSize - stepShrinkValue, stepTime);
-
-					lastSize -= stepShrinkValue;
-
-					activeStep++;
-				}
-			}, 0, stepTime * 20L);
-			return true;
+		if (shrinkTask.isRunning()) {
+			return false;
 		}
-		return false;
+		shrinkTask.start();
+		isShrinking = true;
+		return true;
 	}
 
 	public boolean isRunning() {
-		return taskId != -1;
+		return shrinkTask.isRunning();
 	}
 }
