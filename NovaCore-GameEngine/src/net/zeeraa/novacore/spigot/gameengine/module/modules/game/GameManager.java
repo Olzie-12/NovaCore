@@ -177,6 +177,34 @@ public class GameManager extends NovaModule implements Listener {
 	}
 
 	/**
+	 * Check if a player is in the game. See {@link Game#isPlayerInGame(UUID)} for
+	 * more info
+	 * 
+	 * @param uuid The {@link UUID} of the player to check
+	 * @return <code>true</code> if the player is in the list of players in the game
+	 *         or <code>false</code> if not or no game has been loaded
+	 */
+	public boolean isPlayerInGame(UUID uuid) {
+		if (hasGame()) {
+			return activeGame.isPlayerInGame(uuid);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a player is in the game. See
+	 * {@link Game#isPlayerInGame(OfflinePlayer)} for more info
+	 * 
+	 * @param player The {@link OfflinePlayer} to check
+	 * @return <code>true</code> if the player is in the list of players in the game
+	 *         or <code>false</code> if not or no game has been loaded
+	 */
+	public boolean isPlayerInGame(OfflinePlayer player) {
+		return this.isPlayerInGame(player.getUniqueId());
+	}
+
+	/**
 	 * Try to get the display name of the active map
 	 * 
 	 * @return the display name of the active map or <code>null</code> if game is
@@ -184,10 +212,10 @@ public class GameManager extends NovaModule implements Listener {
 	 */
 	@Nullable
 	public String tryGetActiveMapDisplayName() {
-		if(hasGame()) {
-			if(activeGame instanceof MapGame) {
-				MapGame game = (MapGame)activeGame;
-				if(game.hasActiveMap()) {
+		if (hasGame()) {
+			if (activeGame instanceof MapGame) {
+				MapGame game = (MapGame) activeGame;
+				if (game.hasActiveMap()) {
 					return game.getActiveMap().getDisplayName();
 				}
 			}
