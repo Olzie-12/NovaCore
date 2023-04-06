@@ -39,8 +39,13 @@ import org.bukkit.plugin.Plugin;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import org.bukkit.potion.PotionEffect;
+
+import com.mojang.authlib.GameProfile;
+
 import java.awt.Color;
 import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
 
 /**
  * A utility to make your plugins support multiple versions of the game without
@@ -962,5 +967,8 @@ public abstract class VersionIndependentUtils {
 	public float getBlockBlastResistance(Block block) {
 		return getBlockBlastResistance(block.getType());
 	}
+
 	public abstract float getBlockBlastResistance(Material material);
+
+	public abstract GameProfile getGameProfile(@Nonnull Player player);
 }
