@@ -71,7 +71,6 @@ import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootTableLoaderV1Legac
 import net.zeeraa.novacore.spigot.loottable.loottables.randomiser.RandomizerLootTableLoader;
 import net.zeeraa.novacore.spigot.mapdisplay.MapDisplayManager;
 import net.zeeraa.novacore.spigot.mapdisplay.command.MapDisplayCommand;
-import net.zeeraa.novacore.spigot.mapdisplay.command.subcommand.MDSetImageSubCommand;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.event.ModuleDisabledEvent;
 import net.zeeraa.novacore.spigot.module.event.ModuleEnableEvent;
@@ -494,9 +493,9 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 
 		ConfigurationSection mapDisplaySettings = webServicesSettings.getConfigurationSection("MapDisplays");
-		MDSetImageSubCommand.disableWebInteractions = mapDisplaySettings.getBoolean("Disable");
-		MDSetImageSubCommand.useragent = mapDisplaySettings.getString("UserAgent");
-		MDSetImageSubCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
+		MapDisplayCommand.disableWebInteractions = mapDisplaySettings.getBoolean("Disable");
+		MapDisplayCommand.useragent = mapDisplaySettings.getString("UserAgent");
+		MapDisplayCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
 
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
