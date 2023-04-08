@@ -31,6 +31,7 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameEndE
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerWinEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.TeamEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.TeamWinEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.GameTrigger;
@@ -623,6 +624,7 @@ public abstract class Game {
 
 		Bukkit.getServer().getPluginManager().callEvent(new GameStartEvent(this));
 		this.onStart();
+		Bukkit.getServer().getPluginManager().callEvent(new PostGameStartEvent(this));
 
 		return true;
 	}

@@ -5,14 +5,14 @@ import org.bukkit.event.HandlerList;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 
 /**
- * Called before {@link Game#startGame()} is called
+ * Called after {@link Game#startGame()} is called
  * 
  * @author Zeeraa
  */
-public class GameStartEvent extends GameEvent {
+public class PostGameStartEvent extends GameEvent {
 	private static final HandlerList HANDLERS_LIST = new HandlerList();
 
-	public GameStartEvent(Game game) {
+	public PostGameStartEvent(Game game) {
 		super(game);
 	}
 

@@ -50,9 +50,9 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.Pla
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameEndEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameLoadedEvent;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.MapLoadedEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMapData;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.readers.LegacyMapReader;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.readers.NovaMapReader;
@@ -1256,7 +1256,7 @@ public class GameManager extends NovaModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onGameStart(GameStartEvent e) {
+	public void onGameStart(PostGameStartEvent e) {
 		GameTrigger.triggerMany(e.getGame().getTriggersByFlag(TriggerFlag.TRIGGER_ON_GAME_START), TriggerFlag.TRIGGER_ON_GAME_START);
 		GameTrigger.startMany(e.getGame().getTriggersByFlag(TriggerFlag.START_ON_GAME_START));
 	}
