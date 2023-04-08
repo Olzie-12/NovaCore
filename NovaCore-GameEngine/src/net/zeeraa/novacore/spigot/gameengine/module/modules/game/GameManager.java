@@ -1256,7 +1256,8 @@ public class GameManager extends NovaModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onGameStart(PostGameStartEvent e) {
+	public void onPostGameStart(PostGameStartEvent e) {
+		Log.trace("GameManager", "Post game start trigger processing. " + e.getGame().getTriggers().size() + " triggers found");
 		GameTrigger.triggerMany(e.getGame().getTriggersByFlag(TriggerFlag.TRIGGER_ON_GAME_START), TriggerFlag.TRIGGER_ON_GAME_START);
 		GameTrigger.startMany(e.getGame().getTriggersByFlag(TriggerFlag.START_ON_GAME_START));
 	}

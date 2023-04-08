@@ -355,6 +355,8 @@ public abstract class Game {
 		
 		if (!triggerExist(trigger)) {
 			if (trigger.hasValidName()) {
+				Log.trace("Game", "Adding trigger " + trigger.getName() + " with " + trigger.getFlags().size() + " flags");
+				
 				triggers.add(trigger);
 				return true;
 			}
