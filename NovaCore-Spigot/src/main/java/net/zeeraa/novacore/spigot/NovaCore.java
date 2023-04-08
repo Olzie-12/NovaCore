@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InvalidClassException;
 import java.util.List;
 
+import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
 import org.apache.commons.io.FileUtils;
@@ -131,11 +132,13 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private NovaParticleProvider novaParticleProvider;
 
+	private NovaCoreGameVersion novaCoreGameVersion;
+
 	private boolean disableUnregisteringCommands;
 
 	/**
 	 * Check if the NovaCoreGameEngine plugin is enabled
-	 * 
+	 *
 	 * @return <code>true</code> if the game engine is enabled
 	 */
 	public static boolean isNovaGameEngineEnabled() {
@@ -144,7 +147,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get instance of the {@link NovaCore} plugin
-	 * 
+	 *
 	 * @return {@link NovaCore} instance
 	 */
 	public static NovaCore getInstance() {
@@ -153,7 +156,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the {@link CommandRegistrator} for this version
-	 * 
+	 *
 	 * @return {@link CommandRegistrator}
 	 */
 	public CommandRegistrator getCommandRegistrator() {
@@ -162,7 +165,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link LootTableManager}
-	 * 
+	 *
 	 * @return {@link LootTableManager} instance
 	 */
 	public LootTableManager getLootTableManager() {
@@ -175,7 +178,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Set the {@link TeamManager} to use
-	 * 
+	 *
 	 * @param teamManager The {@link TeamManager} to use
 	 */
 	public void setTeamManager(TeamManager teamManager) {
@@ -184,7 +187,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if a {@link TeamManager} has been defined
-	 * 
+	 *
 	 * @return <code>true</code> if a {@link TeamManager} has been defined
 	 */
 	public boolean hasTeamManager() {
@@ -193,7 +196,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link CustomCraftingManager}
-	 * 
+	 *
 	 * @return {@link CustomCraftingManager} instance
 	 */
 	public CustomCraftingManager getCustomCraftingManager() {
@@ -203,7 +206,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link VersionIndependentUtils} for this version
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 */
 	public VersionIndependentUtils getVersionIndependentUtils() {
@@ -212,7 +215,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link VersionIndependentUtils} for this version
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 */
 	public static VersionIndependentUtils versionIndependantUtils() {
@@ -221,7 +224,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check in holographic displays is installed
-	 * 
+	 *
 	 * @return <code>true</code> if the holographic displays plugin is installed
 	 */
 	public boolean hasHologramsSupport() {
@@ -230,7 +233,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Set the console log level
-	 * 
+	 *
 	 * @param logLevel Log level for the console
 	 */
 	public void setLogLevel(LogLevel logLevel) {
@@ -246,7 +249,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link CitizensUtils}
-	 * 
+	 *
 	 * @return {@link CitizensUtils} instance
 	 */
 	public CitizensUtils getCitizensUtils() {
@@ -255,7 +258,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if citizens utils is available
-	 * 
+	 *
 	 * @return <code>true</code> if citizens is installed and citizens utils is
 	 *         available
 	 */
@@ -266,7 +269,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 	/**
 	 * Check if the plugin is running in no nms mode. If true
 	 * {@link VersionIndependentUtils} wont be avaliabe
-	 * 
+	 *
 	 * @return <code>true</code> if no nms mode is enabled
 	 */
 	public boolean isNoNMSMode() {
@@ -371,7 +374,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if the packet manager is enabled
-	 * 
+	 *
 	 * @return <code>true</code> if packet manager is enabled
 	 */
 	public boolean isPacketManagerEnabled() {
@@ -381,7 +384,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 	/**
 	 * Enable the packet manager. If the packet manager is already enabled this wont
 	 * do anything
-	 * 
+	 *
 	 * @return <code>false</code> if the packet manager could not be started
 	 */
 	public boolean enablePacketManager() {
@@ -434,7 +437,11 @@ public class NovaCore extends JavaPlugin implements Listener {
 		MinecraftChannelDuplexHandler.setDebug(false);
 		return true;
 	}
-	
+
+	public NovaCoreGameVersion getNovaCoreGameVersion() {
+		return novaCoreGameVersion;
+	}
+
 	@Override
 	public void onEnable() {
 		NovaCore.instance = this;
@@ -562,6 +569,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 
 				versionIndependentUtils = versionIndependantLoader.getVersionIndependentUtils();
+				novaCoreGameVersion = versionIndependentUtils.getNovaCoreGameVersion();
 				if (versionIndependentUtils == null) {
 					Log.warn("NovaCore", "VersionIndependentUtils is not supported for this version");
 					Log.warn("NovaCore", "Could not register events from ChunkLoader and PacketManager");
@@ -601,7 +609,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			novaParticleProvider = new NullParticleProvider();
 		}
 		StaticParticleProviderInstance.setInstance(novaParticleProvider);
-		
+
 		if (forceReflectionCommandRegistrator) {
 			Log.info("NovaCore", "Using reflection based command registrator since ForceUseReflectionBasedRegistrator is set to true in config.yml");
 			bukkitCommandRegistrator = reflectionBasedCommandRegistrator;
