@@ -762,10 +762,15 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 		case EXP_BOTTLE:
 			return Material.EXPERIENCE_BOTTLE;
+			
 		case WOOL:
 			return Material.WHITE_WOOL;
+			
 		case FIREBALL:
 			return Material.FIRE_CHARGE;
+			
+		case GUNPOWDER:
+			return Material.GUNPOWDER;
 
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_MATERIAL);
