@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils.materialwrapper;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.DyeColor;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -12,12 +14,12 @@ public class WrappedColoredMaterial extends WrappedMaterial {
 	private DyeColor color;
 	private ColoredBlockType type;
 
-	public WrappedColoredMaterial(DyeColor color, ColoredBlockType type) {
+	public WrappedColoredMaterial(@Nonnull DyeColor color, @Nonnull ColoredBlockType type) {
 		this.color = color;
 		this.type = type;
 	}
 
-	public void setType(ColoredBlockType type) {
+	public void setType(@Nonnull ColoredBlockType type) {
 		this.type = type;
 	}
 

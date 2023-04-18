@@ -2,6 +2,8 @@ package net.zeeraa.novacore.spigot.utils;
 
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -28,7 +30,7 @@ public class RandomFireworkEffect {
 	 * 
 	 * @return A random {@link FireworkEffect}
 	 */
-	public static FireworkEffect randomFireworkEffect(Random random) {
+	public static FireworkEffect randomFireworkEffect(@Nonnull Random random) {
 		return FireworkEffect.builder().flicker(random.nextBoolean()).withColor(getColor(random.nextInt(17) + 1)).withFade(getColor(random.nextInt(17) + 1)).with(Type.values()[random.nextInt(Type.values().length)]).trail(random.nextBoolean()).build();
 	}
 
@@ -68,8 +70,8 @@ public class RandomFireworkEffect {
 			return Color.WHITE;
 		case 17:
 			return Color.YELLOW;
-			default:
-				throw new IllegalStateException("Unexpected value " + i);
+		default:
+			throw new IllegalStateException("Unexpected value " + i);
 		}
 	}
 }

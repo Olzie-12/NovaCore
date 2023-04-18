@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -19,7 +21,7 @@ public class ProjectileUtils {
 	 * @param entity The {@link Entity} to check
 	 * @return <code>true</code> if the {@link Entity} is a {@link Projectile}
 	 */
-	public static boolean isProjectile(Entity entity) {
+	public static boolean isProjectile(@Nonnull Entity entity) {
 		return entity instanceof Projectile;
 	}
 
@@ -31,7 +33,7 @@ public class ProjectileUtils {
 	 *         there was no shooter or if the {@link Projectile} {@link Entity} is
 	 *         not a {@link Projectile}
 	 */
-	public static Entity getProjectileShooterEntity(Entity projectile) {
+	public static Entity getProjectileShooterEntity(@Nonnull Entity projectile) {
 		if (isProjectile(projectile)) {
 			return (Entity) ((Projectile) projectile).getShooter();
 		}
@@ -47,7 +49,7 @@ public class ProjectileUtils {
 	 * @return The estimated hit {@link Location}
 	 * @since 2.0.0
 	 */
-	public static Location getEstimatedHitLocation(Projectile projectile) {
+	public static Location getEstimatedHitLocation(@Nonnull Projectile projectile) {
 		Location loc = projectile.getLocation();
 		Vector vec = projectile.getVelocity();
 		return new Location(loc.getWorld(), loc.getX() + vec.getX(), loc.getY() + vec.getY(), loc.getZ() + vec.getZ());
@@ -61,7 +63,7 @@ public class ProjectileUtils {
 	 * @return The estimated hit {@link Block}
 	 * @since 2.0.0
 	 */
-	public static Block getEstimatedHitBlock(Projectile projectile) {
+	public static Block getEstimatedHitBlock(@Nonnull Projectile projectile) {
 		return ProjectileUtils.getEstimatedHitLocation(projectile).getBlock();
 	}
 }

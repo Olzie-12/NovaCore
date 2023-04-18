@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
@@ -23,14 +25,14 @@ public class VectorArea {
 	 * @param json Input {@link JSONObject}
 	 * @return the {@link VectorArea} loaded from json
 	 */
-	public static VectorArea fromJSON(JSONObject json) {
+	public static VectorArea fromJSON(@Nonnull JSONObject json) {
 		Vector p1 = new Vector(json.getDouble("x1"), json.getDouble("y1"), json.getDouble("z1"));
 		Vector p2 = new Vector(json.getDouble("x2"), json.getDouble("y2"), json.getDouble("z2"));
 
 		return new VectorArea(p1, p2);
 	}
 
-	public VectorArea(Vector position1, Vector position2) {
+	public VectorArea(@Nonnull Vector position1, @Nonnull Vector position2) {
 		this.position1 = new Vector((Math.min(position1.getX(), position2.getX())), (Math.min(position1.getY(), position2.getY())), (Math.min(position1.getZ(), position2.getZ())));
 		this.position2 = new Vector((Math.max(position1.getX(), position2.getX())), (Math.max(position1.getY(), position2.getY())), (Math.max(position1.getZ(), position2.getZ())));
 	}
@@ -57,27 +59,27 @@ public class VectorArea {
 	 * @param offset The {@link Vector} to add
 	 * @return instance of this vector area
 	 */
-	public VectorArea applyOffset(Vector offset) {
+	public VectorArea applyOffset(@Nonnull Vector offset) {
 		this.position1.add(offset);
 		this.position2.add(offset);
 		return this;
 	}
 
-	public VectorArea addOffset(Vector offset) {
+	public VectorArea addOffset(@Nonnull Vector offset) {
 		return this.applyOffset(offset);
 	}
 
-	public VectorArea subtractOffset(Vector offset) {
+	public VectorArea subtractOffset(@Nonnull Vector offset) {
 		this.position1.subtract(offset);
 		this.position2.subtract(offset);
 		return this;
 	}
 
-	public VectorArea addOffset(Location location) {
+	public VectorArea addOffset(@Nonnull Location location) {
 		return this.applyOffset(location.toVector());
 	}
 
-	public VectorArea subtractOffset(Location location) {
+	public VectorArea subtractOffset(@Nonnull Location location) {
 		return this.subtractOffset(location.toVector());
 	}
 
@@ -87,7 +89,7 @@ public class VectorArea {
 	 * @param offset The {@link Location} to add
 	 * @return instance of this vector area
 	 */
-	public VectorArea applyOffset(Location offset) {
+	public VectorArea applyOffset(@Nonnull Location offset) {
 		return this.applyOffset(offset.toVector());
 	}
 
@@ -118,7 +120,7 @@ public class VectorArea {
 	 * @param vector The vector to check
 	 * @return <code>true</code> if the vectors location is inside this area
 	 */
-	public boolean isInside(Vector vector) {
+	public boolean isInside(@Nonnull Vector vector) {
 		double x1 = position1.getX();
 		double y1 = position1.getY();
 		double z1 = position1.getZ();
@@ -147,7 +149,7 @@ public class VectorArea {
 	 * @param vector The vector to check
 	 * @return <code>true</code> if the vectors block location is inside this area
 	 */
-	public boolean isInsideBlock(Vector vector) {
+	public boolean isInsideBlock(@Nonnull Vector vector) {
 		int x1 = position1.getBlockX();
 		int y1 = position1.getBlockY();
 		int z1 = position1.getBlockZ();
@@ -175,7 +177,7 @@ public class VectorArea {
 	 * @param location The {@link Location} to check
 	 * @return <code>true</code> if the location is inside
 	 */
-	public boolean isInside(Location location) {
+	public boolean isInside(@Nonnull Location location) {
 		return this.isInside(location.toVector());
 	}
 
@@ -185,7 +187,7 @@ public class VectorArea {
 	 * @param location The {@link Location} to check
 	 * @return <code>true</code> if the location is inside
 	 */
-	public boolean isInsideBlock(Location location) {
+	public boolean isInsideBlock(@Nonnull Location location) {
 		return this.isInsideBlock(location.toVector());
 	}
 
@@ -195,7 +197,7 @@ public class VectorArea {
 	 * @param entity The {@link Entity} to check
 	 * @return <code>true</code> if the entity is inside
 	 */
-	public boolean isInside(Entity entity) {
+	public boolean isInside(@Nonnull Entity entity) {
 		return this.isInside(entity.getLocation());
 	}
 
@@ -205,7 +207,7 @@ public class VectorArea {
 	 * @param entity The {@link Entity} to check
 	 * @return <code>true</code> if the entity is inside
 	 */
-	public boolean isInsideBlock(Entity entity) {
+	public boolean isInsideBlock(@Nonnull Entity entity) {
 		return this.isInsideBlock(entity.getLocation());
 	}
 
@@ -301,7 +303,7 @@ public class VectorArea {
 		return this.getRandomVectorWithin(new Random());
 	}
 
-	public Vector getRandomVectorWithin(Random random) {
+	public Vector getRandomVectorWithin(@Nonnull Random random) {
 		double x = RandomGenerator.generateDouble(position1.getX(), position2.getX(), random);
 		double y = RandomGenerator.generateDouble(position1.getY(), position2.getY(), random);
 		double z = RandomGenerator.generateDouble(position1.getZ(), position2.getZ(), random);

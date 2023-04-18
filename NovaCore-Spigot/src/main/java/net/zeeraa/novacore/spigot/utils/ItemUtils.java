@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 public class ItemUtils {
@@ -11,7 +13,7 @@ public class ItemUtils {
 	 * @param player The player to remove the item from
 	 * @return The new amount in hand
 	 */
-	public static int removeOneFromHand(Player player) {
+	public static int removeOneFromHand(@Nonnull Player player) {
 		return InventoryUtils.removeOneFromHand(player);
 	}
 }

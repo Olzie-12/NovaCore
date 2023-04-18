@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -56,7 +58,7 @@ public class ItemBuilder {
 	 * 
 	 * @param material The material
 	 */
-	public ItemBuilder(Material material) {
+	public ItemBuilder(@Nonnull Material material) {
 		this(material, 1);
 	}
 
@@ -66,7 +68,7 @@ public class ItemBuilder {
 	 * @param material The material
 	 * @param amount   The amount
 	 */
-	public ItemBuilder(Material material, int amount) {
+	public ItemBuilder(@Nonnull Material material, int amount) {
 		this(new ItemStack(material, amount), false);
 	}
 
@@ -75,7 +77,7 @@ public class ItemBuilder {
 	 * 
 	 * @param material The material
 	 */
-	public ItemBuilder(VersionIndependentMaterial material) {
+	public ItemBuilder(@Nonnull VersionIndependentMaterial material) {
 		this(material, 1);
 	}
 
@@ -85,7 +87,7 @@ public class ItemBuilder {
 	 * @param material The material
 	 * @param amount   The amount
 	 */
-	public ItemBuilder(VersionIndependentMaterial material, int amount) {
+	public ItemBuilder(@Nonnull VersionIndependentMaterial material, int amount) {
 		this(new ItemStack(material.toBukkitVersion(), amount), false);
 	}
 
@@ -94,7 +96,7 @@ public class ItemBuilder {
 	 * 
 	 * @param itemStack The item stack
 	 */
-	public ItemBuilder(ItemStack itemStack) {
+	public ItemBuilder(@Nonnull ItemStack itemStack) {
 		this(itemStack, false);
 	}
 
@@ -104,7 +106,7 @@ public class ItemBuilder {
 	 * @param type  The material type
 	 * @param color The {@link DyeColor} to use
 	 */
-	public ItemBuilder(ColoredBlockType type, DyeColor color) {
+	public ItemBuilder(@Nonnull ColoredBlockType type, @Nonnull DyeColor color) {
 		this(VersionIndependentUtils.get().getColoredItem(color, type));
 	}
 
@@ -114,7 +116,7 @@ public class ItemBuilder {
 	 * @param itemStack The item stack
 	 * @param clone     True if the stack should be cloned
 	 */
-	public ItemBuilder(ItemStack itemStack, boolean clone) {
+	public ItemBuilder(@Nonnull ItemStack itemStack, boolean clone) {
 		if (clone) {
 			this.item = itemStack.clone();
 		} else {
@@ -129,7 +131,7 @@ public class ItemBuilder {
 	 * @param name The name of the item
 	 * @return This item builder instance
 	 */
-	public ItemBuilder setName(String name) {
+	public ItemBuilder setName(@Nonnull String name) {
 		meta.setDisplayName(name);
 		return this;
 	}
@@ -141,7 +143,7 @@ public class ItemBuilder {
 	 * @param level The level
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addEnchant(Enchantment ench, int level) {
+	public ItemBuilder addEnchant(@Nonnull Enchantment ench, int level) {
 		return this.addEnchant(ench, level, false);
 	}
 
@@ -153,7 +155,7 @@ public class ItemBuilder {
 	 * @param ignoreLevelRestriction <code>true</code> to ignore level restriction
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addEnchant(Enchantment ench, int level, boolean ignoreLevelRestriction) {
+	public ItemBuilder addEnchant(@Nonnull Enchantment ench, int level, boolean ignoreLevelRestriction) {
 		meta.addEnchant(ench, level, ignoreLevelRestriction);
 		return this;
 	}
@@ -164,7 +166,7 @@ public class ItemBuilder {
 	 * @param ench The {@link Enchantment} to remove
 	 * @return This item builder instance
 	 */
-	public ItemBuilder removeEnchant(Enchantment ench) {
+	public ItemBuilder removeEnchant(@Nonnull Enchantment ench) {
 		meta.removeEnchant(ench);
 		return this;
 	}
@@ -175,7 +177,7 @@ public class ItemBuilder {
 	 * @param itemFlag The {@link ItemFlag} to add
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addItemFlags(ItemFlag itemFlag) {
+	public ItemBuilder addItemFlags(@Nonnull ItemFlag itemFlag) {
 		meta.addItemFlags(itemFlag);
 		return this;
 	}
@@ -186,7 +188,7 @@ public class ItemBuilder {
 	 * @param itemFlag The {@link ItemFlag} to remove
 	 * @return This item builder instance
 	 */
-	public ItemBuilder removeItemFlags(ItemFlag itemFlag) {
+	public ItemBuilder removeItemFlags(@Nonnull ItemFlag itemFlag) {
 		meta.removeItemFlags(itemFlag);
 		return this;
 	}
@@ -208,7 +210,7 @@ public class ItemBuilder {
 	 * @param meta The new item meta to use
 	 * @return This item builder instance
 	 */
-	public ItemBuilder setItemMeta(ItemMeta meta) {
+	public ItemBuilder setItemMeta(@Nonnull ItemMeta meta) {
 		item.setItemMeta(meta);
 		this.meta = meta;
 		return this;
@@ -231,7 +233,7 @@ public class ItemBuilder {
 	 * @param string The text that should be added
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addLore(String string) {
+	public ItemBuilder addLore(@Nonnull String string) {
 		List<String> lore;
 		if (meta.hasLore()) {
 			lore = meta.getLore();
@@ -259,7 +261,7 @@ public class ItemBuilder {
 	 * @param strings The text that should be added
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addLore(String... strings) {
+	public ItemBuilder addLore(@Nonnull String... strings) {
 		for (int i = 0; i < strings.length; i++) {
 			this.addLore(strings[i]);
 		}
@@ -273,7 +275,7 @@ public class ItemBuilder {
 	 * @return This item builder instance
 	 * @since 2.0.0
 	 */
-	public ItemBuilder addLore(List<String> lines) {
+	public ItemBuilder addLore(@Nonnull List<String> lines) {
 		lines.forEach(string -> this.addLore(string));
 		return this;
 	}
@@ -296,7 +298,7 @@ public class ItemBuilder {
 	 * @param color The color to set
 	 * @return This item builder instance
 	 */
-	public ItemBuilder setLeatherArmorColor(Color color) {
+	public ItemBuilder setLeatherArmorColor(@Nonnull Color color) {
 		((LeatherArmorMeta) meta).setColor(color);
 		return this;
 	}
@@ -308,7 +310,7 @@ public class ItemBuilder {
 	 * @param color The {@link ChatColor} to set
 	 * @return This item builder instance
 	 */
-	public ItemBuilder setLeatherArmorColor(ChatColor color) {
+	public ItemBuilder setLeatherArmorColor(@Nonnull ChatColor color) {
 		if (NovaCore.getInstance().isNoNMSMode()) {
 			((LeatherArmorMeta) meta).setColor(ColorUtils.getColorByChatColor(color));
 		} else {
@@ -345,7 +347,7 @@ public class ItemBuilder {
 	 * @param level       The level
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addStoredEnchant(Enchantment enchantment, int level) {
+	public ItemBuilder addStoredEnchant(@Nonnull Enchantment enchantment, int level) {
 		return this.addStoredEnchant(enchantment, level, false);
 	}
 
@@ -357,13 +359,12 @@ public class ItemBuilder {
 	 * @param ignoreLevelRestriction <code>true</code> to ignore level restriction
 	 * @return The item builder instance
 	 */
-	public ItemBuilder addStoredEnchant(Enchantment enchantment, int level, boolean ignoreLevelRestriction) {
+	public ItemBuilder addStoredEnchant(@Nonnull Enchantment enchantment, int level, boolean ignoreLevelRestriction) {
 		if (meta instanceof EnchantmentStorageMeta) {
 			((EnchantmentStorageMeta) meta).addStoredEnchant(enchantment, level, ignoreLevelRestriction);
 		} else {
 			Log.warn("ItemBuilder", "Could not add stored enchant to item of type " + item.getType().name() + " since it does not have a meta of type EnchantmentStorageMeta");
 		}
-
 		return this;
 	}
 
@@ -384,7 +385,7 @@ public class ItemBuilder {
 	 * @param attributeInfo The attribute's info
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addAttribute(AttributeInfo attributeInfo) {
+	public ItemBuilder addAttribute(@Nonnull AttributeInfo attributeInfo) {
 		VersionIndependentUtils.get().addAttribute(item, meta, attributeInfo);
 		return this;
 	}
@@ -396,7 +397,7 @@ public class ItemBuilder {
 	 * @param attributeInfos Array of attribute info
 	 * @return This item builder instance
 	 */
-	public ItemBuilder addAttribute(AttributeInfo atributeInfo, AttributeInfo... attributeInfos) {
+	public ItemBuilder addAttribute(@Nonnull AttributeInfo atributeInfo, @Nonnull AttributeInfo... attributeInfos) {
 		List<AttributeInfo> list = new ArrayList<>();
 		list.add(atributeInfo);
 		Collections.addAll(list, attributeInfos);
@@ -413,7 +414,7 @@ public class ItemBuilder {
 	 * @param lines The lines to add to the {@link List}
 	 * @return {@link List} containing all lines
 	 */
-	public static List<String> generateLoreList(String... lines) {
+	public static List<String> generateLoreList(@Nonnull String... lines) {
 		return new ArrayList<>(Arrays.asList(lines));
 	}
 
@@ -432,7 +433,7 @@ public class ItemBuilder {
 	 * @param material The {@link Material} of the item stack
 	 * @return {@link ItemStack} of the provided material
 	 */
-	public static ItemStack materialToItemStack(Material material) {
+	public static ItemStack materialToItemStack(@Nonnull Material material) {
 		return ItemBuilder.materialToItemStack(material, 1);
 	}
 
@@ -443,7 +444,7 @@ public class ItemBuilder {
 	 * @param size     The size of the item stack
 	 * @return {@link ItemStack} of the provided material and size
 	 */
-	public static ItemStack materialToItemStack(Material material, int size) {
+	public static ItemStack materialToItemStack(@Nonnull Material material, int size) {
 		return new ItemBuilder(material).setAmount(size).build();
 	}
 
@@ -454,7 +455,7 @@ public class ItemBuilder {
 	 * @param material The {@link VersionIndependentMaterial} of the item stack
 	 * @return {@link ItemStack} of the provided material
 	 */
-	public static ItemStack materialToItemStack(VersionIndependentMaterial material) {
+	public static ItemStack materialToItemStack(@Nonnull VersionIndependentMaterial material) {
 		return ItemBuilder.materialToItemStack(material.toBukkitVersion(), 1);
 	}
 
@@ -466,7 +467,7 @@ public class ItemBuilder {
 	 * @param size     The size of the item stack
 	 * @return {@link ItemStack} of the provided material and size
 	 */
-	public static ItemStack materialToItemStack(VersionIndependentMaterial material, int size) {
+	public static ItemStack materialToItemStack(@Nonnull VersionIndependentMaterial material, int size) {
 		return new ItemBuilder(material.toBukkitVersion()).setAmount(size).build();
 	}
 
@@ -485,7 +486,7 @@ public class ItemBuilder {
 	 * @param name The name of the record
 	 * @return <code>true</code> if the record exits
 	 */
-	public static boolean hasRecordName(String name) {
+	public static boolean hasRecordName(@Nonnull String name) {
 		for (String s : NovaCore.getInstance().getVersionIndependentUtils().getItemBuilderRecordList().getRecordMap().keySet()) {
 			if (s.equalsIgnoreCase(name)) {
 				return true;
@@ -505,7 +506,7 @@ public class ItemBuilder {
 	 * @return {@link ItemBuilder} with the provided record or <code>null</code> if
 	 *         the record name could not be found
 	 */
-	public static ItemBuilder getRecordItemBuilder(String recordName) {
+	public static ItemBuilder getRecordItemBuilder(@Nonnull String recordName) {
 		Material material = null;
 
 		for (String key : NovaCore.getInstance().getVersionIndependentUtils().getItemBuilderRecordList().getRecordMap().keySet()) {
@@ -529,7 +530,7 @@ public class ItemBuilder {
 	 * @return {@link ItemBuilder} instance
 	 * @since 1.1
 	 */
-	public static ItemBuilder playerSkull(String playerName) {
+	public static ItemBuilder playerSkull(@Nonnull String playerName) {
 		ItemStack playerHead = VersionIndependentUtils.get().getPlayerSkullitem();
 
 		SkullMeta meta = (SkullMeta) playerHead.getItemMeta();
@@ -548,7 +549,7 @@ public class ItemBuilder {
 	 * @return {@link ItemBuilder} instance
 	 * @since 1.1
 	 */
-	public static ItemBuilder playerSkull(OfflinePlayer player) {
+	public static ItemBuilder playerSkull(@Nonnull OfflinePlayer player) {
 		return ItemBuilder.playerSkull(player.getName());
 	}
 
@@ -558,7 +559,7 @@ public class ItemBuilder {
 	 * @param b64stringtexture The texture
 	 * @return {@link ItemStack} with a player skull
 	 */
-	public static ItemStack getPlayerSkullWithBase64Texture(String b64stringtexture) {
+	public static ItemStack getPlayerSkullWithBase64Texture(@Nonnull String b64stringtexture) {
 		return VersionIndependentUtils.get().getPlayerSkullWithBase64Texture(b64stringtexture);
 	}
 
@@ -568,7 +569,7 @@ public class ItemBuilder {
 	 * @param b64stringtexture The texture
 	 * @return {@link ItemBuilder} with a player skull
 	 */
-	public static ItemBuilder getPlayerSkullWithBase64TextureAsBuilder(String b64stringtexture) {
+	public static ItemBuilder getPlayerSkullWithBase64TextureAsBuilder(@Nonnull String b64stringtexture) {
 		return new ItemBuilder(VersionIndependentUtils.get().getPlayerSkullWithBase64Texture(b64stringtexture));
 	}
 
@@ -578,7 +579,7 @@ public class ItemBuilder {
 	 * @param stack The item to check
 	 * @return The display name of the item
 	 */
-	public static String getItemDisplayName(ItemStack stack) {
+	public static String getItemDisplayName(@Nonnull ItemStack stack) {
 		return stack.getItemMeta().getDisplayName();
 	}
 
@@ -589,7 +590,7 @@ public class ItemBuilder {
 	 * @return <code>true</code> if the item has a display name
 	 * @since 1.1
 	 */
-	public static boolean hasItemDisplayName(ItemStack stack) {
+	public static boolean hasItemDisplayName(@Nonnull ItemStack stack) {
 		return stack.getItemMeta().hasDisplayName();
 	}
 
@@ -599,15 +600,15 @@ public class ItemBuilder {
 	 * @param material The {@link Material} to use
 	 * @return {@link ItemBuilder} instance with the provided material
 	 */
-	public static ItemBuilder newInstance(Material material) {
+	public static ItemBuilder newInstance(@Nonnull Material material) {
 		return new ItemBuilder(material);
 	}
 
-	public static ItemBuilder fromItemsAdderNamespace(String namespace) {
+	public static ItemBuilder fromItemsAdderNamespace(@Nonnull String namespace) {
 		return new ItemBuilder(NovaItemsAdderUtils.getItemStack(namespace));
 	}
 
-	public static ItemStack makeItemStackUnbreakable(ItemStack item, boolean unbreakable) {
+	public static ItemStack makeItemStackUnbreakable(@Nonnull ItemStack item, boolean unbreakable) {
 		return VersionIndependentUtils.get().setUnbreakable(item, unbreakable);
 	}
 
@@ -615,15 +616,15 @@ public class ItemBuilder {
 		return itemsAdderGUIBackgroundItem;
 	}
 
-	public static ItemBuilder coloredBanner(DyeColor color) {
+	public static ItemBuilder coloredBanner(@Nonnull DyeColor color) {
 		return new ItemBuilder(VersionIndependentUtils.get().getColoredBannerItemStack(color));
 	}
 
-	public static ItemStack coloredBannerItemStack(DyeColor color) {
+	public static ItemStack coloredBannerItemStack(@Nonnull DyeColor color) {
 		return VersionIndependentUtils.get().getColoredBannerItemStack(color);
 	}
 
-	public static void setItemsAdderGUIBackgroundItem(String itemsAdderGUIBackgroundItem) {
+	public static void setItemsAdderGUIBackgroundItem(@Nonnull String itemsAdderGUIBackgroundItem) {
 		ItemBuilder.itemsAdderGUIBackgroundItem = itemsAdderGUIBackgroundItem;
 	}
 

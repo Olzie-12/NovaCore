@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -14,7 +16,7 @@ public class InventoryUtils {
 	 * @param player The player to remove the item from
 	 * @return The new amount in hand
 	 */
-	public static int removeOneFromHand(Player player) {
+	public static int removeOneFromHand(@Nonnull Player player) {
 		final ItemStack item = NovaCore.getInstance().getVersionIndependentUtils().getItemInMainHand(player);
 		final int a = item.getAmount();
 		if (a <= 1) {
@@ -34,7 +36,7 @@ public class InventoryUtils {
 	 * @param material  The {@link Material} to scan for
 	 * @return The total amount of the provoded {@link Material} in the inventory
 	 */
-	public static int countItemsOfType(Inventory inventory, Material material) {
+	public static int countItemsOfType(@Nonnull Inventory inventory, @Nonnull Material material) {
 		int result = 0;
 		for (ItemStack item : inventory.getContents()) {
 			if (item != null) {

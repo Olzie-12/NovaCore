@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -13,8 +15,8 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 /**
  * Functions to serialize a {@link ItemStack} or the content of a
- * {@link Inventory}
- * <br><br>
+ * {@link Inventory} <br>
+ * <br>
  * Special thanks to Comphenix in the Bukkit forums or also known as aadnk on
  * GitHub.
  * 
@@ -35,7 +37,7 @@ public class BukkitSerailization {
 	 * @return Base64 string of the items.
 	 * @throws IllegalStateException IllegalStateException
 	 */
-	public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
+	public static String itemStackArrayToBase64(@Nonnull ItemStack[] items) throws IllegalStateException {
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
@@ -64,7 +66,7 @@ public class BukkitSerailization {
 	 * @return Base64 string of the provided inventory
 	 * @throws IllegalStateException IllegalStateException
 	 */
-	public static String toBase64(Inventory inventory) throws IllegalStateException {
+	public static String toBase64(@Nonnull Inventory inventory) throws IllegalStateException {
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
@@ -94,7 +96,7 @@ public class BukkitSerailization {
 	 * @return Inventory created from the Base64 string.
 	 * @throws IOException IOException
 	 */
-	public static Inventory fromBase64(String data) throws IOException {
+	public static Inventory fromBase64(@Nonnull String data) throws IOException {
 		try {
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
 			BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -122,7 +124,7 @@ public class BukkitSerailization {
 	 * @return ItemStack array created from the Base64 string.
 	 * @throws IOException IOException
 	 */
-	public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
+	public static ItemStack[] itemStackArrayFromBase64(@Nonnull String data) throws IOException {
 		try {
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
 			BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -141,12 +143,12 @@ public class BukkitSerailization {
 		}
 	}
 
-	public static String itemStackToBase64(ItemStack item) throws IOException {
+	public static String itemStackToBase64(@Nonnull ItemStack item) throws IOException {
 		ItemStack[] itemStack = { item };
 		return itemStackArrayToBase64(itemStack);
 	}
 
-	public static ItemStack itemStackFromBase64(String data) throws IOException {
+	public static ItemStack itemStackFromBase64(@Nonnull String data) throws IOException {
 		ItemStack[] itemStack = itemStackArrayFromBase64(data);
 
 		if (itemStack.length > 0) {

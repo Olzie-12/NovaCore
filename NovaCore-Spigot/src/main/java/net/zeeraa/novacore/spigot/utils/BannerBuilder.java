@@ -2,6 +2,8 @@ package net.zeeraa.novacore.spigot.utils;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -17,40 +19,40 @@ public class BannerBuilder {
 		this(DyeColor.WHITE);
 	}
 
-	public BannerBuilder(DyeColor baseColor) {
+	public BannerBuilder(@Nonnull DyeColor baseColor) {
 		item = VersionIndependentUtils.get().getColoredBannerItemStack(baseColor);
 		meta = (BannerMeta) item.getItemMeta();
 	}
 
-	public BannerBuilder(ItemStack bannerItemStack) {
+	public BannerBuilder(@Nonnull ItemStack bannerItemStack) {
 		if (!bannerItemStack.getType().name().contains("BANNER")) {
 			throw new IllegalArgumentException("Provided ItemStack needs to be of type BANNER, " + bannerItemStack.getType().name() + " detected. If this is actually a banner please open an issue on our github repo");
 		}
 		item = bannerItemStack;
 		meta = (BannerMeta) bannerItemStack.getItemMeta();
 	}
-	
+
 	public BannerBuilder setAmount(int amount) {
 		item.setAmount(amount);
 		return this;
 	}
 
-	public BannerBuilder addPattern(Pattern pattern) {
+	public BannerBuilder addPattern(@Nonnull Pattern pattern) {
 		meta.addPattern(pattern);
 		return this;
 	}
 
-	public BannerBuilder addPattern(DyeColor color, PatternType type) {
+	public BannerBuilder addPattern(@Nonnull DyeColor color, @Nonnull PatternType type) {
 		meta.addPattern(new Pattern(color, type));
 		return this;
 	}
 
-	public BannerBuilder setPattern(int index, Pattern pattern) {
+	public BannerBuilder setPattern(int index, @Nonnull Pattern pattern) {
 		meta.setPattern(index, pattern);
 		return this;
 	}
 
-	public BannerBuilder setPattern(int index, DyeColor color, PatternType type) {
+	public BannerBuilder setPattern(int index, @Nonnull DyeColor color, @Nonnull PatternType type) {
 		meta.setPattern(index, new Pattern(color, type));
 		return this;
 	}
@@ -60,7 +62,7 @@ public class BannerBuilder {
 		return this;
 	}
 
-	public BannerBuilder setPatterns(List<Pattern> patterns) {
+	public BannerBuilder setPatterns(@Nonnull List<Pattern> patterns) {
 		meta.setPatterns(patterns);
 		return this;
 	}

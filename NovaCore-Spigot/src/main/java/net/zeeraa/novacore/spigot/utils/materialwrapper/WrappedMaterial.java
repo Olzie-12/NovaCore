@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils.materialwrapper;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,5 +17,5 @@ public abstract class WrappedMaterial {
 
 	public abstract ItemBuilder getItemBuilder();
 
-	public abstract void setBlock(Block block);
+	public abstract void setBlock(@Nonnull Block block);
 }
