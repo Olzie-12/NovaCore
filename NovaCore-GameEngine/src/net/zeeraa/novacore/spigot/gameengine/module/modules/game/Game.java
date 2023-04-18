@@ -28,6 +28,7 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.Pla
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerQuitEliminationAction;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameEndEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GamePlayerAddedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerWinEvent;
@@ -352,11 +353,11 @@ public abstract class Game {
 		if (trigger == null) {
 			throw new IllegalArgumentException("trigger cant be null");
 		}
-		
+
 		if (!triggerExist(trigger)) {
 			if (trigger.hasValidName()) {
 				Log.trace("Game", "Adding trigger " + trigger.getName() + " with " + trigger.getFlags().size() + " flags");
-				
+
 				triggers.add(trigger);
 				return true;
 			}
@@ -886,7 +887,13 @@ public abstract class Game {
 
 		players.add(player.getUniqueId());
 
+		this.onPlayerAdded(player);
+		Bukkit.getServer().getPluginManager().callEvent(new GamePlayerAddedEvent(this, player));
+
 		return true;
+	}
+
+	protected void onPlayerAdded(Player player) {
 	}
 
 	/**
