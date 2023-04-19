@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.json.JSONObject;
@@ -179,6 +180,16 @@ public class VectorArea {
 	 */
 	public boolean isInside(@Nonnull Location location) {
 		return this.isInside(location.toVector());
+	}
+
+	/**
+	 * Check if a {@link Block} is inside this vector areas block location
+	 * 
+	 * @param block The {@link Block} to check
+	 * @return <code>true</code> if the location is inside
+	 */
+	public boolean isInsideBlock(@Nonnull Block block) {
+		return this.isInsideBlock(block.getLocation());
 	}
 
 	/**
