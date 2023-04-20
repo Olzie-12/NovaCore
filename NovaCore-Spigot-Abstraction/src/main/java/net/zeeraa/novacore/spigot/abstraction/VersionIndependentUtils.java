@@ -971,4 +971,16 @@ public abstract class VersionIndependentUtils {
 	public abstract float getBlockBlastResistance(Material material);
 
 	public abstract GameProfile getGameProfile(@Nonnull Player player);
+
+	/**
+	 * Checks if a {@link Arrow} is in ground. This version uses the native
+	 * implementation for 1.12+ and reflection for 1.8
+	 * 
+	 * @param arrow The {@link Arrow} to check
+	 * @return <code>true</code> if the arrow is in a block
+	 */
+	public abstract boolean isArrowInBlock(Arrow arrow);
+	
+	public void clearReflectionCache() {
+	}
 }

@@ -60,6 +60,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArrow;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
@@ -68,6 +69,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftTNTPrimed;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -535,13 +537,13 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 		case EXP_BOTTLE:
 			return Material.EXP_BOTTLE;
-			
+
 		case WOOL:
 			return Material.WOOL;
-			
+
 		case FIREBALL:
 			return Material.FIREBALL;
-			
+
 		case GUNPOWDER:
 			return Material.SULPHUR;
 
@@ -1245,9 +1247,32 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 			return 0;
 		}
 	}
-	
+
 	@Override
 	public GameProfile getGameProfile(Player player) {
 		return ((CraftPlayer) player).getHandle().getProfile();
+	}
+
+	private static Field ARROW_IN_GROUND_FIELD = null;
+
+	@Override
+	public boolean isArrowInBlock(Arrow arrow) {
+		CraftArrow craftArrow = (CraftArrow) arrow;
+		try {
+			if (ARROW_IN_GROUND_FIELD == null) {
+				ARROW_IN_GROUND_FIELD = craftArrow.getClass().getField("inGround");
+				ARROW_IN_GROUND_FIELD.setAccessible(true);
+			}
+			return (boolean) ARROW_IN_GROUND_FIELD.get(craftArrow);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			AbstractionLogger.getLogger().warning("isArrowInBlock", "Failed to access field. " + e.getClass().getName() + " " + e.getMessage());
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public void clearReflectionCache() {
+		ARROW_IN_GROUND_FIELD = null;
 	}
 }
