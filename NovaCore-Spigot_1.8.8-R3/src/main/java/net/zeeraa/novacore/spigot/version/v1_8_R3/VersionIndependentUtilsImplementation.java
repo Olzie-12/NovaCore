@@ -9,6 +9,7 @@ import net.minecraft.server.v1_8_R3.AxisAlignedBB;
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.DamageSource;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
+import net.minecraft.server.v1_8_R3.EntityArrow;
 import net.minecraft.server.v1_8_R3.EntityFallingBlock;
 import net.minecraft.server.v1_8_R3.EntityLiving;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
@@ -61,6 +62,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArrow;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
@@ -1255,6 +1257,7 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 	@Override
 	public boolean isArrowInBlock(Arrow arrow) {
-		return arrow.getVelocity().length() == 0;
+		EntityArrow entityArrow = ((CraftArrow) arrow).getHandle();
+		return entityArrow.inGround;
 	}
 }
