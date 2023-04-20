@@ -61,7 +61,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArrow;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
@@ -1254,26 +1253,8 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 		return ((CraftPlayer) player).getHandle().getProfile();
 	}
 
-	private static Field ARROW_IN_GROUND_FIELD = null;
-
 	@Override
 	public boolean isArrowInBlock(Arrow arrow) {
-		CraftArrow craftArrow = (CraftArrow) arrow;
-		try {
-			if (ARROW_IN_GROUND_FIELD == null) {
-				ARROW_IN_GROUND_FIELD = craftArrow.getClass().getField("inGround");
-				ARROW_IN_GROUND_FIELD.setAccessible(true);
-			}
-			return (boolean) ARROW_IN_GROUND_FIELD.get(craftArrow);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			AbstractionLogger.getLogger().warning("isArrowInBlock", "Failed to access field. " + e.getClass().getName() + " " + e.getMessage());
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	@Override
-	public void clearReflectionCache() {
-		ARROW_IN_GROUND_FIELD = null;
+		return arrow.getVelocity().length() == 0;
 	}
 }
