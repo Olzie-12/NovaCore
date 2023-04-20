@@ -974,8 +974,7 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Checks if a {@link Arrow} is in ground. This version uses the native
-	 * implementation for 1.12+ and for 1.8 it estimates it using the velocity of
-	 * the arrow
+	 * implementation for 1.12+ and for 1.8 it gets the value from the EntityArrow class
 	 * 
 	 * @param arrow The {@link Arrow} to check
 	 * @return <code>true</code> if the arrow is in a block
