@@ -600,7 +600,11 @@ public abstract class Game {
 	public abstract boolean isFriendlyFireAllowed();
 
 	/**
-	 * Check if 2 entities can hurt each other
+	 * Check if 2 entities can hurt each other.
+	 * <p>
+	 * If the attack was due to a tamed animal or a arrow attacking an entity the
+	 * attacker will be the player that owned the animal or arrow if they are the
+	 * owner of that entity
 	 * 
 	 * @param attacker The attacking {@link LivingEntity}, If the entity is a
 	 *                 projectile the entity that fired the projectile will be the

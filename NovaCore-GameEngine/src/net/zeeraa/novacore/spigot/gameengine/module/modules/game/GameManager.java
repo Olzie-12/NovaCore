@@ -1069,27 +1069,27 @@ public class GameManager extends NovaModule implements Listener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
 		if (hasGame()) {
 			if (activeGame.hasStarted()) {
-				if (e.getEntity() instanceof Player) {
-					UUID damagerUuid = null;
+				Player damagerPlayer = null;
 
-					if (e.getDamager() instanceof Player) {
-						damagerUuid = e.getDamager().getUniqueId();
-					} else if (e.getDamager() instanceof Projectile) {
-						Projectile projectile = (Projectile) e.getDamager();
-						if (projectile.getShooter() != null) {
-							if (projectile.getShooter() instanceof Player) {
-								damagerUuid = ((Player) ((Projectile) e.getDamager()).getShooter()).getUniqueId();
-							}
-						}
-					} else if (e.getDamager() instanceof Tameable) {
-						Tameable tameable = (Tameable) e.getDamager();
-
-						if (tameable.getOwner() instanceof HumanEntity) {
-							damagerUuid = ((HumanEntity) tameable.getOwner()).getUniqueId();
+				if (e.getDamager() instanceof Player) {
+					damagerPlayer = (Player) e.getDamager();
+				} else if (e.getDamager() instanceof Projectile) {
+					Projectile projectile = (Projectile) e.getDamager();
+					if (projectile.getShooter() != null) {
+						if (projectile.getShooter() instanceof Player) {
+							damagerPlayer = ((Player) ((Projectile) e.getDamager()).getShooter());
 						}
 					}
+				} else if (e.getDamager() instanceof Tameable) {
+					Tameable tameable = (Tameable) e.getDamager();
 
-					if (damagerUuid != null) {
+					if (tameable.getOwner() instanceof Player) {
+						damagerPlayer = (Player) tameable.getOwner();
+					}
+				}
+
+				if (e.getEntity() instanceof Player) {
+					if (damagerPlayer != null) {
 						if (!activeGame.isPVPEnabled()) {
 							e.setCancelled(true);
 							return;
@@ -1097,13 +1097,21 @@ public class GameManager extends NovaModule implements Listener {
 
 						if (useTeams) {
 							if (NovaCore.getInstance().hasTeamManager()) {
-								if (NovaCore.getInstance().getTeamManager().isInSameTeam(((OfflinePlayer) e.getEntity()).getUniqueId(), damagerUuid)) {
+								if (NovaCore.getInstance().getTeamManager().isInSameTeam(((OfflinePlayer) e.getEntity()).getUniqueId(), damagerPlayer.getUniqueId())) {
 									if (!getActiveGame().isFriendlyFireAllowed()) {
 										e.setCancelled(true);
+										return;
 									}
 								}
 							}
 						}
+					}
+				}
+
+				if ((e.getDamager() instanceof LivingEntity || damagerPlayer != null) && e.getEntity() instanceof LivingEntity) {
+					if (!activeGame.canAttack(damagerPlayer == null ? (LivingEntity) e.getDamager() : damagerPlayer, (LivingEntity) e.getEntity())) {
+						e.setCancelled(true);
+						return;
 					}
 				}
 			}
