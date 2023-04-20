@@ -4,10 +4,13 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
+
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 
 /**
  * Functions used for projectiles
@@ -50,6 +53,9 @@ public class ProjectileUtils {
 	 * @since 2.0.0
 	 */
 	public static Location getEstimatedHitLocation(@Nonnull Projectile projectile) {
+		if (projectile instanceof Arrow) {
+			return getEstimatedHitBlock(projectile).getLocation();
+		}
 		Location loc = projectile.getLocation();
 		Vector vec = projectile.getVelocity();
 		return new Location(loc.getWorld(), loc.getX() + vec.getX(), loc.getY() + vec.getY(), loc.getZ() + vec.getZ());
@@ -64,6 +70,12 @@ public class ProjectileUtils {
 	 * @since 2.0.0
 	 */
 	public static Block getEstimatedHitBlock(@Nonnull Projectile projectile) {
-		return ProjectileUtils.getEstimatedHitLocation(projectile).getBlock();
+		if (projectile instanceof Arrow) {
+			Block block = VersionIndependentUtils.get().getArrowAttachedBlock((Arrow) projectile);
+			return block;
+		}
+		Location loc = projectile.getLocation();
+		Vector vec = projectile.getVelocity();
+		return new Location(loc.getWorld(), loc.getX() + vec.getX(), loc.getY() + vec.getY(), loc.getZ() + vec.getZ()).getBlock();
 	}
 }

@@ -48,6 +48,7 @@ import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -538,13 +539,13 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 
 		case EXP_BOTTLE:
 			return Material.EXP_BOTTLE;
-			
+
 		case WOOL:
 			return Material.WOOL;
-			
+
 		case FIREBALL:
 			return Material.FIREBALL;
-			
+
 		case GUNPOWDER:
 			return Material.SULPHUR;
 
@@ -1246,7 +1247,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 			return 0;
 		}
 	}
-	
+
 	@Override
 	public GameProfile getGameProfile(Player player) {
 		return ((CraftPlayer) player).getHandle().getProfile();
@@ -1255,5 +1256,15 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 	@Override
 	public boolean isArrowInBlock(Arrow arrow) {
 		return arrow.isInBlock();
+	}
+
+	@Override
+	public void showBlockBreakParticles(Block block, int particleCount) {
+		block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
+	}
+	
+	@Override
+	public Block getArrowAttachedBlock(Arrow arrow) {
+		return arrow.getAttachedBlock();
 	}
 }

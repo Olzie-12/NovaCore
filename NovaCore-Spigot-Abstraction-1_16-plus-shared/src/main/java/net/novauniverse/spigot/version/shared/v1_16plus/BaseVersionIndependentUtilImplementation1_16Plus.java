@@ -8,8 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
@@ -42,17 +44,17 @@ import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 
 public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends VersionIndependentUtils {
 	private DyeColorToMaterialMapper dyeColorToMaterialMapper;
-	
+
 	public BaseVersionIndependentUtilImplementation1_16Plus(DyeColorToMaterialMapper colorToMaterialMapper) {
 		this.dyeColorToMaterialMapper = colorToMaterialMapper;
 	}
-	
+
 	public DyeColorToMaterialMapper getDyeColorToMaterialMapper() {
 		return dyeColorToMaterialMapper;
 	}
-	
+
 	public abstract Material getColoredMaterial(DyeColor color, ColoredBlockType type);
-	
+
 	@Override
 	public ItemStack getPlayerSkullWithBase64Texture(String b64stringtexture) {
 		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
@@ -74,7 +76,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 		head.setItemMeta(headMeta);
 		return head;
 	}
-	
+
 	@Override
 	public void setBlockAsPlayerSkull(Block block) {
 		block.setType(Material.PLAYER_HEAD);
@@ -121,7 +123,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public void setItemInOffHand(Player player, ItemStack item) {
 		player.getInventory().setItemInOffHand(item);
 	}
-	
+
 	@Override
 	public void setColoredBlock(Block block, DyeColor color, ColoredBlockType type) {
 		Material material = getColoredMaterial(color, type);
@@ -143,7 +145,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public void addShapelessRecipeIngredientAsColoredBlock(ShapelessRecipe recipe, char ingredient, ColoredBlockType type, DyeColor color) {
 		recipe.addIngredient(getColoredMaterial(color, type));
 	}
-	
+
 	@Override
 	public void attachMapView(ItemStack item, MapView mapView) {
 		MapMeta meta = (MapMeta) item.getItemMeta();
@@ -164,22 +166,22 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public int getMapViewId(MapView mapView) {
 		return mapView.getId();
 	}
-	
+
 	@Override
 	public void setShapedRecipeIngredientAsPlayerSkull(ShapedRecipe recipe, char ingredient) {
 		recipe.setIngredient(ingredient, Material.PLAYER_HEAD);
 	}
-	
+
 	@Override
 	public ItemStack getPlayerSkullitem() {
 		return new ItemStack(Material.PLAYER_HEAD, 1);
 	}
-	
+
 	@Override
 	public void sendActionBarMessage(Player player, String message) {
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
 	}
-	
+
 	@Override
 	public ItemMeta setUnbreakable(ItemMeta meta, boolean unbreakable) {
 		meta.setUnbreakable(unbreakable);
@@ -190,12 +192,12 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public void setCreatureItemInMainHand(Creature creature, ItemStack item) {
 		creature.getEquipment().setItemInMainHand(item);
 	}
-	
+
 	@Override
 	public void setCustomModelData(ItemMeta meta, int data) {
 		meta.setCustomModelData(data);
 	}
-	
+
 	@Override
 	public boolean isInteractEventMainHand(PlayerInteractEvent e) {
 		return e.getHand() == EquipmentSlot.HAND;
@@ -205,7 +207,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public Entity getEntityByUUID(UUID uuid) {
 		return Bukkit.getEntity(uuid);
 	}
-	
+
 	@Override
 	public void setShapedRecipeIngredientAsDye(ShapedRecipe recipe, char ingredient, DyeColor color) {
 		recipe.setIngredient(ingredient, dyeColorToMaterialMapper.dyeColorToMaterial(color));
@@ -215,7 +217,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public void addShapelessRecipeIngredientAsDye(ShapelessRecipe recipe, int count, DyeColor color) {
 		recipe.addIngredient(count, dyeColorToMaterialMapper.dyeColorToMaterial(color));
 	}
-	
+
 	@Override
 	public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
 		if (title.length() == 0) {
@@ -223,7 +225,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 		}
 		player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 	}
-	
+
 	@Override
 	public void setAI(LivingEntity entity, boolean ai) {
 		entity.setAI(ai);
@@ -233,12 +235,12 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public void setSilent(LivingEntity entity, boolean silent) {
 		entity.setSilent(silent);
 	}
-	
+
 	@Override
 	public String colorize(Color color, String message) {
 		return ChatColor.of(color).toString() + message;
 	}
-	
+
 	@Override
 	public String colorizeGradient(Color[] colors, String message) {
 		StringBuilder builder = new StringBuilder();
@@ -265,7 +267,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 		}
 		return finalBuild.toString();
 	}
-	
+
 	@Override
 	public void setPotionEffect(ItemStack item, ItemMeta meta, PotionEffect effect, boolean color) {
 		if (meta instanceof PotionMeta) {
@@ -276,7 +278,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 			}
 		}
 	}
-	
+
 	@Override
 	public void setPotionColor(ItemMeta meta, org.bukkit.Color color) {
 		if (meta instanceof PotionMeta) {
@@ -284,12 +286,12 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 			potMeta.setColor(color);
 		}
 	}
-	
+
 	@Override
 	public Block getBlockFromProjectileHitEvent(ProjectileHitEvent e) {
 		return e.getHitBlock();
 	}
-	
+
 	@Override
 	public ShapedRecipe createShapedRecipeSafe(ItemStack result, Plugin owner, String key) {
 		return new ShapedRecipe(new NamespacedKey(owner, key.toLowerCase()), result);
@@ -304,7 +306,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public Color bungeecordChatColorToJavaColor(ChatColor color) {
 		return color.getColor();
 	}
-	
+
 	@Override
 	public void setMarker(ArmorStand stand, boolean marker) {
 		stand.setMarker(marker);
@@ -314,24 +316,37 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	public boolean isMarker(ArmorStand stand) {
 		return stand.isMarker();
 	}
-	
+
 	@Override
 	public ItemStack getColoredBannerItemStack(DyeColor color) {
 		return SharedBannerItemStackCreator.getColoredBannerItemStack(color);
 	}
-	
+
 	@Override
 	public void registerCustomEntity(Class<?> entity, String name) {
 		// there is no need to register custom entities on 1.14+
 	}
-	
+
 	@Override
 	public void registerCustomEntityWithEntityId(Class<?> entity, String name, int id) {
 		// there is no need to register custom entities on 1.14+
 	}
-	
+
 	@Override
 	public boolean isArrowInBlock(Arrow arrow) {
 		return arrow.isInBlock();
+	}
+
+	@Override
+	public void showBlockBreakParticles(Block block, int particleCount) {
+		BlockData blockData = block.getBlockData();
+		Particle particle = Particle.BLOCK_CRACK;
+
+		block.getLocation().getWorld().spawnParticle(particle, block.getLocation(), particleCount, blockData);
+	}
+
+	@Override
+	public Block getArrowAttachedBlock(Arrow arrow) {
+		return arrow.getAttachedBlock();
 	}
 }

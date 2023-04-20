@@ -53,6 +53,7 @@ import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -1075,6 +1076,14 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 	@Override
 	public Block getBlockFromProjectileHitEvent(ProjectileHitEvent e) {
+		if (e.getEntity() instanceof Arrow) {
+			Block block = getArrowAttachedBlock((Arrow) e.getEntity());
+			if (block != null) {
+				return block;
+			}
+		}
+
+		// Bad estimation fallback
 		Projectile projectile = e.getEntity();
 		Location loc = projectile.getLocation();
 		Vector vec = projectile.getVelocity();
@@ -1106,7 +1115,6 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 	public void setMarker(ArmorStand stand, boolean marker) {
 		EntityArmorStand nmsStand = ((CraftArmorStand) stand).getHandle();
 		nmsStand.n(marker);
-
 	}
 
 	@Override
@@ -1150,7 +1158,6 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 	@Override
 	public EntityBoundingBox getEntityBoundingBox(Entity entity) {
-
 		net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
 		AxisAlignedBB aabb = nmsEntity.getBoundingBox();
 
@@ -1259,5 +1266,36 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 	public boolean isArrowInBlock(Arrow arrow) {
 		EntityArrow entityArrow = ((CraftArrow) arrow).getHandle();
 		return entityArrow.inGround;
+	}
+
+	@Override
+	public void showBlockBreakParticles(Block block, int particleCount) {
+		block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
+	}
+
+	@Override
+	public Block getArrowAttachedBlock(Arrow arrow) {
+		try {
+			EntityArrow antityArrow = ((CraftArrow) arrow).getHandle();
+			if (antityArrow.inGround) {
+				Field xField = EntityArrow.class.getDeclaredField("d");
+				Field yField = EntityArrow.class.getDeclaredField("e");
+				Field zField = EntityArrow.class.getDeclaredField("f");
+
+				xField.setAccessible(true);
+				yField.setAccessible(true);
+				zField.setAccessible(true);
+
+				int x = xField.getInt(antityArrow);
+				int y = yField.getInt(antityArrow);
+				int z = zField.getInt(antityArrow);
+
+				return arrow.getWorld().getBlockAt(x, y, z);
+			}
+		} catch (Exception ex) {
+			AbstractionLogger.getLogger().warning("getArrowAttachedBlock", "Failed to access fields. " + ex.getClass() + " " + ex.getMessage());
+			ex.printStackTrace();
+		}
+		return null;
 	}
 }
