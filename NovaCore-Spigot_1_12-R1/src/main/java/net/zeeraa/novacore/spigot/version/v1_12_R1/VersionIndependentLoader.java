@@ -7,21 +7,21 @@ import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 public class VersionIndependentLoader extends net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader {
 	@Override
 	public CommandRegistrator getCommandRegistrator() {
-		return new net.zeeraa.novacore.spigot.version.v1_12_R1.CommandRegistrator();
+		return new NMSBasedCommandRegistrator();
 	}
 
 	@Override
-	public VersionIndependentUtils getVersionIndependentUtils() {
-		return new net.zeeraa.novacore.spigot.version.v1_12_R1.VersionIndependentUtils();
+	public VersionIndependentUtilsImplementation getVersionIndependentUtils() {
+		return new VersionIndependentUtilsImplementation();
 	}
 
 	@Override
 	public Listeners getListeners() {
-		return new net.zeeraa.novacore.spigot.version.v1_12_R1.Listeners();
+		return new ListenersImplementation();
 	}
-	
+
 	@Override
 	public NovaParticleProvider getVersionSpecificParticleProvider() {
-		return null;
+		return new NMSParticleImplementation();
 	}
 }

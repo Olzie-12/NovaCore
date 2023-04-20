@@ -17,10 +17,10 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author Zeeraa
  */
-public class CommandRegistrator implements net.zeeraa.novacore.spigot.abstraction.CommandRegistrator {
+public class NMSBasedCommandRegistrator implements net.zeeraa.novacore.spigot.abstraction.CommandRegistrator {
 	private CommandMap cmap = null;
 
-	public CommandRegistrator() {
+	public NMSBasedCommandRegistrator() {
 		try {
 			Field f = CraftServer.class.getDeclaredField("commandMap");
 			f.setAccessible(true);

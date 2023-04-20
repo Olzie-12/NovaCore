@@ -35,6 +35,7 @@ import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -109,7 +110,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils {
+public class VersionIndependentUtilsImplementation extends VersionIndependentUtils {
 	private ItemBuilderRecordList itemBuilderRecordList;
 	private MaterialNameList materialNameList;
 	private PacketManager packetManager;
@@ -124,7 +125,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtils() {
+	public VersionIndependentUtilsImplementation() {
 		itemBuilderRecordList = new ItemBuilderRecordList1_8();
 		materialNameList = MaterialNameList1_8.get();
 	}
@@ -450,7 +451,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 	@Override
 	public VersionIndependentItems getVersionIndependantItems() {
-		return new net.zeeraa.novacore.spigot.version.v1_8_R3.VersionIndependantItems();
+		return new net.zeeraa.novacore.spigot.version.v1_8_R3.VersionIndependantItemsImplementation();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -1119,7 +1120,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 				player.setAllowFlight(true);
 				player.setFlying(true);
 				player.spigot().setCollidesWithEntities(false);
-				VersionIndependentUtils.get().setSilent(player, true);
+				VersionIndependentUtilsImplementation.get().setSilent(player, true);
 				player.setHealth(20);
 				player.setFoodLevel(20);
 				player.getEquipment().clear();
@@ -1137,7 +1138,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 				player.setAllowFlight(false);
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 				player.spigot().setCollidesWithEntities(true);
-				VersionIndependentUtils.get().setSilent(player, false);
+				VersionIndependentUtilsImplementation.get().setSilent(player, false);
 				CustomSpectatorManager.getSpectators().remove(player);
 				for (Player list : players) {
 					list.showPlayer(player);

@@ -106,7 +106,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils {
+public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils {
 	private ItemBuilderRecordList itemBuilderRecordList;
 	private MaterialNameList materialNameList;
 	private PacketManager packetManager;
@@ -121,7 +121,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtils() {
+	public VersionIndependentUtilsImplementation() {
 		itemBuilderRecordList = new ItemBuilderRecordList1_12();
 		materialNameList = MaterialNameList1_12.get();
 	}
@@ -451,7 +451,7 @@ public class VersionIndependentUtils extends net.zeeraa.novacore.spigot.abstract
 
 	@Override
 	public VersionIndependentItems getVersionIndependantItems() {
-		return new net.zeeraa.novacore.spigot.version.v1_12_R1.VersionIndependantItems();
+		return new net.zeeraa.novacore.spigot.version.v1_12_R1.VersionIndependantItemsImplementation();
 	}
 
 	@SuppressWarnings("deprecation")
