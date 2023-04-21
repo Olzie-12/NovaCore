@@ -1,6 +1,7 @@
 package net.zeeraa.novacore.commons.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Class with utils for java.lang.reflect
@@ -20,6 +21,17 @@ public class ReflectUtils {
             e.printStackTrace();
         }
         return o;
+    }
+
+    public static boolean hasMethod(Class<?> clazz, String methodName, Class<?>... parameters) {
+        Method methodToFind;
+        try {
+            methodToFind = clazz.getMethod(methodName, parameters);
+        } catch (NoSuchMethodException | SecurityException e) {
+            methodToFind = null;
+            // gotta be sure you know
+        }
+        return methodName != null;
     }
 
 }

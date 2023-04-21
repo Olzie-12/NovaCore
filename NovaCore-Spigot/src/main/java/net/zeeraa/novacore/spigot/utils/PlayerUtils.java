@@ -1,7 +1,9 @@
 package net.zeeraa.novacore.spigot.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -10,6 +12,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,6 +26,9 @@ import net.zeeraa.novacore.spigot.abstraction.enums.PlayerDamageReason;
  *
  */
 public class PlayerUtils {
+
+	private static Map<Player, Block> blocksBreaking = new HashMap<>();
+
 	/**
 	 * Clear the players inventory including armor slots
 	 * 
@@ -191,5 +197,31 @@ public class PlayerUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check if a player is breaking a block (ONLY WORKS WITH PACKET MANAGER ENABLED)
+	 * @param player The {@link Player} to check
+	 * @return <code>true</code> if player is breaking a block
+	 */
+	public static boolean isBreakingBlock(Player player) {
+		return blocksBreaking.containsKey(player) && blocksBreaking.get(player) != null;
+	}
+
+	/**
+	 * Gets the block a player is breaking, returns null if there is none (ONLY WORKS WITH PACKET MANAGER ENABLED)
+	 * @param player The {@link Player} to check
+	 * @return The {@link Block} the player is breaking, and if not breaking <code>null</code>
+	 */
+	public static Block getBlockBreaking(Player player) {
+		return blocksBreaking.getOrDefault(player, null);
+	}
+
+	/**
+	 * Gets the block breaking map for players (ONLY WORKS WITH PACKET MANAGER ENABLED)
+	 * @return The Map of Players and Blocks
+	 */
+	public static Map<Player, Block> getBlockBreakingMap() {
+		return blocksBreaking;
 	}
 }
