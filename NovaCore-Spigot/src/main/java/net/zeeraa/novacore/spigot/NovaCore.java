@@ -7,7 +7,17 @@ import java.util.List;
 
 import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
+import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerAbortBlockDigEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerDigBlockEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerInputEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStartBlockDigEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStopBlockDigEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketEventBus;
+import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketHandler;
+import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketListener;
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
+import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -95,7 +105,7 @@ import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
 import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
-public class NovaCore extends JavaPlugin implements Listener {
+public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 	private static NovaCore instance;
 
 	private CommandRegistrator bukkitCommandRegistrator;
@@ -397,6 +407,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			return true;
 		}
 		Bukkit.getServer().getPluginManager().registerEvents(VersionIndependentUtils.get().getPacketManager(), this);
+		PacketManager.registerEvents(this,this);
 		Log.info("NovaCore", "Packet manager enabled");
 		packetManagerEnabled = true;
 		return true;
@@ -761,9 +772,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		} else {
 			Log.info("NovaCore", "Starting metrics provided by bStats. This can be disabled in config.yml");
 			Metrics metrics = new Metrics(this, 15987);
-			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> {
-				return NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No";
-			}));
+			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No"));
 		}
 
 		ConfigurationSection multiverseSettings = getConfig().getConfigurationSection("Multiverse");
@@ -799,6 +808,11 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		// Unregister plugin channels
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
+
+		if (isPacketManagerEnabled()) {
+			// Unregister Packet Listeners
+			PacketEventBus.unregisterAll((Plugin) this);
+		}
 	}
 
 	/**
@@ -890,11 +904,19 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlaceBlock(BlockPlaceEvent e) {
-
+	// If packet manager is enabled
+	@PacketHandler(priority = Integer.MAX_VALUE)
+	public void onBlockStartDig(PlayerStartBlockDigEvent e) {
+		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), e.getBlock());
 	}
-
+	@PacketHandler(priority = Integer.MAX_VALUE)
+	public void onBlockAbortDig(PlayerAbortBlockDigEvent e) {
+		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), null);
+	}
+	@PacketHandler(priority = Integer.MAX_VALUE)
+	public void onBlockAbortDig(PlayerStopBlockDigEvent e) {
+		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), null);
+	}
 }
 
 // UwU

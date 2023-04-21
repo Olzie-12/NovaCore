@@ -38,12 +38,13 @@ public abstract class MinecraftChannelDuplexHandler extends ChannelDuplexHandler
 			return;
 		}
 		if (debug) {
-			Bukkit.getLogger().log(Level.FINE, "NovaCore Packet Reader", ChatColor.GREEN + "Packet read name: " + ChatColor.YELLOW + packet.getClass().getSimpleName() + ChatColor.RESET + ChatColor.GREEN + " | Packet read class path: " + ChatColor.YELLOW + packet.getClass().getName() + ChatColor.RESET + ChatColor.GREEN + " | Packet Fields:");
+			String message = ChatColor.AQUA + "[NovaCore Packet Reader]" + ChatColor.RESET + ChatColor.GREEN + "Packet read name: " + ChatColor.YELLOW + packet.getClass().getSimpleName() + ChatColor.RESET + ChatColor.GREEN + " | Packet read class path: " + ChatColor.YELLOW + packet.getClass().getName() + ChatColor.RESET + ChatColor.GREEN + " | Packet Fields:\n";
 			for (Field field : packet.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
-				Bukkit.getLogger().log(Level.FINE, ChatColor.GREEN + "FIELD NAME: " + field.getName() + " | FIELD TYPE: " + field.getType().getSimpleName() + " | FIELD VALUE: " + field.get(packet));
+				message += ChatColor.GREEN + "FIELD NAME: " + field.getName() + " | FIELD TYPE: " + field.getType().getSimpleName() + " | FIELD VALUE: " + field.get(packet) + "\n";
 			}
-			Bukkit.getLogger().log(Level.FINE, ChatColor.GREEN + "------------------------------------------");
+			message += ChatColor.GREEN + "------------------------------------------";
+			Bukkit.getLogger().log(Level.FINE, message);
 		}
 		super.channelRead(channelHandlerContext, packet);
 	}
@@ -53,12 +54,13 @@ public abstract class MinecraftChannelDuplexHandler extends ChannelDuplexHandler
 		if (!writePacket(player, packet))
 			return;
 		if (debug) {
-			Bukkit.getLogger().log(Level.FINE, "NovaCore Packet Writer", ChatColor.RED + "Packet written name: " + ChatColor.YELLOW + packet.getClass().getSimpleName() + ChatColor.RESET + ChatColor.RED + " | Packet written class path: " + ChatColor.YELLOW + packet.getClass().getName() + ChatColor.RESET + ChatColor.RED + " | Packet Fields:");
+			String message = ChatColor.AQUA + "[NovaCore Packet Writer]" + ChatColor.RESET + ChatColor.RED + "Packet written name: " + ChatColor.YELLOW + packet.getClass().getSimpleName() + ChatColor.RESET + ChatColor.RED + " | Packet written class path: " + ChatColor.YELLOW + packet.getClass().getName() + ChatColor.RESET + ChatColor.RED + " | Packet Fields:\n";
 			for (Field field : packet.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
-				Bukkit.getLogger().log(Level.FINE, ChatColor.RED + "FIELD NAME: " + field.getName() + " | FIELD TYPE: " + field.getType().getSimpleName() + " | FIELD VALUE: " + field.get(packet));
+				message += ChatColor.RED + "FIELD NAME: " + field.getName() + " | FIELD TYPE: " + field.getType().getSimpleName() + " | FIELD VALUE: " + field.get(packet) + "\n";
 			}
-			Bukkit.getLogger().log(Level.FINE, ChatColor.RED + "------------------------------------------");
+			message += ChatColor.RED + "------------------------------------------";
+			Bukkit.getLogger().log(Level.FINE, message);
 		}
 		super.write(channelHandlerContext, packet, channelPromise);
 	}
