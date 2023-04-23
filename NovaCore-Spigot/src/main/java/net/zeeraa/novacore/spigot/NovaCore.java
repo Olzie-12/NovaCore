@@ -9,8 +9,6 @@ import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerAbortBlockDigEvent;
-import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerDigBlockEvent;
-import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerInputEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStartBlockDigEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStopBlockDigEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketEventBus;
@@ -32,7 +30,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
@@ -97,6 +94,7 @@ import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
+import net.zeeraa.novacore.spigot.module.modules.specialevents.NovaSpecialEventsManager;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentPlayerAPI;
@@ -711,6 +709,7 @@ public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 		ModuleManager.loadModule(this, JumpPadManager.class);
 		ModuleManager.loadModule(this, GlowManager.class);
 		ModuleManager.loadModule(this, CooldownManager.class);
+		ModuleManager.loadModule(this, NovaSpecialEventsManager.class);
 
 		// Modules that might be enabled depending on the configuration
 		ModuleManager.loadModule(this, CustomItemManager.class);
