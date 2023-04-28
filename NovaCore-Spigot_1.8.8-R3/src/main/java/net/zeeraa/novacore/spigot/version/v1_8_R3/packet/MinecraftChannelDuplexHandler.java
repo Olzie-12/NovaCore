@@ -56,38 +56,39 @@ public class MinecraftChannelDuplexHandler extends net.zeeraa.novacore.spigot.ab
 			Block block = player.getWorld().getBlockAt(bp.getX(), bp.getY(), bp.getZ());
 			BlockFace face;
 			switch (dig.b()) {
-				case UP:
-					face = BlockFace.UP;
-					break;
-				case DOWN:
-					face = BlockFace.DOWN;
-					break;
-				case EAST:
-					face = BlockFace.EAST;
-					break;
-				case WEST:
-					face = BlockFace.WEST;
-					break;
-				case NORTH:
-					face = BlockFace.NORTH;
-					break;
-				case SOUTH:
-					face = BlockFace.SOUTH;
-					break;
-				default:
-					face = null;
+			case UP:
+				face = BlockFace.UP;
+				break;
+			case DOWN:
+				face = BlockFace.DOWN;
+				break;
+			case EAST:
+				face = BlockFace.EAST;
+				break;
+			case WEST:
+				face = BlockFace.WEST;
+				break;
+			case NORTH:
+				face = BlockFace.NORTH;
+				break;
+			case SOUTH:
+				face = BlockFace.SOUTH;
+				break;
+			default:
+				face = null;
 			}
 			switch (dig.c()) {
-				case STOP_DESTROY_BLOCK:
-					events.add(new PlayerStopBlockDigEvent(player, block, face));
-					break;
-				case ABORT_DESTROY_BLOCK:
-					events.add(new PlayerAbortBlockDigEvent(player, block, face));
-					break;
-				case START_DESTROY_BLOCK:
-					events.add(new PlayerStartBlockDigEvent(player, block, face));
-					break;
-
+			case STOP_DESTROY_BLOCK:
+				events.add(new PlayerStopBlockDigEvent(player, block, face));
+				break;
+			case ABORT_DESTROY_BLOCK:
+				events.add(new PlayerAbortBlockDigEvent(player, block, face));
+				break;
+			case START_DESTROY_BLOCK:
+				events.add(new PlayerStartBlockDigEvent(player, block, face));
+				break;
+			default:
+				break;
 			}
 		}
 

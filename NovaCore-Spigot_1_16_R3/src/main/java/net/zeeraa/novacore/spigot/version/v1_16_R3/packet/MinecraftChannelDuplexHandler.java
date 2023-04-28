@@ -6,7 +6,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInSteerVehicle;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PacketEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerAbortBlockDigEvent;
-import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerDigBlockEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerInputEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStartBlockDigEvent;
 import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStopBlockDigEvent;
@@ -57,38 +56,39 @@ public class MinecraftChannelDuplexHandler extends net.zeeraa.novacore.spigot.ab
 			Block block = player.getWorld().getBlockAt(bp.getX(), bp.getY(), bp.getZ());
 			BlockFace face;
 			switch (dig.c()) {
-				case UP:
-					face = BlockFace.UP;
-					break;
-				case DOWN:
-					face = BlockFace.DOWN;
-					break;
-				case EAST:
-					face = BlockFace.EAST;
-					break;
-				case WEST:
-					face = BlockFace.WEST;
-					break;
-				case NORTH:
-					face = BlockFace.NORTH;
-					break;
-				case SOUTH:
-					face = BlockFace.SOUTH;
-					break;
-				default:
-					face = null;
+			case UP:
+				face = BlockFace.UP;
+				break;
+			case DOWN:
+				face = BlockFace.DOWN;
+				break;
+			case EAST:
+				face = BlockFace.EAST;
+				break;
+			case WEST:
+				face = BlockFace.WEST;
+				break;
+			case NORTH:
+				face = BlockFace.NORTH;
+				break;
+			case SOUTH:
+				face = BlockFace.SOUTH;
+				break;
+			default:
+				face = null;
 			}
 			switch (dig.d()) {
-				case STOP_DESTROY_BLOCK:
-					events.add(new PlayerStopBlockDigEvent(player, block, face));
-					break;
-				case ABORT_DESTROY_BLOCK:
-					events.add(new PlayerAbortBlockDigEvent(player, block, face));
-					break;
-				case START_DESTROY_BLOCK:
-					events.add(new PlayerStartBlockDigEvent(player, block, face));
-					break;
-
+			case STOP_DESTROY_BLOCK:
+				events.add(new PlayerStopBlockDigEvent(player, block, face));
+				break;
+			case ABORT_DESTROY_BLOCK:
+				events.add(new PlayerAbortBlockDigEvent(player, block, face));
+				break;
+			case START_DESTROY_BLOCK:
+				events.add(new PlayerStartBlockDigEvent(player, block, face));
+				break;
+			default:
+				break;
 			}
 		}
 
