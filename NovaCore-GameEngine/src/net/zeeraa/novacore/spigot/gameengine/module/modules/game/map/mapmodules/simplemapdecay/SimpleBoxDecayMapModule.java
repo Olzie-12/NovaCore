@@ -17,7 +17,7 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.Repeat
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.TriggerFlag;
 import net.zeeraa.novacore.spigot.utils.VectorArea;
 
-public class SimpleBoxDecay extends MapModule {
+public class SimpleBoxDecayMapModule extends MapModule {
 	private VectorArea area;
 
 	private String startMessage;
@@ -27,7 +27,7 @@ public class SimpleBoxDecay extends MapModule {
 
 	private int layer;
 
-	public SimpleBoxDecay(JSONObject json) {
+	public SimpleBoxDecayMapModule(JSONObject json) {
 		super(json);
 
 		JSONObject areaJson = json.getJSONObject("area");

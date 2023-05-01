@@ -12,8 +12,8 @@ import org.json.JSONObject;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class InfiniteFood extends MapModule implements Listener {
-	public InfiniteFood(JSONObject json) {
+public class InfiniteFoodMapModule extends MapModule implements Listener {
+	public InfiniteFoodMapModule(JSONObject json) {
 		super(json);
 	}
 

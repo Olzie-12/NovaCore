@@ -8,10 +8,10 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 
-public class InfiniteOxygen extends MapModule {
+public class InfiniteOxygenMapModule extends MapModule {
 	private Task task;
 
-	public InfiniteOxygen(JSONObject json) {
+	public InfiniteOxygenMapModule(JSONObject json) {
 		super(json);
 		task = new SimpleTask(() -> Bukkit.getServer().getOnlinePlayers().forEach(p -> p.setRemainingAir(p.getMaximumAir())), 1L);
 	}

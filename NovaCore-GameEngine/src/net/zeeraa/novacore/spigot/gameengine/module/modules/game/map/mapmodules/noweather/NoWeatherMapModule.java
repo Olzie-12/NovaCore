@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class NoWeather extends MapModule implements Listener {
-	public NoWeather(JSONObject json) {
+public class NoWeatherMapModule extends MapModule implements Listener {
+	public NoWeatherMapModule(JSONObject json) {
 		super(json);
 	}
 

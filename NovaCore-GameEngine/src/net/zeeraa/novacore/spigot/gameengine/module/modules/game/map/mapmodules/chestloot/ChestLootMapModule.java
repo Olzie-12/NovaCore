@@ -15,7 +15,7 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.Trigge
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.modules.chestloot.ChestLootManager;
 
-public class ChestLoot extends MapModule {
+public class ChestLootMapModule extends MapModule {
 	private String chestLootTable;
 	private String enderChestLootTable;
 
@@ -26,7 +26,7 @@ public class ChestLoot extends MapModule {
 
 	private DelayedGameTrigger trigger;
 
-	public ChestLoot(JSONObject json) {
+	public ChestLootMapModule(JSONObject json) {
 		super(json);
 
 		this.chestLootTable = json.optString("chest_loot");

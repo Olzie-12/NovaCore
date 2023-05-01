@@ -19,11 +19,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMap;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 import net.zeeraa.novacore.spigot.utils.LocationUtils;
 
-public class BlockReplacer extends MapModule {
+public class BlockReplacerMapModule extends MapModule {
 	private List<BlockReplacerConfigEntry> configEntries;
 	private Random random;
 
-	public BlockReplacer(JSONObject json) {
+	public BlockReplacerMapModule(JSONObject json) {
 		super(json);
 
 		random = new Random();

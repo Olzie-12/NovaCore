@@ -15,10 +15,10 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class HandCraftingTable extends MapModule implements Listener {
+public class HandCraftingTableMapModule extends MapModule implements Listener {
 	private Game game;
 
-	public HandCraftingTable(JSONObject json) {
+	public HandCraftingTableMapModule(JSONObject json) {
 		super(json);
 	}
 

@@ -15,8 +15,8 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class FarmlandProtection extends MapModule implements Listener {
-	public FarmlandProtection(JSONObject json) {
+public class FarmlandProtectionMapModule extends MapModule implements Listener {
+	public FarmlandProtectionMapModule(JSONObject json) {
 		super(json);
 	}
 

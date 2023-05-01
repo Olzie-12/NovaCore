@@ -15,8 +15,8 @@ import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class DisableSpectateChests extends MapModule implements Listener {
-	public DisableSpectateChests(JSONObject config) {
+public class DisableSpectateChestsMapModule extends MapModule implements Listener {
+	public DisableSpectateChestsMapModule(JSONObject config) {
 		super(config);
 	}
 

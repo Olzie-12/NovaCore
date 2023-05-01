@@ -16,11 +16,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 
-public class FireReistance extends MapModule implements Listener {
+public class FireReistanceMapModule extends MapModule implements Listener {
 	private boolean extinguish;
 	private Task task;
 
-	public FireReistance(JSONObject json) {
+	public FireReistanceMapModule(JSONObject json) {
 		super(json);
 
 		extinguish = json.optBoolean("extinguish", false);

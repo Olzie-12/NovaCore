@@ -24,7 +24,7 @@ import net.zeeraa.novacore.spigot.utils.ItemBuilder;
  * 
  * @author Zeeraa
  */
-public class GiveItemSlow extends MapModule {
+public class GiveItemSlowMapModule extends MapModule {
 	private Material material;
 	private int maxItems;
 	private int delay;
@@ -46,7 +46,7 @@ public class GiveItemSlow extends MapModule {
 		return task;
 	}
 
-	public GiveItemSlow(JSONObject json) {
+	public GiveItemSlowMapModule(JSONObject json) {
 		super(json);
 
 		if (json.has("material")) {

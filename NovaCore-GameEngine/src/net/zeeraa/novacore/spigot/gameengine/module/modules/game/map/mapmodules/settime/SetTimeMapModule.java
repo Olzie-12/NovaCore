@@ -7,11 +7,11 @@ import org.json.JSONObject;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class SetTime extends MapModule {
+public class SetTimeMapModule extends MapModule {
 	private int time;
 	private int delay;
 
-	public SetTime(JSONObject json) {
+	public SetTimeMapModule(JSONObject json) {
 		super(json);
 
 		this.delay = json.optInt("delay", 0);

@@ -7,10 +7,10 @@ import org.json.JSONObject;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class StartMessage extends MapModule {
+public class StartMessageMapModule extends MapModule {
 	private String message;
 
-	public StartMessage(JSONObject json) {
+	public StartMessageMapModule(JSONObject json) {
 		super(json);
 
 		this.message =  json.optString("message", ChatColor.DARK_RED + "error: missing json value: message");

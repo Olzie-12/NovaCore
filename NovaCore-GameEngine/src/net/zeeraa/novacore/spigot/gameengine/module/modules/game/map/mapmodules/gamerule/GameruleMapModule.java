@@ -11,10 +11,10 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 import net.zeeraa.novacore.spigot.world.WorldUtils;
 
-public class Gamerule extends MapModule {
+public class GameruleMapModule extends MapModule {
 	private Map<String, String> gamerules;
 
-	public Gamerule(JSONObject json) {
+	public GameruleMapModule(JSONObject json) {
 		super(json);
 
 		gamerules = new HashMap<>();

@@ -22,10 +22,10 @@ import net.zeeraa.novacore.spigot.utils.JSONItemParser;
  * 
  * @author Zeeraa
  */
-public class GiveItemInstant extends MapModule {
+public class GiveItemInstantMapModule extends MapModule {
 	private List<ItemStack> items;
 
-	public GiveItemInstant(JSONObject json) {
+	public GiveItemInstantMapModule(JSONObject json) {
 		super(json);
 
 		this.items = new ArrayList<>();

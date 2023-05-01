@@ -15,11 +15,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 import net.zeeraa.novacore.spigot.utils.VectorArea;
 
-public class ChunkLoader extends MapModule {
+public class ChunkLoaderMapModule extends MapModule {
 	private List<Chunk> chunks;
 	private List<VectorArea> areas;
 
-	public ChunkLoader(JSONObject json) {
+	public ChunkLoaderMapModule(JSONObject json) {
 		super(json);
 
 		this.chunks = new ArrayList<>();

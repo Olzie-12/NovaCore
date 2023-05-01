@@ -16,10 +16,10 @@ import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class AddPotionEffect extends MapModule {
+public class AddPotionEffectMapModule extends MapModule {
 	private List<PotionEffect> effects;
 
-	public AddPotionEffect(JSONObject json) {
+	public AddPotionEffectMapModule(JSONObject json) {
 		super(json);
 
 		effects = new ArrayList<>();

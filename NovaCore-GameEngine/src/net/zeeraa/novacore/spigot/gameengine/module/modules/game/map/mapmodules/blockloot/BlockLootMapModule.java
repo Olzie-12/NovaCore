@@ -21,11 +21,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.M
 import net.zeeraa.novacore.spigot.loottable.LootTable;
 import net.zeeraa.novacore.spigot.utils.LocationUtils;
 
-public class BlockLoot extends MapModule implements Listener {
+public class BlockLootMapModule extends MapModule implements Listener {
 	private Map<Material, BlockLootData> materialData;
 	private Game game;
 
-	public BlockLoot(JSONObject json) {
+	public BlockLootMapModule(JSONObject json) {
 		super(json);
 
 		materialData = new HashMap<>();

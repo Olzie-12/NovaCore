@@ -20,7 +20,7 @@ import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
-public class MapProtection extends MapModule implements Listener {
+public class MapProtectionMapModule extends MapModule implements Listener {
 	private List<Material> breakWhitelist;
 	private List<Material> breakBlacklist;
 
@@ -33,7 +33,7 @@ public class MapProtection extends MapModule implements Listener {
 
 	private MapProtectionMode mode;
 
-	public MapProtection(JSONObject json) {
+	public MapProtectionMapModule(JSONObject json) {
 		super(json);
 
 		this.breakWhitelist = new ArrayList<>();

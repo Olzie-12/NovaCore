@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.json.JSONObject;
 
-public class BuildLimit extends MapModule implements Listener {
+public class BuildLimitMapModule extends MapModule implements Listener {
 	private int maxLimit;
 	private int minLimit;
 	private boolean sendMessage;
@@ -29,7 +29,7 @@ public class BuildLimit extends MapModule implements Listener {
 		HandlerList.unregisterAll(this);
 	}
 
-	public BuildLimit(JSONObject json) {
+	public BuildLimitMapModule(JSONObject json) {
 		super(json);
 		maxLimit = json.optInt("max", 256);
 		minLimit = json.optInt("min", NovaCore.getInstance().isNoNMSMode() ? VersionIndependentUtils.get().getMinY() : 0);

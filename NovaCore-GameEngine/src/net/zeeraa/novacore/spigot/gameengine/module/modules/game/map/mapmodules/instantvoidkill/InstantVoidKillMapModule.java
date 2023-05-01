@@ -12,12 +12,12 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 
-public class InstantVoidKill extends MapModule {
+public class InstantVoidKillMapModule extends MapModule {
 	private Task taks;
 
 	private int y;
 
-	public InstantVoidKill(JSONObject json) {
+	public InstantVoidKillMapModule(JSONObject json) {
 		super(json);
 
 		y = json.optInt("y", NovaCore.getInstance().isNoNMSMode() ? VersionIndependentUtils.get().getMinY() : 0);
