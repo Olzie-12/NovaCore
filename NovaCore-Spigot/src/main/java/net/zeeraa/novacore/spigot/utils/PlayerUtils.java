@@ -117,7 +117,14 @@ public class PlayerUtils {
 		return false;
 	}
 
+	public static boolean isOnline(UUID uuid) {
+		return Bukkit.getPlayer(uuid) != null;
+	}
+
 	/**
+	 * Deprecated: turns out player.isOnline() is unnecessary since
+	 * Bukkit.getPlayer() always return null if player is offline
+	 * <p>
 	 * Check if a player is online and exists
 	 * <p>
 	 * This also accepts null but will return <code>false</code>
@@ -126,6 +133,7 @@ public class PlayerUtils {
 	 * @return <code>true</code> if the player is online and exists, this will also
 	 *         return <code>false</code> if the player is <code>null</code>
 	 */
+	@Deprecated
 	public static boolean existsAndIsOnline(UUID uuid) {
 		return PlayerUtils.existsAndIsOnline(Bukkit.getServer().getPlayer(uuid));
 	}
@@ -182,10 +190,8 @@ public class PlayerUtils {
 	public static boolean ifOnline(UUID uuid, Consumer<Player> consumer) {
 		Player player = Bukkit.getServer().getPlayer(uuid);
 		if (player != null) {
-			if (player.isOnline()) {
-				consumer.accept(player);
-				return true;
-			}
+			consumer.accept(player);
+			return true;
 		}
 		return false;
 	}
