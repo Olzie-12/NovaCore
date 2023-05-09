@@ -3,6 +3,8 @@ package net.zeeraa.novacore.spigot.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -25,11 +27,11 @@ public class BookBuilder extends ItemBuilder {
 		this(null, null, null);
 	}
 
-	public BookBuilder(String title, String author) {
+	public BookBuilder(@Nonnull String title, @Nonnull String author) {
 		this(null, title, author);
 	}
 
-	public BookBuilder(List<String> pages, String title, String author) {
+	public BookBuilder(@Nonnull List<String> pages, @Nonnull String title, @Nonnull String author) {
 		super(Material.WRITTEN_BOOK);
 
 		if (pages != null) {
@@ -56,7 +58,7 @@ public class BookBuilder extends ItemBuilder {
 	 * @param pages A list of pages to set the book to use
 	 * @return Instance of the {@link BookBuilder}
 	 */
-	public BookBuilder setPages(List<String> pages) {
+	public BookBuilder setPages(@Nonnull List<String> pages) {
 		((BookMeta) meta).setPages(pages);
 		return this;
 	}
@@ -70,7 +72,7 @@ public class BookBuilder extends ItemBuilder {
 	 * @param pages A list of strings, each being a page
 	 * @return Instance of the {@link BookBuilder}
 	 */
-	public BookBuilder addPages(String... pages) {
+	public BookBuilder addPages(@Nonnull String... pages) {
 		for (String page : pages) {
 			addPage(page);
 		}
@@ -87,7 +89,7 @@ public class BookBuilder extends ItemBuilder {
 	 * @param pages A list of strings, each being a page
 	 * @return Instance of the {@link BookBuilder}
 	 */
-	public BookBuilder addPages(List<String> pages) {
+	public BookBuilder addPages(@Nonnull List<String> pages) {
 		List<String> bookPages = getPageArrayListClone();
 
 		bookPages.addAll(pages);
@@ -106,7 +108,7 @@ public class BookBuilder extends ItemBuilder {
 	 * @param page A string containing the page text
 	 * @return Instance of the {@link BookBuilder}
 	 */
-	public BookBuilder addPage(String page) {
+	public BookBuilder addPage(@Nonnull String page) {
 		List<String> bookPages = getPageArrayListClone();
 
 		bookPages.add(page);
@@ -135,7 +137,7 @@ public class BookBuilder extends ItemBuilder {
 	 * @param title the title to set
 	 * @return Instance of the {@link BookBuilder}
 	 */
-	public BookBuilder setTitle(String title) {
+	public BookBuilder setTitle(@Nonnull String title) {
 		((BookMeta) meta).setTitle(title);
 		return this;
 	}
@@ -148,7 +150,7 @@ public class BookBuilder extends ItemBuilder {
 	 * @param author the author of the book
 	 * @return Instance of the {@link BookBuilder}
 	 */
-	public BookBuilder setAuthor(String author) {
+	public BookBuilder setAuthor(@Nonnull String author) {
 		((BookMeta) meta).setAuthor(author);
 		return this;
 	}

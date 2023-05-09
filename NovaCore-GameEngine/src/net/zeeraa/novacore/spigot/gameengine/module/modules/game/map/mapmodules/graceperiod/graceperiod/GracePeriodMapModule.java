@@ -142,6 +142,14 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 		}
 	}
 
+	public BasicTimer getEndTimer() {
+		return endTimer;
+	}
+	
+	public boolean isActive() {
+		return isActive;
+	}
+	
 	public int getInitialTime() {
 		return initialTime;
 	}

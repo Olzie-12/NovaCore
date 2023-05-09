@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
@@ -15,6 +16,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.json.JSONObject;
 
@@ -30,7 +32,7 @@ import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseWorld;
  * @author Zeeraa
  */
 public class LocationUtils {
-	public static boolean isOutsideOfBorder(Location location) {
+	public static boolean isOutsideOfBorder(@Nonnull Location location) {
 		WorldBorder border = location.getWorld().getWorldBorder();
 		double size = border.getSize() / 2;
 		Location center = border.getCenter();
@@ -47,7 +49,7 @@ public class LocationUtils {
 	 * @param location2 Location 2 to check
 	 * @return <code>true</code> if matching
 	 */
-	public static boolean isSameBlock(Location location1, Location location2) {
+	public static boolean isSameBlock(@Nonnull Location location1, @Nonnull Location location2) {
 		if (location1.getWorld().equals(location2.getWorld())) {
 			if (location1.getBlockX() == location2.getBlockX()) {
 				if (location1.getBlockY() == location2.getBlockY()) {
@@ -65,7 +67,7 @@ public class LocationUtils {
 	 * @param location2 Location 2 to check
 	 * @return <code>true</code> if matching
 	 */
-	public static boolean isSameBlock(Location location1, Vector location2) {
+	public static boolean isSameBlock(@Nonnull Location location1, @Nonnull Vector location2) {
 		if (location1.getBlockX() == location2.getBlockX()) {
 			if (location1.getBlockY() == location2.getBlockY()) {
 				return location1.getBlockZ() == location2.getBlockZ();
@@ -82,7 +84,7 @@ public class LocationUtils {
 	 * @param location2 Location 2 to check
 	 * @return <code>true</code> if matching
 	 */
-	public static boolean isSameVector(Location location1, Location location2) {
+	public static boolean isSameVector(@Nonnull Location location1, @Nonnull Location location2) {
 		if (location1.getBlockX() == location2.getBlockX()) {
 			if (location1.getBlockY() == location2.getBlockY()) {
 				return location1.getBlockZ() == location2.getBlockZ();
@@ -102,7 +104,7 @@ public class LocationUtils {
 		return ((double) block) + 0.5D;
 	}
 
-	public static JSONObject toJSONObject(Location location) {
+	public static JSONObject toJSONObject(@Nonnull Location location) {
 		JSONObject result = new JSONObject();
 
 		result.put("x", location.getX());
@@ -117,15 +119,15 @@ public class LocationUtils {
 		return result;
 	}
 
-	public static int getHighestYAtLocation(Location location) {
+	public static int getHighestYAtLocation(@Nonnull Location location) {
 		return LocationUtils.getHighestYAtLocation(location, false, false);
 	}
 
-	public static int getHighestYAtLocation(Location location, boolean ignoreNonSolid) {
+	public static int getHighestYAtLocation(@Nonnull Location location, boolean ignoreNonSolid) {
 		return LocationUtils.getHighestYAtLocation(location, ignoreNonSolid, false);
 	}
 
-	public static int getHighestYAtLocation(Location location, boolean ignoreNonSolid, boolean ignoreLiquid) {
+	public static int getHighestYAtLocation(@Nonnull Location location, boolean ignoreNonSolid, boolean ignoreLiquid) {
 		int max = location.getWorld().getMaxHeight() - 1;
 		int min = VersionIndependentUtils.get().getMinY();
 
@@ -151,15 +153,15 @@ public class LocationUtils {
 		return max;
 	}
 
-	public static @Nullable Block getHighestBlockAtLocation(Location location) {
+	public static @Nullable Block getHighestBlockAtLocation(@Nonnull Location location) {
 		return LocationUtils.getHighestBlockAtLocation(location, false, false);
 	}
 
-	public static @Nullable Block getHighestBlockAtLocation(Location location, boolean ignoreNonSolid) {
+	public static @Nullable Block getHighestBlockAtLocation(@Nonnull Location location, boolean ignoreNonSolid) {
 		return LocationUtils.getHighestBlockAtLocation(location, ignoreNonSolid, false);
 	}
 
-	public static @Nullable Block getHighestBlockAtLocation(Location location, boolean ignoreNonSolid, boolean ignoreLiquid) {
+	public static @Nullable Block getHighestBlockAtLocation(@Nonnull Location location, boolean ignoreNonSolid, boolean ignoreLiquid) {
 		int max = location.getWorld().getMaxHeight() - 1;
 		int min = VersionIndependentUtils.get().getMinY();
 
@@ -184,7 +186,7 @@ public class LocationUtils {
 		return null;
 	}
 
-	public static Location fromJSONObject(JSONObject json) {
+	public static Location fromJSONObject(@Nonnull JSONObject json) {
 		World world = Bukkit.getServer().getWorld(json.getString("world"));
 
 		if (world == null) {
@@ -210,7 +212,7 @@ public class LocationUtils {
 		return new Location(world, x, y, z, yaw, pitch);
 	}
 
-	public static Location fromJSONObject(JSONObject json, World world) {
+	public static Location fromJSONObject(@Nonnull JSONObject json, World world) {
 		double x = json.getDouble("x");
 		double y = json.getDouble("y");
 		double z = json.getDouble("z");
@@ -241,7 +243,7 @@ public class LocationUtils {
 	 * @param vector The {@link Vector}
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(World world, Vector vector) {
+	public static Location getLocation(@Nonnull World world, @Nonnull Vector vector) {
 		return LocationUtils.getLocation(world, vector, 0, 0);
 	}
 
@@ -253,7 +255,7 @@ public class LocationUtils {
 	 * @param yaw    The yaw
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(World world, Vector vector, float yaw) {
+	public static Location getLocation(@Nonnull World world, @Nonnull Vector vector, float yaw) {
 		return LocationUtils.getLocation(world, vector, yaw, 0);
 	}
 
@@ -265,7 +267,7 @@ public class LocationUtils {
 	 * @param rotation The {@link Rotation}
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(World world, Vector vector, Rotation rotation) {
+	public static Location getLocation(@Nonnull World world, @Nonnull Vector vector, @Nonnull Rotation rotation) {
 		return LocationUtils.getLocation(world, vector, rotation.getYaw(), rotation.getPitch());
 	}
 
@@ -278,7 +280,7 @@ public class LocationUtils {
 	 * @param pitch  The pitch
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(World world, Vector vector, float yaw, float pitch) {
+	public static Location getLocation(@Nonnull World world, @Nonnull Vector vector, float yaw, float pitch) {
 		return new Location(world, vector.getX(), vector.getY(), vector.getZ(), yaw, pitch);
 	}
 
@@ -289,7 +291,7 @@ public class LocationUtils {
 	 * @param vector The {@link Vector}
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(MultiverseWorld world, Vector vector) {
+	public static Location getLocation(@Nonnull MultiverseWorld world, @Nonnull Vector vector) {
 		return LocationUtils.getLocation(world, vector, 0, 0);
 	}
 
@@ -301,7 +303,7 @@ public class LocationUtils {
 	 * @param yaw    The yaw
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(MultiverseWorld world, Vector vector, float yaw) {
+	public static Location getLocation(@Nonnull MultiverseWorld world, @Nonnull Vector vector, float yaw) {
 		return LocationUtils.getLocation(world, vector, yaw, 0);
 	}
 
@@ -313,7 +315,7 @@ public class LocationUtils {
 	 * @param rotation The {@link Rotation}
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(MultiverseWorld world, Vector vector, Rotation rotation) {
+	public static Location getLocation(@Nonnull MultiverseWorld world, @Nonnull Vector vector, @Nonnull Rotation rotation) {
 		return LocationUtils.getLocation(world, vector, rotation.getYaw(), rotation.getPitch());
 	}
 
@@ -326,7 +328,7 @@ public class LocationUtils {
 	 * @param pitch  The pitch
 	 * @return The {@link Location}
 	 */
-	public static Location getLocation(MultiverseWorld world, Vector vector, float yaw, float pitch) {
+	public static Location getLocation(@Nonnull MultiverseWorld world, @Nonnull Vector vector, float yaw, float pitch) {
 		return LocationUtils.getLocation(world.getWorld(), vector, yaw, pitch);
 	}
 
@@ -337,7 +339,7 @@ public class LocationUtils {
 	 * @param location The location to get a centered copy of
 	 * @return New location with centered x and z
 	 */
-	public static Location centerLocation(Location location) {
+	public static Location centerLocation(@Nonnull Location location) {
 		Location newLocation = location.clone();
 
 		newLocation.setX(LocationUtils.blockCenter(newLocation.getBlockX()));
@@ -345,15 +347,15 @@ public class LocationUtils {
 
 		return newLocation;
 	}
-	
+
 	/**
-	 * Get a copy of the provided location with its x, y and z centered. This will not
-	 * modify the provided {@link Location} object
+	 * Get a copy of the provided location with its x, y and z centered. This will
+	 * not modify the provided {@link Location} object
 	 * 
 	 * @param location The location to get a centered copy of
 	 * @return New location with centered x, y and z
 	 */
-	public static Location fullyCenterLocation(Location location) {
+	public static Location fullyCenterLocation(@Nonnull Location location) {
 		Location newLocation = location.clone();
 
 		newLocation.setX(LocationUtils.blockCenter(newLocation.getBlockX()));
@@ -370,7 +372,7 @@ public class LocationUtils {
 	 * @param blockFace The {@link BlockFace} to apply
 	 * @return Modified location
 	 */
-	public static Location addFaceMod(Location location, BlockFace blockFace) {
+	public static Location addFaceMod(@Nonnull Location location, @Nonnull BlockFace blockFace) {
 		return location.add(blockFace.getModX(), blockFace.getModY(), blockFace.getModZ());
 	}
 
@@ -381,7 +383,7 @@ public class LocationUtils {
 	 * @param location2 Second location to compare
 	 * @return <code>true</code> if block x and z is matching
 	 */
-	public static boolean isBlockXZMatching(Location location1, Location location2) {
+	public static boolean isBlockXZMatching(@Nonnull Location location1, @Nonnull Location location2) {
 		return location1.getBlockX() == location2.getBlockX() && location1.getBlockZ() == location2.getBlockZ();
 	}
 
@@ -392,7 +394,7 @@ public class LocationUtils {
 	 * @param vector2 Second vector to compare
 	 * @return <code>true</code> if block x and z is matching
 	 */
-	public static boolean isBlockXZMatching(Vector vector1, Vector vector2) {
+	public static boolean isBlockXZMatching(@Nonnull Vector vector1, @Nonnull Vector vector2) {
 		return vector1.getBlockX() == vector2.getBlockX() && vector1.getBlockZ() == vector2.getBlockZ();
 	}
 
@@ -408,7 +410,7 @@ public class LocationUtils {
 	 * @param z        The Z value range
 	 * @return Instance of the modified location
 	 */
-	public static Location addRandomValue(Location location, double x, double y, double z) {
+	public static Location addRandomValue(@Nonnull Location location, double x, double y, double z) {
 		return LocationUtils.addRandomValue(location, x, y, z, new Random());
 	}
 
@@ -425,7 +427,7 @@ public class LocationUtils {
 	 * @param random   The Random instance to use
 	 * @return Instance of the modified location
 	 */
-	public static Location addRandomValue(Location location, double x, double y, double z, Random random) {
+	public static Location addRandomValue(@Nonnull Location location, double x, double y, double z, @Nonnull Random random) {
 		double newX = RandomGenerator.generateDouble(x * -1, x, random);
 		double newY = RandomGenerator.generateDouble(y * -1, y, random);
 		double newZ = RandomGenerator.generateDouble(z * -1, z, random);
@@ -433,16 +435,15 @@ public class LocationUtils {
 		return location.add(newX, newY, newZ);
 	}
 
-
 	/**
 	 * Checks if the player is inside a block location, since it needs to count for
 	 * the players hitbox
 	 *
-	 * @param block The block to be checked
+	 * @param block  The block to be checked
 	 * @param entity The entity to be checked
 	 * @return If player is inside the block location
 	 */
-	public static boolean entityIsInsideBlockLocation(Block block, Entity entity) {
+	public static boolean entityIsInsideBlockLocation(@Nonnull Block block, @Nonnull Entity entity) {
 		EntityBoundingBox bb = VersionIndependentUtils.get().getEntityBoundingBox(entity);
 		Block blockTop = block.getLocation().clone().add(bb.getWidth(), bb.getHeight(), bb.getWidth()).getBlock();
 		Block blockBottom = block.getLocation().clone().add(-bb.getWidth(), 0, -bb.getWidth()).getBlock();
@@ -452,7 +453,7 @@ public class LocationUtils {
 		for (int x = blockBottom.getX(); x <= blockTop.getX(); x++) {
 			for (int y = blockBottom.getY(); y <= blockTop.getY(); y++) {
 				for (int z = blockBottom.getZ(); z <= blockTop.getZ(); z++) {
-					avaliableBlocks.add(entity.getWorld().getBlockAt(x,y,z));
+					avaliableBlocks.add(entity.getWorld().getBlockAt(x, y, z));
 				}
 			}
 		}
@@ -468,7 +469,7 @@ public class LocationUtils {
 		return isInside;
 	}
 
-	public static boolean blockLocationsEqual(Block block, Block other) {
+	public static boolean blockLocationsEqual(@Nonnull Block block, @Nonnull Block other) {
 		if (block.getWorld() == other.getWorld()) {
 			return block.getX() == other.getX() && block.getY() == other.getY() && other.getZ() == other.getZ();
 		} else {
@@ -476,4 +477,35 @@ public class LocationUtils {
 		}
 	}
 
+	public static Rotation locationToRotation(@Nonnull LocationData locationData) {
+		return new Rotation(locationData.getYaw(), locationData.getPitch());
+	}
+
+	public static Rotation locationToRotation(@Nonnull Location location) {
+		return new Rotation(location.getYaw(), location.getPitch());
+	}
+
+	/**
+	 * Same as {@link Location#distance(Location)} but this version does not check
+	 * if the locations are in the same world
+	 * 
+	 * @param location1 the first location
+	 * @param location2 the second location to check distance for
+	 * @return distance
+	 */
+	public static double distanceNoWorldCheck(@Nonnull Location location1, @Nonnull Location location2) {
+		return Math.sqrt(distanceSquaredNoWorldCheck(location1, location2));
+	}
+
+	/**
+	 * Same as {@link Location#distanceSquared(Location)} but this version does not
+	 * check if the locations are in the same world
+	 * 
+	 * @param location1 the first location
+	 * @param location2 the second location to check distance for
+	 * @return distance
+	 */
+	public static double distanceSquaredNoWorldCheck(@Nonnull Location location1, @Nonnull Location location2) {
+		return NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getY() - location2.getY()) + NumberConversions.square(location1.getZ() - location2.getZ());
+	}
 }

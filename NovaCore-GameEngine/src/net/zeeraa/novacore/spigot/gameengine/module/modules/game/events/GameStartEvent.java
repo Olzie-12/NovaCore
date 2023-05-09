@@ -5,7 +5,7 @@ import org.bukkit.event.HandlerList;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 
 /**
- * Called when a game is starting
+ * Called before {@link Game#startGame()} is called
  * 
  * @author Zeeraa
  */

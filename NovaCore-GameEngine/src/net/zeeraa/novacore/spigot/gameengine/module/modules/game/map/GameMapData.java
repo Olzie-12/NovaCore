@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.World;
+import org.json.JSONObject;
 
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
@@ -29,8 +32,8 @@ public class GameMapData extends AbstractMapData {
 
 	private boolean enabled;
 
-	public GameMapData(List<MapModule> mapModules, List<LocationData> starterLocations, LocationData spectatorLocation, String mapName, String displayName, String description, File worldFile, boolean enabled, List<HologramData> holograms) {
-		super(mapName, displayName, description, worldFile, holograms);
+	public GameMapData(List<MapModule> mapModules, List<LocationData> starterLocations, LocationData spectatorLocation, String mapName, String displayName, String description, File worldFile, boolean enabled, List<HologramData> holograms, JSONObject jsonData) {
+		super(mapName, displayName, description, worldFile, holograms, jsonData);
 
 		this.mapModules = mapModules;
 
@@ -70,8 +73,10 @@ public class GameMapData extends AbstractMapData {
 		return getMapModule(clazz) != null;
 	}
 
-	public MapModule getMapModule(Class<? extends MapModule> clazz) {
-		return mapModules.stream().filter(module -> clazz.isAssignableFrom(module.getClass())).findFirst().orElse(null);
+	@SuppressWarnings("unchecked")
+	@Nullable
+	public <T extends MapModule> T getMapModule(Class<T> clazz) {
+		return (T) mapModules.stream().filter(module -> clazz.isAssignableFrom(module.getClass())).findFirst().orElse(null);
 	}
 
 	/**

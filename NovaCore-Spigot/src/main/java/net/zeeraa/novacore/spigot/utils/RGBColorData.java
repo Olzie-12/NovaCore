@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.json.JSONObject;
@@ -19,13 +21,13 @@ public class RGBColorData {
 		setB(b);
 	}
 
-	public RGBColorData(org.bukkit.Color color) {
+	public RGBColorData(@Nonnull org.bukkit.Color color) {
 		this.r = color.getRed();
 		this.g = color.getGreen();
 		this.b = color.getBlue();
 	}
 
-	public RGBColorData(java.awt.Color color) {
+	public RGBColorData(@Nonnull java.awt.Color color) {
 		this.r = color.getRed();
 		this.g = color.getGreen();
 		this.b = color.getBlue();
@@ -81,7 +83,7 @@ public class RGBColorData {
 		return json;
 	}
 
-	public static RGBColorData fromJSON(JSONObject json) {
+	public static RGBColorData fromJSON(@Nonnull JSONObject json) {
 		return new RGBColorData(json.getInt("r"), json.getInt("g"), json.getInt("b"));
 	}
 
@@ -93,58 +95,58 @@ public class RGBColorData {
 		return new java.awt.Color(r, g, b);
 	}
 
-	public Color getColorByChatColor(net.md_5.bungee.api.ChatColor color) {
+	public Color getColorByChatColor(@Nonnull net.md_5.bungee.api.ChatColor color) {
 		switch (color) {
-			case BLACK:
-				return Color.BLACK;
-			case DARK_BLUE:
-				return Color.NAVY;
-			case DARK_GREEN:
-				return Color.GREEN;
-			case DARK_AQUA:
-				return Color.TEAL;
-			case DARK_RED:
-				return Color.MAROON;
-			case DARK_PURPLE:
-				return Color.PURPLE;
-			case GOLD:
-				return Color.ORANGE;
-			case GRAY:
-				return Color.SILVER;
-			case DARK_GRAY:
-				return Color.GRAY;
-			case BLUE:
-				return Color.BLUE;
-			case GREEN:
-				return Color.LIME;
-			case AQUA:
-				return Color.AQUA;
-			case RED:
-				return Color.RED;
-			case LIGHT_PURPLE:
-				return Color.FUCHSIA;
-			case YELLOW:
-				return Color.YELLOW;
-			case WHITE:
-				return Color.WHITE;
-			default:
-				return Color.WHITE;
+		case BLACK:
+			return Color.BLACK;
+		case DARK_BLUE:
+			return Color.NAVY;
+		case DARK_GREEN:
+			return Color.GREEN;
+		case DARK_AQUA:
+			return Color.TEAL;
+		case DARK_RED:
+			return Color.MAROON;
+		case DARK_PURPLE:
+			return Color.PURPLE;
+		case GOLD:
+			return Color.ORANGE;
+		case GRAY:
+			return Color.SILVER;
+		case DARK_GRAY:
+			return Color.GRAY;
+		case BLUE:
+			return Color.BLUE;
+		case GREEN:
+			return Color.LIME;
+		case AQUA:
+			return Color.AQUA;
+		case RED:
+			return Color.RED;
+		case LIGHT_PURPLE:
+			return Color.FUCHSIA;
+		case YELLOW:
+			return Color.YELLOW;
+		case WHITE:
+			return Color.WHITE;
+		default:
+			return Color.WHITE;
 		}
 	}
 
-	public static RGBColorData fromChatColor(ChatColor color) {
+	public static RGBColorData fromChatColor(@Nonnull ChatColor color) {
 		return ChatColorRGBMapper.chatColorToRGBColorData(color);
 	}
 
-	public static RGBColorData fromChatColor(net.md_5.bungee.api.ChatColor color) {
+	public static RGBColorData fromChatColor(@Nonnull net.md_5.bungee.api.ChatColor color) {
 		return ChatColorRGBMapper.chatColorToRGBColorData(color);
 	}
 
-	public static RGBColorData fromBukkitColor(org.bukkit.Color color) {
+	public static RGBColorData fromBukkitColor(@Nonnull org.bukkit.Color color) {
 		return new RGBColorData(color);
 	}
 
-	public static RGBColorData fromAWTColor(java.awt.Color color) {
+	public static RGBColorData fromAWTColor(@Nonnull java.awt.Color color) {
 		return new RGBColorData(color);
 	}
 }

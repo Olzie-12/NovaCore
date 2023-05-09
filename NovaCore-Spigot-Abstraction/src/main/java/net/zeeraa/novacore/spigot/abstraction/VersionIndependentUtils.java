@@ -39,8 +39,14 @@ import org.bukkit.plugin.Plugin;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import org.bukkit.potion.PotionEffect;
+
+import com.mojang.authlib.GameProfile;
+
 import java.awt.Color;
 import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A utility to make your plugins support multiple versions of the game without
@@ -962,5 +968,26 @@ public abstract class VersionIndependentUtils {
 	public float getBlockBlastResistance(Block block) {
 		return getBlockBlastResistance(block.getType());
 	}
+
 	public abstract float getBlockBlastResistance(Material material);
+
+	public abstract GameProfile getGameProfile(@Nonnull Player player);
+
+	/**
+	 * Checks if a {@link Arrow} is in ground. This version uses the native
+	 * implementation for 1.12+ and for 1.8 it gets the value from the EntityArrow class
+	 * 
+	 * @param arrow The {@link Arrow} to check
+	 * @return <code>true</code> if the arrow is in a block
+	 */
+	public abstract boolean isArrowInBlock(Arrow arrow);
+	
+	public void showBlockBreakParticles(Block block) {
+		this.showBlockBreakParticles(block, 10);
+	}
+	
+	public abstract void showBlockBreakParticles(Block block, int particleCount);
+	
+	@Nullable
+	public abstract Block getArrowAttachedBlock(Arrow arrow);
 }

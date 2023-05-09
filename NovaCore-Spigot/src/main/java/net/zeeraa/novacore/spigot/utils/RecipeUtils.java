@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -12,11 +14,12 @@ import org.bukkit.inventory.ShapedRecipe;
 public class RecipeUtils {
 	/**
 	 * Compare 2 recipes
+	 * 
 	 * @param recipe1 {@link Recipe} to compare
 	 * @param recipe2 {@link Recipe} to compare
 	 * @return <code>true</code> if the recipes match
 	 */
-	public static boolean compareRecipe(Recipe recipe1, Recipe recipe2) {
+	public static boolean compareRecipe(@Nonnull Recipe recipe1, @Nonnull Recipe recipe2) {
 		if (recipe1.getResult().isSimilar(recipe2.getResult())) {
 			if (recipe1 instanceof ShapedRecipe) {
 				if (recipe2 instanceof ShapedRecipe) {

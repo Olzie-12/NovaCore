@@ -1,7 +1,7 @@
 package net.zeeraa.novacore.commons.utils;
 
 /**
- * This class contains utilities to set the color in the console od a java
+ * This class contains utilities to set the color in the console of a java
  * application
  */
 public class ConsoleColor {

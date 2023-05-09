@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -48,9 +50,9 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.Pla
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameEndEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameLoadedEvent;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.MapLoadedEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMapData;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.readers.LegacyMapReader;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.readers.NovaMapReader;
@@ -172,6 +174,53 @@ public class GameManager extends NovaModule implements Listener {
 
 		mapReaders.add(new LegacyMapReader());
 		mapReaders.add(new NovaMapReader());
+	}
+
+	/**
+	 * Check if a player is in the game. See {@link Game#isPlayerInGame(UUID)} for
+	 * more info
+	 * 
+	 * @param uuid The {@link UUID} of the player to check
+	 * @return <code>true</code> if the player is in the list of players in the game
+	 *         or <code>false</code> if not or no game has been loaded
+	 */
+	public boolean isPlayerInGame(UUID uuid) {
+		if (hasGame()) {
+			return activeGame.isPlayerInGame(uuid);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a player is in the game. See
+	 * {@link Game#isPlayerInGame(OfflinePlayer)} for more info
+	 * 
+	 * @param player The {@link OfflinePlayer} to check
+	 * @return <code>true</code> if the player is in the list of players in the game
+	 *         or <code>false</code> if not or no game has been loaded
+	 */
+	public boolean isPlayerInGame(OfflinePlayer player) {
+		return this.isPlayerInGame(player.getUniqueId());
+	}
+
+	/**
+	 * Try to get the display name of the active map
+	 * 
+	 * @return the display name of the active map or <code>null</code> if game is
+	 *         not a map based game or if no map is loaded
+	 */
+	@Nullable
+	public String tryGetActiveMapDisplayName() {
+		if (hasGame()) {
+			if (activeGame instanceof MapGame) {
+				MapGame game = (MapGame) activeGame;
+				if (game.hasActiveMap()) {
+					return game.getActiveMap().getDisplayName();
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -1020,27 +1069,27 @@ public class GameManager extends NovaModule implements Listener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
 		if (hasGame()) {
 			if (activeGame.hasStarted()) {
-				if (e.getEntity() instanceof Player) {
-					UUID damagerUuid = null;
+				Player damagerPlayer = null;
 
-					if (e.getDamager() instanceof Player) {
-						damagerUuid = e.getDamager().getUniqueId();
-					} else if (e.getDamager() instanceof Projectile) {
-						Projectile projectile = (Projectile) e.getDamager();
-						if (projectile.getShooter() != null) {
-							if (projectile.getShooter() instanceof Player) {
-								damagerUuid = ((Player) ((Projectile) e.getDamager()).getShooter()).getUniqueId();
-							}
-						}
-					} else if (e.getDamager() instanceof Tameable) {
-						Tameable tameable = (Tameable) e.getDamager();
-
-						if (tameable.getOwner() instanceof HumanEntity) {
-							damagerUuid = ((HumanEntity) tameable.getOwner()).getUniqueId();
+				if (e.getDamager() instanceof Player) {
+					damagerPlayer = (Player) e.getDamager();
+				} else if (e.getDamager() instanceof Projectile) {
+					Projectile projectile = (Projectile) e.getDamager();
+					if (projectile.getShooter() != null) {
+						if (projectile.getShooter() instanceof Player) {
+							damagerPlayer = ((Player) ((Projectile) e.getDamager()).getShooter());
 						}
 					}
+				} else if (e.getDamager() instanceof Tameable) {
+					Tameable tameable = (Tameable) e.getDamager();
 
-					if (damagerUuid != null) {
+					if (tameable.getOwner() instanceof Player) {
+						damagerPlayer = (Player) tameable.getOwner();
+					}
+				}
+
+				if (e.getEntity() instanceof Player) {
+					if (damagerPlayer != null) {
 						if (!activeGame.isPVPEnabled()) {
 							e.setCancelled(true);
 							return;
@@ -1048,13 +1097,21 @@ public class GameManager extends NovaModule implements Listener {
 
 						if (useTeams) {
 							if (NovaCore.getInstance().hasTeamManager()) {
-								if (NovaCore.getInstance().getTeamManager().isInSameTeam(((OfflinePlayer) e.getEntity()).getUniqueId(), damagerUuid)) {
+								if (NovaCore.getInstance().getTeamManager().isInSameTeam(((OfflinePlayer) e.getEntity()).getUniqueId(), damagerPlayer.getUniqueId())) {
 									if (!getActiveGame().isFriendlyFireAllowed()) {
 										e.setCancelled(true);
+										return;
 									}
 								}
 							}
 						}
+					}
+				}
+
+				if ((e.getDamager() instanceof LivingEntity || damagerPlayer != null) && e.getEntity() instanceof LivingEntity) {
+					if (!activeGame.canAttack(damagerPlayer == null ? (LivingEntity) e.getDamager() : damagerPlayer, (LivingEntity) e.getEntity())) {
+						e.setCancelled(true);
+						return;
 					}
 				}
 			}
@@ -1207,7 +1264,8 @@ public class GameManager extends NovaModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onGameStart(GameStartEvent e) {
+	public void onPostGameStart(PostGameStartEvent e) {
+		Log.trace("GameManager", "Post game start trigger processing. " + e.getGame().getTriggers().size() + " triggers found");
 		GameTrigger.triggerMany(e.getGame().getTriggersByFlag(TriggerFlag.TRIGGER_ON_GAME_START), TriggerFlag.TRIGGER_ON_GAME_START);
 		GameTrigger.startMany(e.getGame().getTriggersByFlag(TriggerFlag.START_ON_GAME_START));
 	}

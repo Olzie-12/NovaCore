@@ -8,6 +8,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public abstract class NovaParticleProvider {
+	public static final NovaParticleProvider get() {
+		return StaticParticleProviderInstance.getInstance();
+	}
+	
 	public void showColoredRedstoneParticle(Location location, java.awt.Color color) {
 		this.showColoredRedstoneParticle(location, new NovaDustOptions(color));
 	}

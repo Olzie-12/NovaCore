@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -26,9 +28,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.Pla
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerQuitEliminationAction;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameEndEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GamePlayerAddedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerWinEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.TeamEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.TeamWinEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.GameTrigger;
@@ -181,12 +185,12 @@ public abstract class Game {
 			Log.warn("Game", "Tried to call Game#sendBeginEvent() twice");
 			return;
 		}
-		
-		if(hasEnded()) {
+
+		if (hasEnded()) {
 			Log.warn("Game", "Tried to call Game#sendBeginEvent() after the game ended");
 			return;
 		}
-		
+
 		beginEventCalled = true;
 		GameBeginEvent event = new GameBeginEvent(this);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -345,9 +349,15 @@ public abstract class Game {
 	 * @param trigger The {@link GameTrigger} to add
 	 * @return <code>true</code> on success
 	 */
-	public boolean addTrigger(GameTrigger trigger) {
+	public boolean addTrigger(@Nonnull GameTrigger trigger) {
+		if (trigger == null) {
+			throw new IllegalArgumentException("trigger cant be null");
+		}
+
 		if (!triggerExist(trigger)) {
 			if (trigger.hasValidName()) {
+				Log.trace("Game", "Adding trigger " + trigger.getName() + " with " + trigger.getFlags().size() + " flags");
+
 				triggers.add(trigger);
 				return true;
 			}
@@ -590,7 +600,11 @@ public abstract class Game {
 	public abstract boolean isFriendlyFireAllowed();
 
 	/**
-	 * Check if 2 entities can hurt each other
+	 * Check if 2 entities can hurt each other.
+	 * <p>
+	 * If the attack was due to a tamed animal or a arrow attacking an entity the
+	 * attacker will be the player that owned the animal or arrow if they are the
+	 * owner of that entity
 	 * 
 	 * @param attacker The attacking {@link LivingEntity}, If the entity is a
 	 *                 projectile the entity that fired the projectile will be the
@@ -617,6 +631,7 @@ public abstract class Game {
 
 		Bukkit.getServer().getPluginManager().callEvent(new GameStartEvent(this));
 		this.onStart();
+		Bukkit.getServer().getPluginManager().callEvent(new PostGameStartEvent(this));
 
 		return true;
 	}
@@ -780,8 +795,8 @@ public abstract class Game {
 		if (autoWinnerCheckCompleted) {
 			return;
 		}
-		
-		if(NovaCoreGameEngine.getInstance().isDebugDisableAutoEndGame()) {
+
+		if (NovaCoreGameEngine.getInstance().isDebugDisableAutoEndGame()) {
 			return;
 		}
 
@@ -876,7 +891,13 @@ public abstract class Game {
 
 		players.add(player.getUniqueId());
 
+		this.onPlayerAdded(player);
+		Bukkit.getServer().getPluginManager().callEvent(new GamePlayerAddedEvent(this, player));
+
 		return true;
+	}
+
+	protected void onPlayerAdded(Player player) {
 	}
 
 	/**
@@ -915,7 +936,7 @@ public abstract class Game {
 	 */
 	public void onPlayerRespawn(Player player) {
 	}
-	
+
 	/**
 	 * Called when a player respawns
 	 * 

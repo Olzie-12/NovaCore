@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.NovaCore;
 
 /**
@@ -25,9 +26,25 @@ public abstract class TeamManager {
 	 * object to this list
 	 */
 	protected List<Team> teams;
+	protected List<Class<? extends TeamMetadataContainer>> registeredMetadataContainerClasses;
 
 	public TeamManager() {
 		this.teams = new ArrayList<Team>();
+		this.registeredMetadataContainerClasses = new ArrayList<>();
+	}
+
+	public List<Class<? extends TeamMetadataContainer>> getRegisteredMetadataContainerClasses() {
+		return registeredMetadataContainerClasses;
+	}
+
+	public boolean registerMetadataContainerClass(Class<? extends TeamMetadataContainer> dataClass) {
+		if (registeredMetadataContainerClasses.contains(dataClass)) {
+			return false;
+		}
+		Log.info("TeamManager", "Adding team metadata class " + dataClass.getName());
+		registeredMetadataContainerClasses.add(dataClass);
+		teams.forEach(Team::applyTeamMetadataClasses);
+		return true;
 	}
 
 	/**

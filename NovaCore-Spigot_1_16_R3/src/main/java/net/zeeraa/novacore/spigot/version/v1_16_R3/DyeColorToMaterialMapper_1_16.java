@@ -3,8 +3,10 @@ package net.zeeraa.novacore.spigot.version.v1_16_R3;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 
-public class DyeColorToMaterialMapper_1_16 {
-	public static Material dyeColorToMaterial(DyeColor color) {
+import net.novauniverse.spigot.version.shared.v1_16plus.DyeColorToMaterialMapper;
+
+public class DyeColorToMaterialMapper_1_16 implements DyeColorToMaterialMapper{
+	public Material dyeColorToMaterial(DyeColor color) {
 		switch (color) {
 		case BLACK:
 			return Material.INK_SAC;

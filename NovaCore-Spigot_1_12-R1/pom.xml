@@ -57,6 +57,13 @@
 		
 		<dependency>
 			<groupId>net.novauniverse.novacore</groupId>
+			<artifactId>novacore-spigot-abstraction-1.16-shared</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.novauniverse.novacore</groupId>
 			<artifactId>novacore-commons</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
@@ -72,7 +79,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20200518</version>
+			<version>20230227</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

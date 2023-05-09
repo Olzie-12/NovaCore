@@ -529,4 +529,12 @@ public class NetherBoardScoreboard extends NovaModule implements Listener {
 		clearGlobalLines();
 		netherBoardGlobalLineContentSnapshot.getGlobalLines().forEach((key, val) -> globalLines.put(key, val));
 	}
+
+	/**
+	 * Clear all player lines and global lines
+	 */
+	public void clear() {
+		clearAllPlayerLines();
+		clearGlobalLines();
+	}
 }

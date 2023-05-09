@@ -134,6 +134,6 @@ public class NovaMapReader extends MapReader {
 			}
 		}
 
-		return new GameMapData(mapModules, starterLocations, spectatorLocation, mapName, displayName, description, worldFile, enabled, holograms);
+		return new GameMapData(mapModules, starterLocations, spectatorLocation, mapName, displayName, description, worldFile, enabled, holograms, json);
 	}
 }

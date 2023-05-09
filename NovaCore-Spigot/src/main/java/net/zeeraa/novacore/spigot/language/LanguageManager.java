@@ -69,11 +69,15 @@ public class LanguageManager {
 	}
 
 	public static void setPlayerLanguage(UUID uuid, @Nullable String lanuage) {
-		if(lanuage == null) {
+		if (lanuage == null) {
 			playerLanguage.remove(uuid);
 		} else {
 			playerLanguage.put(uuid, lanuage);
 		}
+	}
+
+	public static void messagePlayer(Player player, String node, Object... args) {
+		player.sendMessage(LanguageManager.getString(player, node, args));
 	}
 
 	public static String getString(String languageCode, String node, Object... args) {

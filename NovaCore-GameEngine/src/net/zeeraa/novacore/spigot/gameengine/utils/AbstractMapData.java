@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.World;
+import org.json.JSONObject;
 
 import net.zeeraa.novacore.commons.log.Log;
 
@@ -17,7 +18,9 @@ public abstract class AbstractMapData {
 
 	protected List<HologramData> holograms;
 
-	public AbstractMapData(String mapName, String displayName, String description, File worldFile, List<HologramData> holograms) {
+	protected JSONObject jsonData;
+	
+	public AbstractMapData(String mapName, String displayName, String description, File worldFile, List<HologramData> holograms, JSONObject jsonData) {
 		this.mapName = mapName;
 		this.displayName = displayName;
 
@@ -26,6 +29,8 @@ public abstract class AbstractMapData {
 		this.worldFile = worldFile;
 
 		this.holograms = holograms;
+		
+		this.jsonData = jsonData;
 	}
 
 	/**
@@ -64,6 +69,14 @@ public abstract class AbstractMapData {
 		return description;
 	}
 
+	/** 
+	 * Get a {@link JSONObject} containing the data of the map
+	 * @return {@link JSONObject} with config data
+	 */
+	public JSONObject getJsonData() {
+		return jsonData;
+	}
+	
 	public List<HologramData> getHolograms() {
 		return holograms;
 	}

@@ -5,8 +5,17 @@ import java.io.IOException;
 import java.io.InvalidClassException;
 import java.util.List;
 
+import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
+import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerAbortBlockDigEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStartBlockDigEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStopBlockDigEvent;
+import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketEventBus;
+import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketHandler;
+import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketListener;
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
+import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -21,7 +30,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
@@ -54,6 +62,7 @@ import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 import net.zeeraa.novacore.spigot.abstraction.particle.NullParticleProvider;
+import net.zeeraa.novacore.spigot.abstraction.particle.StaticParticleProviderInstance;
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
 import net.zeeraa.novacore.spigot.command.commands.dumplanguagenodes.DumpLanguageNodesCommand;
 import net.zeeraa.novacore.spigot.command.commands.novacore.NovaCoreCommand;
@@ -70,7 +79,6 @@ import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootTableLoaderV1Legac
 import net.zeeraa.novacore.spigot.loottable.loottables.randomiser.RandomizerLootTableLoader;
 import net.zeeraa.novacore.spigot.mapdisplay.MapDisplayManager;
 import net.zeeraa.novacore.spigot.mapdisplay.command.MapDisplayCommand;
-import net.zeeraa.novacore.spigot.mapdisplay.command.subcommand.MDSetImageSubCommand;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.event.ModuleDisabledEvent;
 import net.zeeraa.novacore.spigot.module.event.ModuleEnableEvent;
@@ -86,6 +94,7 @@ import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
+import net.zeeraa.novacore.spigot.module.modules.specialevents.NovaSpecialEventsManager;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentPlayerAPI;
@@ -94,7 +103,7 @@ import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
 import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
-public class NovaCore extends JavaPlugin implements Listener {
+public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 	private static NovaCore instance;
 
 	private CommandRegistrator bukkitCommandRegistrator;
@@ -131,11 +140,13 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private NovaParticleProvider novaParticleProvider;
 
+	private NovaCoreGameVersion novaCoreGameVersion;
+
 	private boolean disableUnregisteringCommands;
 
 	/**
 	 * Check if the NovaCoreGameEngine plugin is enabled
-	 * 
+	 *
 	 * @return <code>true</code> if the game engine is enabled
 	 */
 	public static boolean isNovaGameEngineEnabled() {
@@ -144,7 +155,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get instance of the {@link NovaCore} plugin
-	 * 
+	 *
 	 * @return {@link NovaCore} instance
 	 */
 	public static NovaCore getInstance() {
@@ -153,7 +164,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the {@link CommandRegistrator} for this version
-	 * 
+	 *
 	 * @return {@link CommandRegistrator}
 	 */
 	public CommandRegistrator getCommandRegistrator() {
@@ -162,7 +173,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link LootTableManager}
-	 * 
+	 *
 	 * @return {@link LootTableManager} instance
 	 */
 	public LootTableManager getLootTableManager() {
@@ -175,7 +186,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Set the {@link TeamManager} to use
-	 * 
+	 *
 	 * @param teamManager The {@link TeamManager} to use
 	 */
 	public void setTeamManager(TeamManager teamManager) {
@@ -184,7 +195,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if a {@link TeamManager} has been defined
-	 * 
+	 *
 	 * @return <code>true</code> if a {@link TeamManager} has been defined
 	 */
 	public boolean hasTeamManager() {
@@ -193,7 +204,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link CustomCraftingManager}
-	 * 
+	 *
 	 * @return {@link CustomCraftingManager} instance
 	 */
 	public CustomCraftingManager getCustomCraftingManager() {
@@ -203,7 +214,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link VersionIndependentUtils} for this version
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 */
 	public VersionIndependentUtils getVersionIndependentUtils() {
@@ -212,7 +223,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link VersionIndependentUtils} for this version
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 */
 	public static VersionIndependentUtils versionIndependantUtils() {
@@ -221,7 +232,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check in holographic displays is installed
-	 * 
+	 *
 	 * @return <code>true</code> if the holographic displays plugin is installed
 	 */
 	public boolean hasHologramsSupport() {
@@ -230,7 +241,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Set the console log level
-	 * 
+	 *
 	 * @param logLevel Log level for the console
 	 */
 	public void setLogLevel(LogLevel logLevel) {
@@ -246,7 +257,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link CitizensUtils}
-	 * 
+	 *
 	 * @return {@link CitizensUtils} instance
 	 */
 	public CitizensUtils getCitizensUtils() {
@@ -255,7 +266,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if citizens utils is available
-	 * 
+	 *
 	 * @return <code>true</code> if citizens is installed and citizens utils is
 	 *         available
 	 */
@@ -266,7 +277,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 	/**
 	 * Check if the plugin is running in no nms mode. If true
 	 * {@link VersionIndependentUtils} wont be avaliabe
-	 * 
+	 *
 	 * @return <code>true</code> if no nms mode is enabled
 	 */
 	public boolean isNoNMSMode() {
@@ -295,6 +306,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	public void setNovaParticleProvider(NovaParticleProvider novaParticleProvider) {
 		this.novaParticleProvider = novaParticleProvider;
+		StaticParticleProviderInstance.setInstance(novaParticleProvider);
 	}
 
 	public boolean runVersionIndependentLayerSelftest() {
@@ -370,7 +382,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if the packet manager is enabled
-	 * 
+	 *
 	 * @return <code>true</code> if packet manager is enabled
 	 */
 	public boolean isPacketManagerEnabled() {
@@ -380,7 +392,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 	/**
 	 * Enable the packet manager. If the packet manager is already enabled this wont
 	 * do anything
-	 * 
+	 *
 	 * @return <code>false</code> if the packet manager could not be started
 	 */
 	public boolean enablePacketManager() {
@@ -393,6 +405,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			return true;
 		}
 		Bukkit.getServer().getPluginManager().registerEvents(VersionIndependentUtils.get().getPacketManager(), this);
+		PacketManager.registerEvents(this,this);
 		Log.info("NovaCore", "Packet manager enabled");
 		packetManagerEnabled = true;
 		return true;
@@ -432,6 +445,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 		Log.info("NovaCore", "Packet debugging disabled");
 		MinecraftChannelDuplexHandler.setDebug(false);
 		return true;
+	}
+
+	public NovaCoreGameVersion getNovaCoreGameVersion() {
+		return novaCoreGameVersion;
 	}
 
 	@Override
@@ -492,9 +509,9 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 
 		ConfigurationSection mapDisplaySettings = webServicesSettings.getConfigurationSection("MapDisplays");
-		MDSetImageSubCommand.disableWebInteractions = mapDisplaySettings.getBoolean("Disable");
-		MDSetImageSubCommand.useragent = mapDisplaySettings.getString("UserAgent");
-		MDSetImageSubCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
+		MapDisplayCommand.disableWebInteractions = mapDisplaySettings.getBoolean("Disable");
+		MapDisplayCommand.useragent = mapDisplaySettings.getString("UserAgent");
+		MapDisplayCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
 
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
@@ -561,6 +578,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 
 				versionIndependentUtils = versionIndependantLoader.getVersionIndependentUtils();
+				novaCoreGameVersion = versionIndependentUtils.getNovaCoreGameVersion();
 				if (versionIndependentUtils == null) {
 					Log.warn("NovaCore", "VersionIndependentUtils is not supported for this version");
 					Log.warn("NovaCore", "Could not register events from ChunkLoader and PacketManager");
@@ -575,15 +593,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 				if (versionSpecificParticleProvider == null) {
 					Log.info("NovaCore", "No version specific particle provider found. Using default implementation");
 				} else {
-					Log.info("NovaCore", "Using particle provider " + versionIndependantLoader.getClass().getName());
+					Log.info("NovaCore", "Using particle provider " + versionSpecificParticleProvider.getClass().getName());
 					this.novaParticleProvider = versionSpecificParticleProvider;
-				}
-
-				NovaParticleProvider nmsParticleProvider = versionIndependantLoader.getVersionSpecificParticleProvider();
-				if (nmsParticleProvider != null) {
-					Log.warn("NovaCore", "This version has not yet got support for particles. Please contact the developers of Novacore about this");
-				} else {
-					this.novaParticleProvider = nmsParticleProvider;
 				}
 			} else {
 				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
@@ -601,6 +612,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 				return;
 			}
 		}
+
+		if(novaParticleProvider == null) {
+			Log.warn("NovaCore", "No particle proivider was loaded during startup. Particles spawned by NovaCore will not be visible");
+			novaParticleProvider = new NullParticleProvider();
+		}
+		StaticParticleProviderInstance.setInstance(novaParticleProvider);
 
 		if (forceReflectionCommandRegistrator) {
 			Log.info("NovaCore", "Using reflection based command registrator since ForceUseReflectionBasedRegistrator is set to true in config.yml");
@@ -692,6 +709,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		ModuleManager.loadModule(this, JumpPadManager.class);
 		ModuleManager.loadModule(this, GlowManager.class);
 		ModuleManager.loadModule(this, CooldownManager.class);
+		ModuleManager.loadModule(this, NovaSpecialEventsManager.class);
 
 		// Modules that might be enabled depending on the configuration
 		ModuleManager.loadModule(this, CustomItemManager.class);
@@ -753,9 +771,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		} else {
 			Log.info("NovaCore", "Starting metrics provided by bStats. This can be disabled in config.yml");
 			Metrics metrics = new Metrics(this, 15987);
-			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> {
-				return NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No";
-			}));
+			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No"));
 		}
 
 		ConfigurationSection multiverseSettings = getConfig().getConfigurationSection("Multiverse");
@@ -791,6 +807,11 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		// Unregister plugin channels
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
+
+		if (isPacketManagerEnabled()) {
+			// Unregister Packet Listeners
+			PacketEventBus.unregisterAll((Plugin) this);
+		}
 	}
 
 	/**
@@ -882,11 +903,19 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlaceBlock(BlockPlaceEvent e) {
-
+	// If packet manager is enabled
+	@PacketHandler(priority = Integer.MAX_VALUE)
+	public void onBlockStartDig(PlayerStartBlockDigEvent e) {
+		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), e.getBlock());
 	}
-
+	@PacketHandler(priority = Integer.MAX_VALUE)
+	public void onBlockAbortDig(PlayerAbortBlockDigEvent e) {
+		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), null);
+	}
+	@PacketHandler(priority = Integer.MAX_VALUE)
+	public void onBlockAbortDig(PlayerStopBlockDigEvent e) {
+		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), null);
+	}
 }
 
 // UwU

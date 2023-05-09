@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.world.worldborder;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import net.zeeraa.novacore.commons.log.Log;
@@ -10,7 +12,6 @@ public class WorldborderShrinkTask {
 	private double centerZ;
 
 	private double startSize;
-
 
 	private double damage;
 	private double damageBuffer;
@@ -25,7 +26,7 @@ public class WorldborderShrinkTask {
 
 	private int taskId;
 
-	public WorldborderShrinkTask(World world, double centerX, double centerZ, double startSize, double endSize, double damage, double damageBuffer, int shrinkDuration, int stepTime) {
+	public WorldborderShrinkTask(@Nonnull World world, double centerX, double centerZ, double startSize, double endSize, double damage, double damageBuffer, int shrinkDuration, int stepTime) {
 		this.centerX = centerX;
 		this.centerZ = centerZ;
 

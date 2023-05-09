@@ -33,8 +33,11 @@
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
-							<!-- Replace this with your package! -->
-							<shadedPattern>net.novauniverse.novacore.bstats</shadedPattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.org.bstats</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>net.coobird</pattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.net.coobird</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -143,13 +146,13 @@
 			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Mixed dependencies -->
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
 			<version>3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Mixed dependencies -->
 		<dependency>
 			<groupId>org.bstats</groupId>
 			<artifactId>bstats-bukkit</artifactId>
@@ -159,13 +162,13 @@
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
-			<version>0.4.17</version>
+			<version>0.4.19</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20200518</version>
+			<version>20230227</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

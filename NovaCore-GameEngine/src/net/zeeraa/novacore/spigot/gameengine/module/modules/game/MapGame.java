@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMap;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMapData;
 
@@ -99,6 +100,8 @@ public abstract class MapGame extends Game {
 		}
 
 		this.onStart();
+		
+		Bukkit.getServer().getPluginManager().callEvent(new PostGameStartEvent(this));
 
 		return true;
 	}

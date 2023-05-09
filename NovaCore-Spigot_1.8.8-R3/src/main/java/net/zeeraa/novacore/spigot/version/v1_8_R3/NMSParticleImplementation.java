@@ -48,11 +48,23 @@ public class NMSParticleImplementation extends NovaParticleProvider implements N
 
 		case SMOKE_NORMAL:
 			return EnumParticle.SMOKE_NORMAL;
+
+		case EXPLOSION_NORMAL:
+			return EnumParticle.EXPLOSION_NORMAL;
+			
+		case EXPLOSION_LARGE:
+			return EnumParticle.EXPLOSION_LARGE;
+			
+		case EXPLOSION_HUGE:
+			return EnumParticle.EXPLOSION_HUGE;
+			
+		case FOOTSTEP:
+			return EnumParticle.FOOTSTEP;
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public boolean runNovaParticleEffectConversionTest(NovaParticleEffect effect) {
 		return novaToNMSParticle(effect) != null;

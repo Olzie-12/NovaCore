@@ -207,6 +207,10 @@ public class MapDisplay {
 		return uuid;
 	}
 
+	public String getNamespace() {
+		return world.getName() + ":" + this.getName();
+	}
+	
 	public String getName() {
 		return name;
 	}

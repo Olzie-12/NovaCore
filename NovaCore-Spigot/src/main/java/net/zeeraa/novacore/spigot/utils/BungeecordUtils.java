@@ -2,6 +2,8 @@ package net.zeeraa.novacore.spigot.utils;
 
 import java.util.UUID;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -22,7 +24,7 @@ public class BungeecordUtils {
 	 * @param player {@link Player} to send
 	 * @param server Name of the server to send the player to
 	 */
-	public static void sendToServer(Player player, String server) {
+	public static void sendToServer(@Nonnull Player player, @Nonnull String server) {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
 		out.writeUTF("Connect");
@@ -39,7 +41,7 @@ public class BungeecordUtils {
 	 * @param uuid   {@link UUID} of the player to send
 	 * @param server Name of the server to send the player to
 	 */
-	public static void sendToServer(UUID uuid, String server) {
+	public static void sendToServer(@Nonnull UUID uuid, @Nonnull String server) {
 		Player player = Bukkit.getServer().getPlayer(uuid);
 
 		if (player != null) {
