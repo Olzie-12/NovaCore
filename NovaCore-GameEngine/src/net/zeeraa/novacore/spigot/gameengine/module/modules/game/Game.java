@@ -123,7 +123,13 @@ public abstract class Game {
 
 	private Plugin plugin;
 
+	protected final GameListernerRegistrationTime listernerRegistrationTime;
+
 	public Game(Plugin plugin) {
+		this(plugin, GameListernerRegistrationTime.ON_LOAD);
+	}
+
+	public Game(Plugin plugin, GameListernerRegistrationTime listernerRegistrationTime) {
 		this.players = new ArrayList<>();
 		this.triggers = new ArrayList<>();
 		this.world = null;
@@ -133,6 +139,7 @@ public abstract class Game {
 		this.random = new Random();
 		this.beginEventCalled = false;
 		this.plugin = plugin;
+		this.listernerRegistrationTime = listernerRegistrationTime;
 		this.dropItemsOnCombatLog = false;
 		this.winCheckTask = new SimpleTask(NovaCore.getInstance(), () -> {
 			if (!autoWinnerCheckCompleted) {
@@ -1008,5 +1015,13 @@ public abstract class Game {
 	 */
 	public List<Player> getOnlinePlayers() {
 		return Bukkit.getServer().getOnlinePlayers().stream().filter(this::isPlaying).collect(Collectors.toList());
+	}
+
+	public GameListernerRegistrationTime getListernerRegistrationTime() {
+		return listernerRegistrationTime;
+	}
+
+	public enum GameListernerRegistrationTime {
+		ON_LOAD, ON_START;
 	}
 }

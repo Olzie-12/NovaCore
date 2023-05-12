@@ -42,6 +42,7 @@ import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
 import net.zeeraa.novacore.spigot.gameengine.command.commands.game.NovaCoreCommandGame;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game.GameListernerRegistrationTime;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.countdown.DefaultGameCountdown;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.countdown.GameCountdown;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.EliminationTask;
@@ -608,7 +609,10 @@ public class GameManager extends NovaModule implements Listener {
 
 		game.onLoad();
 		if (game instanceof Listener) {
-			Bukkit.getPluginManager().registerEvents((Listener) game, game.getPlugin());
+			if(game.getListernerRegistrationTime() == Game.GameListernerRegistrationTime.ON_LOAD) {
+				Log.debug("GameManager", "Registering game events (On load)");
+				Bukkit.getPluginManager().registerEvents((Listener) game, game.getPlugin());
+			}
 		}
 
 		this.activeGame = game;
@@ -680,6 +684,13 @@ public class GameManager extends NovaModule implements Listener {
 
 				Log.info("GameManager", "Loading game map");
 				((MapGame) activeGame).loadMap(map);
+			}
+			
+			if (activeGame instanceof Listener) {
+				if(activeGame.getListernerRegistrationTime() == Game.GameListernerRegistrationTime.ON_START) {
+					Log.debug("GameManager", "Registering game events (On start)");
+					Bukkit.getPluginManager().registerEvents((Listener) activeGame, activeGame.getPlugin());
+				}
 			}
 
 			Log.debug("GameManager", "Calling start on " + activeGame.getClass().getName());
