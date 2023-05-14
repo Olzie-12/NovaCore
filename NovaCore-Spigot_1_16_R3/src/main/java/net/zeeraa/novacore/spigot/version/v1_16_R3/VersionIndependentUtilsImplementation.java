@@ -528,6 +528,9 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 		case BLAZE_HIT:
 			return Sound.ENTITY_BLAZE_HURT;
+			
+		case BURP:
+			return Sound.ENTITY_PLAYER_BURP;
 
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_SOUND);
