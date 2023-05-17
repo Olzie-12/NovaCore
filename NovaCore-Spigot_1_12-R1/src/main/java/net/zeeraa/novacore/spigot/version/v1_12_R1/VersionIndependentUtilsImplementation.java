@@ -47,7 +47,6 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
-import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
@@ -112,7 +111,6 @@ import java.util.stream.Collectors;
 public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils {
 	private ItemBuilderRecordList itemBuilderRecordList;
 	private MaterialNameList materialNameList;
-	private PacketManager packetManager;
 
 	private ChunkLoader chunkLoader;
 
@@ -826,13 +824,6 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 	public String colorizeRainbow(Color[] colors, int charsPerColor, String message) {
 		// does not work on 1.15 and below
 		return message;
-	}
-
-	@Override
-	public PacketManager getPacketManager() {
-		if (packetManager == null)
-			packetManager = new net.zeeraa.novacore.spigot.version.v1_12_R1.packet.PacketManager();
-		return packetManager;
 	}
 
 	@Override

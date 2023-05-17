@@ -38,7 +38,6 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
-import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
 import org.bukkit.potion.PotionEffect;
 
 import com.mojang.authlib.GameProfile;
@@ -743,8 +742,6 @@ public abstract class VersionIndependentUtils {
 	 * @return Colorized message
 	 */
 	public abstract String colorizeRainbow(Color[] colors, int charsPerColor, String message);
-
-	public abstract PacketManager getPacketManager();
 
 	public abstract boolean canBreakBlock(ItemStack item, Material material);
 

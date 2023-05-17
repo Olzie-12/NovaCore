@@ -6,16 +6,7 @@ import java.io.InvalidClassException;
 import java.util.List;
 
 import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
-import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
-import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
-import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerAbortBlockDigEvent;
-import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStartBlockDigEvent;
-import net.zeeraa.novacore.spigot.abstraction.packet.event.PlayerStopBlockDigEvent;
-import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketEventBus;
-import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketHandler;
-import net.zeeraa.novacore.spigot.abstraction.packet.listener.PacketListener;
 import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
-import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -103,7 +94,7 @@ import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
 import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
-public class NovaCore extends JavaPlugin implements Listener, PacketListener {
+public class NovaCore extends JavaPlugin implements Listener {
 	private static NovaCore instance;
 
 	private CommandRegistrator bukkitCommandRegistrator;
@@ -128,8 +119,6 @@ public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 	private boolean loadingDone;
 
 	private boolean noNMSMode;
-
-	private boolean packetManagerEnabled;
 
 	private boolean disableAdvancedGUISupport;
 	private int advancedGUIMultiverseReloadDelay;
@@ -380,73 +369,6 @@ public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 		}
 	}
 
-	/**
-	 * Check if the packet manager is enabled
-	 *
-	 * @return <code>true</code> if packet manager is enabled
-	 */
-	public boolean isPacketManagerEnabled() {
-		return packetManagerEnabled;
-	}
-
-	/**
-	 * Enable the packet manager. If the packet manager is already enabled this wont
-	 * do anything
-	 *
-	 * @return <code>false</code> if the packet manager could not be started
-	 */
-	public boolean enablePacketManager() {
-		if (noNMSMode) {
-			Log.error("NovaCore", "Could not enable packet manager since we are running in NoNMS mode");
-			return false;
-		}
-
-		if (packetManagerEnabled) {
-			return true;
-		}
-		Bukkit.getServer().getPluginManager().registerEvents(VersionIndependentUtils.get().getPacketManager(), this);
-		PacketManager.registerEvents(this,this);
-		Log.info("NovaCore", "Packet manager enabled");
-		packetManagerEnabled = true;
-		return true;
-	}
-
-	public boolean enablePacketDebugging() {
-		if (noNMSMode) {
-			Log.error("NovaCore", "Could not enable packet debugging since we are running in NoNMS mode");
-			return false;
-		}
-		if (!packetManagerEnabled) {
-			Log.warn("NovaCore", "Could not enable packet debugging since the packet manager is not enabled");
-			return false;
-		}
-		if (MinecraftChannelDuplexHandler.isDebug()) {
-			Log.warn("NovaCore", "Packet Debugging is already disabled.");
-			return false;
-		}
-		Log.info("NovaCore", "Packet debugging enabled");
-		MinecraftChannelDuplexHandler.setDebug(true);
-		return true;
-	}
-
-	public boolean disablePacketDebugging() {
-		if (noNMSMode) {
-			Log.error("NovaCore", "Could not disable packet debugging since we are running in NoNMS mode");
-			return false;
-		}
-		if (!packetManagerEnabled) {
-			Log.warn("NovaCore", "Could not disable packet debugging since the packet manager is not enabled");
-			return false;
-		}
-		if (!MinecraftChannelDuplexHandler.isDebug()) {
-			Log.warn("NovaCore", "Packet Debugging is already disabled.");
-			return false;
-		}
-		Log.info("NovaCore", "Packet debugging disabled");
-		MinecraftChannelDuplexHandler.setDebug(false);
-		return true;
-	}
-
 	public NovaCoreGameVersion getNovaCoreGameVersion() {
 		return novaCoreGameVersion;
 	}
@@ -642,10 +564,6 @@ public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 			Log.warn("NovaCore", "Hologram support disabled due to HolographicDisplays not being installed");
 		}
 
-		if (getConfig().getBoolean("EnablePacketManager")) {
-			this.enablePacketManager();
-		}
-
 		// Register permissions for log levels
 		for (LogLevel ll : LogLevel.values()) {
 			PermissionRegistrator.registerPermission("novacore.loglevel.auto." + ll.name().toLowerCase(), "Sets the players log level to " + ll.name().toLowerCase() + " whan they join", PermissionDefault.FALSE);
@@ -807,11 +725,6 @@ public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 
 		// Unregister plugin channels
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
-
-		if (isPacketManagerEnabled()) {
-			// Unregister Packet Listeners
-			PacketEventBus.unregisterAll((Plugin) this);
-		}
 	}
 
 	/**
@@ -901,20 +814,6 @@ public class NovaCore extends JavaPlugin implements Listener, PacketListener {
 		if (permissionLevelCount > 1) {
 			Log.warn("NovaCore", player.getName() + " has multiple log level set permissions. Please remove permissions until they only have one of the following: " + perms);
 		}
-	}
-
-	// If packet manager is enabled
-	@PacketHandler(priority = Integer.MAX_VALUE)
-	public void onBlockStartDig(PlayerStartBlockDigEvent e) {
-		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), e.getBlock());
-	}
-	@PacketHandler(priority = Integer.MAX_VALUE)
-	public void onBlockAbortDig(PlayerAbortBlockDigEvent e) {
-		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), null);
-	}
-	@PacketHandler(priority = Integer.MAX_VALUE)
-	public void onBlockAbortDig(PlayerStopBlockDigEvent e) {
-		PlayerUtils.getBlockBreakingMap().put(e.getPlayer(), null);
 	}
 }
 
