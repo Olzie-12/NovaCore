@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -80,6 +81,8 @@ public abstract class VersionIndependentUtils {
 		BED_MATERIALS.add("WHITE_BED");
 		BED_MATERIALS.add("YELLOW_BED");
 	}
+
+	public abstract NovaBossBar createBossBar(String text);
 
 	private VersionIndependenceLayerError lastError = VersionIndependenceLayerError.NONE;
 
@@ -975,19 +978,20 @@ public abstract class VersionIndependentUtils {
 
 	/**
 	 * Checks if a {@link Arrow} is in ground. This version uses the native
-	 * implementation for 1.12+ and for 1.8 it gets the value from the EntityArrow class
+	 * implementation for 1.12+ and for 1.8 it gets the value from the EntityArrow
+	 * class
 	 * 
 	 * @param arrow The {@link Arrow} to check
 	 * @return <code>true</code> if the arrow is in a block
 	 */
 	public abstract boolean isArrowInBlock(Arrow arrow);
-	
+
 	public void showBlockBreakParticles(Block block) {
 		this.showBlockBreakParticles(block, 10);
 	}
-	
+
 	public abstract void showBlockBreakParticles(Block block, int particleCount);
-	
+
 	@Nullable
 	public abstract Block getArrowAttachedBlock(Arrow arrow);
 }

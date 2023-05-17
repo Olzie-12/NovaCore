@@ -38,8 +38,10 @@ import com.mojang.authlib.properties.PropertyMap;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.novauniverse.spigot.version.shared.v1_16plus.bossbar.NovaNativeBossBar;
 import net.zeeraa.novacore.commons.utils.LoopableIterator;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
+import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 
 public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends VersionIndependentUtils {
@@ -54,6 +56,11 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	}
 
 	public abstract Material getColoredMaterial(DyeColor color, ColoredBlockType type);
+
+	@Override
+	public NovaBossBar createBossBar(String text) {
+		return new NovaNativeBossBar(text);
+	}
 
 	@Override
 	public ItemStack getPlayerSkullWithBase64Texture(String b64stringtexture) {

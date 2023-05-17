@@ -16,6 +16,7 @@ import net.minecraft.server.v1_12_R1.IBlockAccess;
 import net.minecraft.server.v1_12_R1.IBlockData;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
+import net.novauniverse.spigot.version.shared.v1_16plus.bossbar.NovaNativeBossBar;
 import net.minecraft.server.v1_12_R1.MinecraftServer;
 import net.minecraft.server.v1_12_R1.NBTBase;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
@@ -34,6 +35,7 @@ import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
+import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -115,6 +117,11 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 	private ChunkLoader chunkLoader;
 
 	@Override
+	public NovaBossBar createBossBar(String text) {
+		return new NovaNativeBossBar(text);
+	}
+	
+	@Override
 	public ChunkLoader getChunkLoader() {
 		if (chunkLoader == null) {
 			chunkLoader = new ChunkLoaderImplementation();
@@ -138,7 +145,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		block.setType(Material.SKULL);
 		Skull skull = (Skull) block.getState();
 		skull.setSkullType(SkullType.PLAYER);
-
+		
 		block.getState().update(true);
 
 		// TODO: fix

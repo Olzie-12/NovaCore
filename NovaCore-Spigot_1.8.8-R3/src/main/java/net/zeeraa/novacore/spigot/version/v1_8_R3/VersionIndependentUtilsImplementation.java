@@ -37,6 +37,7 @@ import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
+import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -50,6 +51,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
 import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
+import net.zeeraa.novacore.spigot.version.v1_8_R3.bossbar.NovaExternalBossBarImplementation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -119,6 +121,11 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 	private ChunkLoader chunkLoader;
 
+	@Override
+	public NovaBossBar createBossBar(String text) {
+		return new NovaExternalBossBarImplementation(text);
+	}
+	
 	@Override
 	public ChunkLoader getChunkLoader() {
 		if (chunkLoader == null) {
