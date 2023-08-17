@@ -34,7 +34,7 @@ public class BuildLimitMapModule extends MapModule implements Listener {
 		maxLimit = json.optInt("max", 256);
 		minLimit = json.optInt("min", NovaCore.getInstance().isNoNMSMode() ? 0 : VersionIndependentUtils.get().getMinY());
 		sendMessage = json.optBoolean("send_message", true);
-		message = json.optString("message", ChatColor.RED + "Reached build limit.");
+		message = json.optString("message", ChatColor.RED + "Build height limit reached.");
 	}
 
 	@EventHandler
