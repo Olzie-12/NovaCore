@@ -21,6 +21,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -53,6 +54,7 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameLoad
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.MapLoadedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PreGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMapData;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.readers.LegacyMapReader;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.readers.NovaMapReader;
@@ -608,7 +610,7 @@ public class GameManager extends NovaModule implements Listener {
 
 		game.onLoad();
 		if (game instanceof Listener) {
-			if(game.getListernerRegistrationTime() == Game.GameListernerRegistrationTime.ON_LOAD) {
+			if (game.getListernerRegistrationTime() == Game.GameListernerRegistrationTime.ON_LOAD) {
 				Log.debug("GameManager", "Registering game events (On load)");
 				Bukkit.getPluginManager().registerEvents((Listener) game, game.getPlugin());
 			}
@@ -684,9 +686,12 @@ public class GameManager extends NovaModule implements Listener {
 				Log.info("GameManager", "Loading game map");
 				((MapGame) activeGame).loadMap(map);
 			}
-			
+
+			Event event = new PreGameStartEvent(activeGame);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+
 			if (activeGame instanceof Listener) {
-				if(activeGame.getListernerRegistrationTime() == Game.GameListernerRegistrationTime.ON_START) {
+				if (activeGame.getListernerRegistrationTime() == Game.GameListernerRegistrationTime.ON_START) {
 					Log.debug("GameManager", "Registering game events (On start)");
 					Bukkit.getPluginManager().registerEvents((Listener) activeGame, activeGame.getPlugin());
 				}
