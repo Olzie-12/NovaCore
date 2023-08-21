@@ -118,7 +118,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 	public NovaBossBar createBossBar(String text) {
 		return new NovaNativeBossBar(text);
 	}
-	
+
 	@Override
 	public ChunkLoader getChunkLoader() {
 		if (chunkLoader == null) {
@@ -143,7 +143,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		block.setType(Material.SKULL);
 		Skull skull = (Skull) block.getState();
 		skull.setSkullType(SkullType.PLAYER);
-		
+
 		block.getState().update(true);
 
 		// TODO: fix
@@ -417,7 +417,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 
 		case BLAZE_HIT:
 			return Sound.ENTITY_BLAZE_HURT;
-			
+
 		case BURP:
 			return Sound.ENTITY_PLAYER_BURP;
 
@@ -1060,7 +1060,9 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		fb.ticksLived = 1;
 		if (fb.getBukkitEntity() instanceof CraftFallingBlock) {
 			CraftFallingBlock cfb = (CraftFallingBlock) fb.getBukkitEntity();
-			consumer.accept(cfb);
+			if (consumer != null) {
+				consumer.accept(cfb);
+			}
 			((CraftWorld) location.getWorld()).getHandle().addEntity(fb, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
 			return cfb;
@@ -1263,7 +1265,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 	public void showBlockBreakParticles(Block block, int particleCount) {
 		block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
 	}
-	
+
 	@Override
 	public Block getArrowAttachedBlock(Arrow arrow) {
 		return arrow.getAttachedBlock();

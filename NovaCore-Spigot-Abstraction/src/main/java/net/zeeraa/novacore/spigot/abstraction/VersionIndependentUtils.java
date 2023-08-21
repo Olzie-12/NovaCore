@@ -757,7 +757,11 @@ public abstract class VersionIndependentUtils {
 
 	public abstract Block getReacheableBlockExact(LivingEntity entity);
 
-	public abstract FallingBlock spawnFallingBlock(Location location, Material material, byte data, Consumer<FallingBlock> consumer);
+	public FallingBlock spawnFallingBlock(Location location, Material material, byte data) {
+		return this.spawnFallingBlock(location, material, data, null);
+	}
+
+	public abstract FallingBlock spawnFallingBlock(Location location, Material material, byte data, @Nullable Consumer<FallingBlock> consumer);
 
 	public abstract void setPotionEffect(ItemStack item, ItemMeta meta, PotionEffect effect, boolean color);
 

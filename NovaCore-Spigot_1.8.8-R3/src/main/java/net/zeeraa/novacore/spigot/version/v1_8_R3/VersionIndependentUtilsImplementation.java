@@ -1032,7 +1032,9 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 		fb.ticksLived = 1;
 		if (fb.getBukkitEntity() instanceof CraftFallingSand) {
 			CraftFallingSand cfb = (CraftFallingSand) fb.getBukkitEntity();
-			consumer.accept(cfb);
+			if (consumer != null) {
+				consumer.accept(cfb);
+			}
 			((CraftWorld) location.getWorld()).getHandle().addEntity(fb, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
 			return cfb;
