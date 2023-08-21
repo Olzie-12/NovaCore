@@ -420,6 +420,9 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 
 		case BURP:
 			return Sound.ENTITY_PLAYER_BURP;
+			
+		case FUSE:
+			return Sound.ENTITY_TNT_PRIMED;
 
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_SOUND);

@@ -417,6 +417,9 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 			
 		case BURP:
 			return Sound.BURP;
+			
+		case FUSE:
+			return Sound.FUSE;
 
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_SOUND);
@@ -557,7 +560,7 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 		case GUNPOWDER:
 			return Material.SULPHUR;
-
+			
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_MATERIAL);
 			AbstractionLogger.getLogger().warning("VersionIndependentUtils", "Unknown version Independent material: " + material.name());
