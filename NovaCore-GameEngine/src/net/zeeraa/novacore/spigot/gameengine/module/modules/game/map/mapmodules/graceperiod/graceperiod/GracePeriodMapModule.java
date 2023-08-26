@@ -23,6 +23,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodFinishEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodTimerEvent;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
@@ -145,11 +146,11 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 	public BasicTimer getEndTimer() {
 		return endTimer;
 	}
-	
+
 	public boolean isActive() {
 		return isActive;
 	}
-	
+
 	public int getInitialTime() {
 		return initialTime;
 	}
@@ -168,6 +169,10 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 
 	@Override
 	public void onGameStart(Game game) {
+		GracePeriodBeginEvent event = new GracePeriodBeginEvent(initialTime);
+		seconds = event.getTime();
+		initialTime = event.getTime();
+
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> player.sendMessage(LanguageManager.getString(player, "novacore.game.modules.graceperiod.started", seconds)));
 		Bukkit.getServer().getPluginManager().registerEvents(this, game.getPlugin());
 	}
