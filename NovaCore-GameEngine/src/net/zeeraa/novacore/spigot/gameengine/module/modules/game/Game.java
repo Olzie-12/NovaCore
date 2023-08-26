@@ -1024,4 +1024,11 @@ public abstract class Game {
 	public enum GameListernerRegistrationTime {
 		ON_LOAD, ON_START;
 	}
+
+	/**
+	 * Called when {@link GameManager#start()} is called before any map loading or
+	 * {@link Game#onStart()} is called
+	 */
+	public void preStart() {
+	}
 }

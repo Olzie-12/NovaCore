@@ -673,6 +673,8 @@ public class GameManager extends NovaModule implements Listener {
 	 */
 	public void start() throws IOException {
 		try {
+			activeGame.preStart();
+			
 			Log.debug("GameManager", "Trying to start game");
 			if (activeGame instanceof MapGame) {
 				if (mapSelector.getMaps().size() == 0) {
