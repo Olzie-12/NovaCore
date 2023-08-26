@@ -170,6 +170,7 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 	@Override
 	public void onGameStart(Game game) {
 		GracePeriodBeginEvent event = new GracePeriodBeginEvent(initialTime);
+		Bukkit.getPluginManager().callEvent(event);
 		seconds = event.getTime();
 		initialTime = event.getTime();
 
