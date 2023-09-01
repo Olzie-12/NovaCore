@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -14,19 +16,23 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.spigot.NovaCore;
+import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerEliminationReason;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerQuitEliminationAction;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameEndEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GamePlayerAddedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PlayerWinEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PostGameStartEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.TeamEliminatedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.TeamWinEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.GameTrigger;
@@ -117,7 +123,13 @@ public abstract class Game {
 
 	private Plugin plugin;
 
+	protected final GameListernerRegistrationTime listernerRegistrationTime;
+
 	public Game(Plugin plugin) {
+		this(plugin, GameListernerRegistrationTime.ON_LOAD);
+	}
+
+	public Game(Plugin plugin, GameListernerRegistrationTime listernerRegistrationTime) {
 		this.players = new ArrayList<>();
 		this.triggers = new ArrayList<>();
 		this.world = null;
@@ -127,6 +139,7 @@ public abstract class Game {
 		this.random = new Random();
 		this.beginEventCalled = false;
 		this.plugin = plugin;
+		this.listernerRegistrationTime = listernerRegistrationTime;
 		this.dropItemsOnCombatLog = false;
 		this.winCheckTask = new SimpleTask(NovaCore.getInstance(), () -> {
 			if (!autoWinnerCheckCompleted) {
@@ -179,6 +192,12 @@ public abstract class Game {
 			Log.warn("Game", "Tried to call Game#sendBeginEvent() twice");
 			return;
 		}
+
+		if (hasEnded()) {
+			Log.warn("Game", "Tried to call Game#sendBeginEvent() after the game ended");
+			return;
+		}
+
 		beginEventCalled = true;
 		GameBeginEvent event = new GameBeginEvent(this);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -337,9 +356,15 @@ public abstract class Game {
 	 * @param trigger The {@link GameTrigger} to add
 	 * @return <code>true</code> on success
 	 */
-	public boolean addTrigger(GameTrigger trigger) {
+	public boolean addTrigger(@Nonnull GameTrigger trigger) {
+		if (trigger == null) {
+			throw new IllegalArgumentException("trigger cant be null");
+		}
+
 		if (!triggerExist(trigger)) {
 			if (trigger.hasValidName()) {
+				Log.trace("Game", "Adding trigger " + trigger.getName() + " with " + trigger.getFlags().size() + " flags");
+
 				triggers.add(trigger);
 				return true;
 			}
@@ -536,33 +561,6 @@ public abstract class Game {
 	}
 
 	/**
-	 * Deprecated. use {@link GameManager#setUseCombatTagging(boolean)} to enable
-	 * this feature
-	 * <p>
-	 * Set to true to eliminate players for combat logging
-	 * 
-	 * @return <code>true</code> if players will be eliminated for combat logging
-	 */
-	@Deprecated
-	public boolean eliminateIfCombatLogging() {
-		return false;
-	}
-
-	/**
-	 * Deprecated. Use {@link GameManager#setCombatTaggingTime(int)} to change the
-	 * time
-	 * <p>
-	 * Get the delay in second the player is combat tagged for if hurt by another
-	 * player
-	 * 
-	 * @return delay in seconds for combat tag to expire
-	 */
-	@Deprecated
-	public int getCombatTagDelay() {
-		return 5;
-	}
-
-	/**
 	 * Check if the game can be started
 	 * <p>
 	 * This can be used to create games that need to generate a world before
@@ -609,7 +607,11 @@ public abstract class Game {
 	public abstract boolean isFriendlyFireAllowed();
 
 	/**
-	 * Check if 2 entities can hurt each other
+	 * Check if 2 entities can hurt each other.
+	 * <p>
+	 * If the attack was due to a tamed animal or a arrow attacking an entity the
+	 * attacker will be the player that owned the animal or arrow if they are the
+	 * owner of that entity
 	 * 
 	 * @param attacker The attacking {@link LivingEntity}, If the entity is a
 	 *                 projectile the entity that fired the projectile will be the
@@ -636,6 +638,7 @@ public abstract class Game {
 
 		Bukkit.getServer().getPluginManager().callEvent(new GameStartEvent(this));
 		this.onStart();
+		Bukkit.getServer().getPluginManager().callEvent(new PostGameStartEvent(this));
 
 		return true;
 	}
@@ -800,6 +803,10 @@ public abstract class Game {
 			return;
 		}
 
+		if (NovaCoreGameEngine.getInstance().isDebugDisableAutoEndGame()) {
+			return;
+		}
+
 		boolean hasWinner = false;
 
 		if (NovaCore.getInstance().hasTeamManager() && getGameManager().isUseTeams()) {
@@ -891,7 +898,13 @@ public abstract class Game {
 
 		players.add(player.getUniqueId());
 
+		this.onPlayerAdded(player);
+		Bukkit.getServer().getPluginManager().callEvent(new GamePlayerAddedEvent(this, player));
+
 		return true;
+	}
+
+	protected void onPlayerAdded(Player player) {
 	}
 
 	/**
@@ -929,6 +942,14 @@ public abstract class Game {
 	 * @param player The player that respawned
 	 */
 	public void onPlayerRespawn(Player player) {
+	}
+
+	/**
+	 * Called when a player respawns
+	 * 
+	 * @param event The {@link PlayerRespawnEvent}
+	 */
+	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
 	}
 
 	/**
@@ -994,5 +1015,20 @@ public abstract class Game {
 	 */
 	public List<Player> getOnlinePlayers() {
 		return Bukkit.getServer().getOnlinePlayers().stream().filter(this::isPlaying).collect(Collectors.toList());
+	}
+
+	public GameListernerRegistrationTime getListernerRegistrationTime() {
+		return listernerRegistrationTime;
+	}
+
+	public enum GameListernerRegistrationTime {
+		ON_LOAD, ON_START;
+	}
+
+	/**
+	 * Called when {@link GameManager#start()} is called before any map loading or
+	 * {@link Game#onStart()} is called
+	 */
+	public void preStart() {
 	}
 }

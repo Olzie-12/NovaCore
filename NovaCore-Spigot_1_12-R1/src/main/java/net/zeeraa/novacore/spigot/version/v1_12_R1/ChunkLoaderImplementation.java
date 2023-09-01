@@ -10,10 +10,10 @@ public class ChunkLoaderImplementation extends ChunkLoader {
 	public ChunkLoaderImplementation() {
 		super();
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		if(chunks.contains(e.getChunk())) {
+		if (chunks.contains(e.getChunk())) {
 			e.setCancelled(true);
 		}
 	}

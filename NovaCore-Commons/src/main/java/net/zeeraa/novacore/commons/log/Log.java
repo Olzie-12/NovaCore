@@ -3,12 +3,8 @@ package net.zeeraa.novacore.commons.log;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-
 import net.md_5.bungee.api.ChatColor;
 import net.zeeraa.novacore.commons.NovaCommons;
-import net.zeeraa.novacore.commons.ServerType;
-import net.zeeraa.novacore.commons.async.AsyncManager;
 
 /**
  * This is the logger built into both NovaCore Spigot and Novacore Bungeecord
@@ -19,6 +15,27 @@ import net.zeeraa.novacore.commons.async.AsyncManager;
  */
 public class Log {
 	private static LogLevel consoleLogLevel = LogLevel.INFO;
+
+	private static boolean disableColors = false;
+
+	/**
+	 * Check if built in colors are disabled
+	 * 
+	 * @return <code>true</code> if built in colors are disabled
+	 */
+	public static boolean isDisableColors() {
+		return disableColors;
+	}
+
+	/**
+	 * Disable the built in colors to the log messages. If the message printed is
+	 * using colors it will still print that color to the console
+	 * 
+	 * @param disableColors <code>true</code> to disable built in colors
+	 */
+	public static void setDisableColors(boolean disableColors) {
+		Log.disableColors = disableColors;
+	}
 
 	public static HashMap<UUID, LogLevel> subscribedPlayers = new HashMap<>();
 
@@ -79,14 +96,20 @@ public class Log {
 	}
 
 	public static void log(String source, String message, LogLevel logLevel) {
-		if (NovaCommons.getServerType() == ServerType.SPIGOT) {
-			if (!Bukkit.isPrimaryThread()) {
-				AsyncManager.runSync(() -> Log.log(source, message, logLevel));
-				return;
-			}
+		/*
+		 * if (NovaCommons.getServerType() == ServerType.SPIGOT) { if
+		 * (!Bukkit.isPrimaryThread()) { AsyncManager.runSync(() -> Log.log(source,
+		 * message, logLevel)); return; } }
+		 */
+
+		String fullMessage;
+
+		if (disableColors) {
+			fullMessage = "[" + logLevel.getMessagePrefix(false) + "]" + (source == null ? "" : " [" + ChatColor.stripColor(source) + "]") + ": " + message;
+		} else {
+			fullMessage = "[" + logLevel.getMessagePrefix(true) + ChatColor.RESET + "]" + (source == null ? "" : " [" + ChatColor.GOLD + source + ChatColor.RESET + "]") + ": " + message;
 		}
 
-		String fullMessage = "[" + logLevel.getMessagePrefix() + ChatColor.RESET + "]" + (source == null ? "" : " [" + ChatColor.GOLD + source + ChatColor.RESET + "]") + ": " + message;
 		if (logLevel.shouldLog(consoleLogLevel)) {
 			if (NovaCommons.getAbstractConsoleSender() == null) {
 				System.out.println(ChatColor.stripColor(message));

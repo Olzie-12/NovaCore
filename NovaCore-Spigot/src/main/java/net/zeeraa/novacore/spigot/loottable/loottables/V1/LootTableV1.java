@@ -56,7 +56,7 @@ public class LootTableV1 extends LootTable {
 	}
 
 	@Override
-	public ArrayList<ItemStack> generateLoot(Random random, int count) {
+	public ArrayList<ItemStack> generate(Random random, int count) {
 		ArrayList<ItemStack> result = new ArrayList<>();
 
 		for (int i = 0; i < count; i++) {

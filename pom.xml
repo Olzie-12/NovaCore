@@ -39,6 +39,7 @@
 		<module>NovaCore-Commons</module>
 		<module>NovaCore-Bungeecord</module>
 		<module>NovaCore-Spigot-Abstraction</module>
+		<module>NovaCore-Spigot-Abstraction-1_16-plus-shared</module>
 		<module>NovaCore-Spigot_1.8.8-R3</module>
 		<module>NovaCore-Spigot_1_12-R1</module>
 		<module>NovaCore-Spigot_1_16_R3</module>

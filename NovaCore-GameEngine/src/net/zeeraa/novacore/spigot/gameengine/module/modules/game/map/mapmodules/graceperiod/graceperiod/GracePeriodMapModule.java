@@ -18,12 +18,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import net.zeeraa.novacore.commons.log.Log;
-import net.zeeraa.novacore.commons.utils.TextUtils;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodBeginEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodFinishEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodTimerEvent;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
@@ -72,10 +72,7 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 			Log.warn("GracePeriodMapModule", "No time defined. Using the default of 15 seconds");
 		}
 
-		boolean legacyMode = false;
-		if (json.has("legacy_mode")) {
-			legacyMode = json.getBoolean("legacy_mode");
-		}
+		boolean legacyMode = json.optBoolean("legacy_mode", false);
 
 		if (!legacyMode) {
 			for (DamageCause cause : DamageCause.values()) {
@@ -109,10 +106,8 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 		endTimer.addFinishCallback(() -> {
 			isActive = false;
 			Bukkit.getServer().getPluginManager().callEvent(new GracePeriodFinishEvent());
-			Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-				VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "novacore.game.modules.graceperiod.over_title"), 10, 40, 10);
-				player.sendMessage(LanguageManager.getString(player, "novacore.game.modules.graceperiod.over"));
-			});
+			LanguageManager.broadcast("novacore.game.modules.graceperiod.over");
+			Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "novacore.game.modules.graceperiod.over_title"), 0, 60, 20));
 		});
 	}
 
@@ -148,6 +143,14 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 		}
 	}
 
+	public BasicTimer getEndTimer() {
+		return endTimer;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
 	public int getInitialTime() {
 		return initialTime;
 	}
@@ -160,13 +163,17 @@ public class GracePeriodMapModule extends MapModule implements Listener {
 	public void onGameBegin(GameBeginEvent e) {
 		Log.info("GracePeriodMapModule", "Received GameBeginEvent");
 		isActive = true;
-		// TODO: language file
-		Bukkit.getServer().getOnlinePlayers().forEach(player -> player.sendMessage(LanguageManager.getString(player, "novacore.game.modules.graceperiod.ending_in", seconds)));
+		LanguageManager.broadcast("novacore.game.modules.graceperiod.ending_in", seconds);
 		endTimer.start();
 	}
 
 	@Override
 	public void onGameStart(Game game) {
+		GracePeriodBeginEvent event = new GracePeriodBeginEvent(initialTime);
+		Bukkit.getPluginManager().callEvent(event);
+		seconds = event.getTime();
+		initialTime = event.getTime();
+
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> player.sendMessage(LanguageManager.getString(player, "novacore.game.modules.graceperiod.started", seconds)));
 		Bukkit.getServer().getPluginManager().registerEvents(this, game.getPlugin());
 	}

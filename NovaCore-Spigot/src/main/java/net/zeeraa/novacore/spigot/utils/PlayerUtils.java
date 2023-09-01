@@ -3,6 +3,10 @@ package net.zeeraa.novacore.spigot.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +28,7 @@ public class PlayerUtils {
 	 * 
 	 * @param player The {@link Player} to clear
 	 */
-	public static void clearPlayerInventory(Player player) {
+	public static void clearPlayerInventory(@Nonnull Player player) {
 		player.getInventory().clear();
 		for (int i = 0; i < player.getInventory().getSize(); i++) {
 			player.getInventory().setItem(i, new ItemStack(Material.AIR));
@@ -38,7 +42,7 @@ public class PlayerUtils {
 	 * 
 	 * @param player The {@link Player} to remove potion effects from
 	 */
-	public static void clearPotionEffects(Player player) {
+	public static void clearPotionEffects(@Nonnull Player player) {
 		player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 	}
 
@@ -47,7 +51,7 @@ public class PlayerUtils {
 	 * 
 	 * @param player The {@link Player} to reset xp for
 	 */
-	public static void resetPlayerXP(Player player) {
+	public static void resetPlayerXP(@Nonnull Player player) {
 		player.setExp(0);
 		player.setLevel(0);
 	}
@@ -57,7 +61,7 @@ public class PlayerUtils {
 	 * 
 	 * @param player The player to reset the max health of
 	 */
-	public static void resetMaxHealth(Player player) {
+	public static void resetMaxHealth(@Nonnull Player player) {
 		NovaCore.getInstance().getVersionIndependentUtils().resetEntityMaxHealth(player);
 	}
 
@@ -67,7 +71,7 @@ public class PlayerUtils {
 	 * @param player The player to reset the set health of
 	 * @param health The new health value
 	 */
-	public static void setMaxHealth(Player player, double health) {
+	public static void setMaxHealth(@Nonnull Player player, double health) {
 		NovaCore.getInstance().getVersionIndependentUtils().setEntityMaxHealth(player, health);
 	}
 
@@ -78,7 +82,7 @@ public class PlayerUtils {
 	 * 
 	 * @return The max health of the player
 	 */
-	public static double getPlayerMaxHealth(Player player) {
+	public static double getPlayerMaxHealth(@Nonnull Player player) {
 		return NovaCore.getInstance().getVersionIndependentUtils().getEntityMaxHealth(player);
 	}
 
@@ -88,7 +92,7 @@ public class PlayerUtils {
 	 * @param player The player to heal
 	 * @return The new player health
 	 */
-	public static double fullyHealPlayer(Player player) {
+	public static double fullyHealPlayer(@Nonnull Player player) {
 		double maxHealth = PlayerUtils.getPlayerMaxHealth(player);
 
 		player.setHealth(maxHealth);
@@ -96,7 +100,7 @@ public class PlayerUtils {
 		return maxHealth;
 	}
 
-	public static void damagePlayer(Player player, PlayerDamageReason reason, float damage) {
+	public static void damagePlayer(@Nonnull Player player, @Nonnull PlayerDamageReason reason, float damage) {
 		NovaCore.getInstance().getVersionIndependentUtils().damagePlayer(player, reason, damage);
 	}
 
@@ -109,14 +113,21 @@ public class PlayerUtils {
 	 * @return <code>true</code> if the player is online and exists, this will also
 	 *         return <code>false</code> if the player is <code>null</code>
 	 */
-	public static boolean existsAndIsOnline(Player player) {
+	public static boolean existsAndIsOnline(@Nullable Player player) {
 		if (player != null) {
 			return player.isOnline();
 		}
 		return false;
 	}
 
+	public static boolean isOnline(UUID uuid) {
+		return Bukkit.getPlayer(uuid) != null;
+	}
+
 	/**
+	 * Deprecated: turns out player.isOnline() is unnecessary since
+	 * Bukkit.getPlayer() always return null if player is offline
+	 * <p>
 	 * Check if a player is online and exists
 	 * <p>
 	 * This also accepts null but will return <code>false</code>
@@ -125,7 +136,8 @@ public class PlayerUtils {
 	 * @return <code>true</code> if the player is online and exists, this will also
 	 *         return <code>false</code> if the player is <code>null</code>
 	 */
-	public static boolean existsAndIsOnline(UUID uuid) {
+	@Deprecated
+	public static boolean existsAndIsOnline(@Nonnull UUID uuid) {
 		return PlayerUtils.existsAndIsOnline(Bukkit.getServer().getPlayer(uuid));
 	}
 
@@ -135,7 +147,7 @@ public class PlayerUtils {
 	 * @param players The list of players
 	 * @return The list on names
 	 */
-	public static List<String> getNames(List<Player> players) {
+	public static List<String> getNames(@Nonnull List<Player> players) {
 		List<String> names = new ArrayList<String>();
 
 		players.forEach(player -> names.add(player.getName()));
@@ -151,7 +163,7 @@ public class PlayerUtils {
 	 * @return <code>true</code> if the player is online and received the message,
 	 *         <code>false</code> if the player is offline
 	 */
-	public static boolean tryMessagePlayer(UUID uuid, String message) {
+	public static boolean tryMessagePlayer(@Nonnull UUID uuid, @Nonnull String message) {
 		Player player = Bukkit.getServer().getPlayer(uuid);
 		if (player != null) {
 			player.sendMessage(message);
@@ -162,10 +174,28 @@ public class PlayerUtils {
 
 	/**
 	 * Check if the player is at full health
+	 * 
 	 * @param player The {@link Player} to check
 	 * @return <code>true</code> if the player is at full health
 	 */
-	public static boolean isAtMaxHealth(Player player) {
+	public static boolean isAtMaxHealth(@Nonnull Player player) {
 		return player.getHealth() == PlayerUtils.getPlayerMaxHealth(player);
+	}
+
+	/**
+	 * Check if a player is online and if so call a {@link Consumer} of type
+	 * {@link Player}
+	 * 
+	 * @param uuid     The {@link UUID} of the player to check
+	 * @param consumer The {@link Consumer} to use
+	 * @return <code>true</code> if the player is online
+	 */
+	public static boolean ifOnline(@Nonnull UUID uuid, @Nonnull Consumer<Player> consumer) {
+		Player player = Bukkit.getServer().getPlayer(uuid);
+		if (player != null) {
+			consumer.accept(player);
+			return true;
+		}
+		return false;
 	}
 }

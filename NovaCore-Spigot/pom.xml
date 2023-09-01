@@ -5,16 +5,13 @@
 	<artifactId>novacore-spigot</artifactId>
 	<name>NovaCore Spigot</name>
 	<version>2.0.0-SNAPSHOT</version>
-
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -27,13 +24,23 @@
 				</includes>
 			</resource>
 		</resources>
-
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>${maven-shade-plugin-version}</version>
+				<configuration>
+					<relocations>
+						<relocation>
+							<pattern>org.bstats</pattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.org.bstats</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>net.coobird</pattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.net.coobird</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -43,7 +50,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven-source-plugin-version}</version>
@@ -69,7 +75,6 @@
 						</goals>
 					</execution>
 				</executions>
-
 				<configuration>
 					<excludePackageNames>com.darkblade12.particledemo.*</excludePackageNames>
 				</configuration>
@@ -91,36 +96,30 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<parent>
 		<groupId>net.novauniverse.novacore</groupId>
 		<artifactId>novacore-parent</artifactId>
 		<version>PARENT</version>
 		<relativePath>..</relativePath>
 	</parent>
-
 	<repositories>
 		<repository>
 			<id>novauniverse2</id>
 			<url>https://nexus2.novauniverse.net/repository/novauniverse-group/</url>
 		</repository>
-
 		<repository>
 			<id>novauniverse-thirdparty</id>
 			<url>https://nexus2.novauniverse.net/repository/third-party-proxy-group/</url>
 		</repository>
-
 		<repository>
 			<id>jitpack-repo</id>
 			<url>https://jitpack.io</url>
 		</repository>
-
 		<!--<repository>
 			<id>leoko-dev</id>
 			<url>https://repo.leoko.dev/releases</url>
 		</repository> -->
 	</repositories>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -130,7 +129,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>net.novauniverse.novacore</groupId>
 				<artifactId>novacore-spigot-abstraction</artifactId>
@@ -140,7 +138,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<dependencies>
 		<!--Spigot API -->
 		<dependency>
@@ -149,50 +146,43 @@
 			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<!-- Mixed dependencies -->
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
 			<version>3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- Mixed dependencies -->
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>3.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
-			<version>0.4.17</version>
+			<version>0.4.19</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>xyz.xenondevs</groupId>
-			<artifactId>particle</artifactId>
-			<version>1.8.3</version>
-			<scope>compile</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20200518</version>
+			<version>20230227</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
 			<version>3.0.2</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.86.Final</version>
+			<version>4.1.94.Final</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizens-main</artifactId>
@@ -200,34 +190,29 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>fr.minuskube</groupId>
 			<artifactId>netherboard-bukkit</artifactId>
 			<version>1.2.2</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.gmail.filoghost.holographicdisplays</groupId>
 			<artifactId>holographicdisplays-api</artifactId>
 			<version>2.4.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.11.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
-
 		<!-- NovaCore commons -->
 		<dependency>
 			<groupId>net.novauniverse.novacore</groupId>
@@ -235,7 +220,6 @@
 			<version>2.0.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<!-- Abstraction layer -->
 		<dependency>
 			<groupId>net.novauniverse.novacore</groupId>
@@ -243,7 +227,6 @@
 			<version>2.0.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<!-- Abstraction versions -->
 		<dependency>
 			<groupId>net.novauniverse.novacore</groupId>
@@ -253,7 +236,6 @@
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>net.novauniverse.novacore</groupId>
 			<artifactId>novacore-spigot_v1_12-R1</artifactId>
@@ -262,7 +244,6 @@
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>net.novauniverse.novacore</groupId>
 			<artifactId>novacore-spigot_v1_16_R3</artifactId>
@@ -271,7 +252,14 @@
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
-
+		<dependency>
+			<groupId>net.novauniverse.novacore</groupId>
+			<artifactId>novacore-spigot-abstraction-1.16-shared</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
 		<!-- <dependency>
 			<groupId>me.leoko.advancedgui</groupId>
 			<artifactId>AdvancedGUI</artifactId>

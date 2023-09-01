@@ -70,6 +70,11 @@
 			<id>novauniverse2</id>
 			<url>https://nexus2.novauniverse.net/repository/novauniverse-group/</url>
 		</repository>
+		
+		<repository>
+            <id>minecraft-repo</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
 	</repositories>
 
 	<dependencies>
@@ -94,5 +99,12 @@
 			<version>4.1.42.Final</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.21</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 </project>

@@ -2,6 +2,7 @@
 	"language_code": "en-us",
 	"language_name": "English",
 	"content": {
+		"novacore.game.starting_in.title": "§b§lStarting in",
 		"novacore.game.starting_in": "§6§lStarting in§b§l %s",
 		"novacore.game.countdown": "§6§lThe game will start in§b§l %s §6§lseconds!",
 
@@ -11,7 +12,7 @@
 		"novacore.game.modules.graceperiod.over": "§6§lThe grace period is over",
 		"novacore.game.modules.graceperiod.over_title": "§6§l⚠Grace period is over⚠",
 		"novacore.game.modules.graceperiod.ending_in": "§6§lGrace period will end in %s §6§lseconds§6 ⚠",
-		"novacore.game.modules.graceperiod.started": "§6§lGrace period will be %s §6§lseconds§6 long",
+		"novacore.game.modules.graceperiod.started": "§6§lGrace period will be %s §6§lseconds§6§l long",
 
 		"novacore.game.lobby.spectator_no_team": "§aYou joined as spectator since you are not in a team",
 		"novacore.game.lobby.start_exception": "§cAn uncorrectable error occurred while trying to start the game",

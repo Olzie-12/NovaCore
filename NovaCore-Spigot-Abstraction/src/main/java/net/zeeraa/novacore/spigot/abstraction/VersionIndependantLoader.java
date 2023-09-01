@@ -9,7 +9,5 @@ public abstract class VersionIndependantLoader {
 
 	public abstract Listeners getListeners();
 
-	public NovaParticleProvider getVersionSpecificParticleProvider() {
-		return null;
-	}
+	public abstract NovaParticleProvider getVersionSpecificParticleProvider();
 }

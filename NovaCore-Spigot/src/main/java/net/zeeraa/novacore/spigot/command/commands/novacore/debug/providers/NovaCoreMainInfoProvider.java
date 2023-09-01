@@ -8,7 +8,6 @@ public class NovaCoreMainInfoProvider implements NovaCoreDebugCommandInfoProvide
 		String message = "";
 
 		message += "No NMS Mode: " + NovaCore.getInstance().isNoNMSMode() + "\n";
-		message += "Packet manager enabled: " + NovaCore.getInstance().isPacketManagerEnabled() + "\n";
 		message += "GameEngine enabled: " + NovaCore.isNovaGameEngineEnabled() + "\n";
 		if (NovaCore.getInstance().getVersionIndependentUtils() != null) {
 			message += "VersionIndependent layer class: " + NovaCore.getInstance().getVersionIndependentUtils().getClass().getName() + "\n";

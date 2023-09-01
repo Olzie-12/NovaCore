@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,25 +29,25 @@ public class XYZLocation {
 		this.z = z;
 	}
 
-	public XYZLocation(ConfigurationSection configurationSection) {
+	public XYZLocation(@Nonnull ConfigurationSection configurationSection) {
 		this.x = configurationSection.getDouble("x", 0);
 		this.y = configurationSection.getDouble("y", 0);
 		this.z = configurationSection.getDouble("z", 0);
 	}
 
-	public XYZLocation(Vector vector) {
+	public XYZLocation(@Nonnull Vector vector) {
 		this(vector.getX(), vector.getBlockY(), vector.getBlockZ());
 	}
 
-	public XYZLocation(Location location) {
+	public XYZLocation(@Nonnull Location location) {
 		this(location.getX(), location.getBlockY(), location.getBlockZ());
 	}
 
-	public XYZLocation(JSONObject json) {
+	public XYZLocation(@Nonnull JSONObject json) {
 		this(json.getDouble("x"), json.getDouble("y"), json.getDouble("z"));
 	}
 
-	public XYZLocation add(Vector vector) {
+	public XYZLocation add(@Nonnull Vector vector) {
 		this.x += vector.getX();
 		this.y += vector.getY();
 		this.z += vector.getZ();
@@ -53,7 +55,7 @@ public class XYZLocation {
 		return this;
 	}
 
-	public XYZLocation subtract(Vector vector) {
+	public XYZLocation subtract(@Nonnull Vector vector) {
 		this.x -= vector.getX();
 		this.y -= vector.getY();
 		this.z -= vector.getZ();
@@ -183,7 +185,7 @@ public class XYZLocation {
 	 * @param world This {@link World} to use
 	 * @return Bukkit {@link Location} with the X, Y and Z location of this object
 	 */
-	public Location toBukkitLocation(World world) {
+	public Location toBukkitLocation(@Nonnull World world) {
 		return new Location(world, x, y, z);
 	}
 
@@ -211,7 +213,7 @@ public class XYZLocation {
 		return json;
 	}
 
-	public boolean isLocationMatching(Location location) {
+	public boolean isLocationMatching(@Nonnull Location location) {
 		if (location.getX() == this.x) {
 			if (location.getY() == this.y) {
 				if (location.getZ() == this.z) {
@@ -222,7 +224,7 @@ public class XYZLocation {
 		return false;
 	}
 
-	public boolean isLocationMatchingBlock(Location location) {
+	public boolean isLocationMatchingBlock(@Nonnull Location location) {
 		if (location.getBlockX() == this.getBlockX()) {
 			if (location.getBlockY() == this.getBlockY()) {
 				if (location.getBlockZ() == this.getBlockZ()) {
@@ -244,7 +246,7 @@ public class XYZLocation {
 	 * @param json The {@link JSONObject} with x, y and z data
 	 * @return {@link XYZLocation} from the json data
 	 */
-	public static XYZLocation fromJSON(JSONObject json) {
+	public static XYZLocation fromJSON(@Nonnull JSONObject json) {
 		return new XYZLocation(json);
 	}
 
@@ -254,7 +256,7 @@ public class XYZLocation {
 	 * @param vector The {@link Vector}
 	 * @return The {@link XYZLocation}
 	 */
-	public static XYZLocation fromVector(Vector vector) {
+	public static XYZLocation fromVector(@Nonnull Vector vector) {
 		return new XYZLocation(vector);
 	}
 
@@ -264,7 +266,7 @@ public class XYZLocation {
 	 * @param location The {@link Location}
 	 * @return The {@link XYZLocation}
 	 */
-	public static XYZLocation fromVector(Location location) {
+	public static XYZLocation fromVector(@Nonnull Location location) {
 		return new XYZLocation(location);
 	}
 }

@@ -92,7 +92,7 @@ public class CooldownManager extends NovaModule {
 			List<UUID> empty = new ArrayList<>();
 			cooldowns.forEach((key, val) -> {
 				if (val.size() == 0) {
-					if (!PlayerUtils.existsAndIsOnline(key)) {
+					if (!PlayerUtils.isOnline(key)) {
 						empty.add(key);
 					}
 				}

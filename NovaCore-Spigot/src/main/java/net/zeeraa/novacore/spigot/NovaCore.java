@@ -3,9 +3,13 @@ package net.zeeraa.novacore.spigot;
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.util.List;
 
-import net.zeeraa.novacore.spigot.abstraction.packet.MinecraftChannelDuplexHandler;
+import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
+import net.zeeraa.novacore.spigot.spectators.SpectatorListener;
 import org.apache.commons.io.FileUtils;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -17,7 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
@@ -27,12 +30,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 
-import net.novauniverse.novacore.bstats.Metrics;
 import net.zeeraa.novacore.commons.NovaCommons;
 import net.zeeraa.novacore.commons.ServerType;
 import net.zeeraa.novacore.commons.api.novauniverse.NovaUniverseAPI;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.log.LogLevel;
+import net.zeeraa.novacore.commons.utils.DelayedRunner;
 import net.zeeraa.novacore.commons.utils.Hastebin;
 import net.zeeraa.novacore.commons.utils.JSONFileType;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
@@ -47,7 +50,10 @@ import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
+import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
+import net.zeeraa.novacore.spigot.abstraction.particle.NullParticleProvider;
+import net.zeeraa.novacore.spigot.abstraction.particle.StaticParticleProviderInstance;
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
 import net.zeeraa.novacore.spigot.command.commands.dumplanguagenodes.DumpLanguageNodesCommand;
 import net.zeeraa.novacore.spigot.command.commands.novacore.NovaCoreCommand;
@@ -55,6 +61,7 @@ import net.zeeraa.novacore.spigot.command.fallback.ReflectionBasedCommandRegistr
 import net.zeeraa.novacore.spigot.customcrafting.CustomCraftingManager;
 import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.builtin.BuiltinDebugTriggers;
+import net.zeeraa.novacore.spigot.delayedrunner.DelayedRunnerImplementationSpigot;
 import net.zeeraa.novacore.spigot.language.LanguageReader;
 import net.zeeraa.novacore.spigot.logger.SpigotAbstractionLogger;
 import net.zeeraa.novacore.spigot.loottable.LootTableManager;
@@ -76,14 +83,16 @@ import net.zeeraa.novacore.spigot.module.modules.gui.GUIManager;
 import net.zeeraa.novacore.spigot.module.modules.jumppad.JumpPadManager;
 import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
+import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
-import net.zeeraa.novacore.spigot.particles.DefaultNovaParticleProvider;
+import net.zeeraa.novacore.spigot.module.modules.specialevents.NovaSpecialEventsManager;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentPlayerAPI;
 import net.zeeraa.novacore.spigot.tasks.abstraction.BukkitSimpleTaskCreator;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
+import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
 public class NovaCore extends JavaPlugin implements Listener {
 	private static NovaCore instance;
@@ -111,8 +120,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private boolean noNMSMode;
 
-	private boolean packetManagerEnabled;
-
 	private boolean disableAdvancedGUISupport;
 	private int advancedGUIMultiverseReloadDelay;
 
@@ -122,11 +129,13 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private NovaParticleProvider novaParticleProvider;
 
+	private NovaCoreGameVersion novaCoreGameVersion;
+
 	private boolean disableUnregisteringCommands;
 
 	/**
 	 * Check if the NovaCoreGameEngine plugin is enabled
-	 * 
+	 *
 	 * @return <code>true</code> if the game engine is enabled
 	 */
 	public static boolean isNovaGameEngineEnabled() {
@@ -135,7 +144,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get instance of the {@link NovaCore} plugin
-	 * 
+	 *
 	 * @return {@link NovaCore} instance
 	 */
 	public static NovaCore getInstance() {
@@ -144,7 +153,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the {@link CommandRegistrator} for this version
-	 * 
+	 *
 	 * @return {@link CommandRegistrator}
 	 */
 	public CommandRegistrator getCommandRegistrator() {
@@ -153,7 +162,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link LootTableManager}
-	 * 
+	 *
 	 * @return {@link LootTableManager} instance
 	 */
 	public LootTableManager getLootTableManager() {
@@ -166,7 +175,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Set the {@link TeamManager} to use
-	 * 
+	 *
 	 * @param teamManager The {@link TeamManager} to use
 	 */
 	public void setTeamManager(TeamManager teamManager) {
@@ -175,7 +184,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if a {@link TeamManager} has been defined
-	 * 
+	 *
 	 * @return <code>true</code> if a {@link TeamManager} has been defined
 	 */
 	public boolean hasTeamManager() {
@@ -184,7 +193,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link CustomCraftingManager}
-	 * 
+	 *
 	 * @return {@link CustomCraftingManager} instance
 	 */
 	public CustomCraftingManager getCustomCraftingManager() {
@@ -194,7 +203,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link VersionIndependentUtils} for this version
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 */
 	public VersionIndependentUtils getVersionIndependentUtils() {
@@ -203,7 +212,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link VersionIndependentUtils} for this version
-	 * 
+	 *
 	 * @return {@link VersionIndependentUtils} instance
 	 */
 	public static VersionIndependentUtils versionIndependantUtils() {
@@ -212,7 +221,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check in holographic displays is installed
-	 * 
+	 *
 	 * @return <code>true</code> if the holographic displays plugin is installed
 	 */
 	public boolean hasHologramsSupport() {
@@ -221,7 +230,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Set the console log level
-	 * 
+	 *
 	 * @param logLevel Log level for the console
 	 */
 	public void setLogLevel(LogLevel logLevel) {
@@ -237,7 +246,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Get the instance of {@link CitizensUtils}
-	 * 
+	 *
 	 * @return {@link CitizensUtils} instance
 	 */
 	public CitizensUtils getCitizensUtils() {
@@ -246,7 +255,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	/**
 	 * Check if citizens utils is available
-	 * 
+	 *
 	 * @return <code>true</code> if citizens is installed and citizens utils is
 	 *         available
 	 */
@@ -257,7 +266,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 	/**
 	 * Check if the plugin is running in no nms mode. If true
 	 * {@link VersionIndependentUtils} wont be avaliabe
-	 * 
+	 *
 	 * @return <code>true</code> if no nms mode is enabled
 	 */
 	public boolean isNoNMSMode() {
@@ -286,6 +295,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	public void setNovaParticleProvider(NovaParticleProvider novaParticleProvider) {
 		this.novaParticleProvider = novaParticleProvider;
+		StaticParticleProviderInstance.setInstance(novaParticleProvider);
 	}
 
 	public boolean runVersionIndependentLayerSelftest() {
@@ -293,6 +303,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.error("NovaCore", "Cant run selftest in no nms mode");
 			return false;
 		}
+
+		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
 
 		try {
 			boolean ok = true;
@@ -334,6 +346,20 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 			}
 
+			if (novaParticleProvider instanceof NullParticleProvider) {
+				Log.error("NovaCore", "Errors detected while running selftest: Particle provider is of type " + NullParticleProvider.class.getName() + ". This is probably caused by the version not yet supporting particles");
+				VersionIndependentUtils.get().resetLastError();
+				ok = false;
+			} else if (novaParticleProvider instanceof NMSParticleImplementation) {
+				NMSParticleImplementation nmsImplementation = (NMSParticleImplementation) novaParticleProvider;
+				for (NovaParticleEffect effect : NovaParticleEffect.values()) {
+					if (!nmsImplementation.runNovaParticleEffectConversionTest(effect)) {
+						Log.warn("NMSBasedParticleProvider", "Failure to map NovaParticleEffect with name " + effect.name() + " to a valid particle. This version needs to be updated to support that effect");
+						ok = false;
+					}
+				}
+			}
+
 			VersionIndependentUtils.get().resetLastError();
 			return ok;
 		} catch (Exception e) {
@@ -343,70 +369,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 	}
 
-	/**
-	 * Check if the packet manager is enabled
-	 * 
-	 * @return <code>true</code> if packet manager is enabled
-	 */
-	public boolean isPacketManagerEnabled() {
-		return packetManagerEnabled;
-	}
-
-	/**
-	 * Enable the packet manager. If the packet manager is already enabled this wont
-	 * do anything
-	 * 
-	 * @return <code>false</code> if the packet manager could not be started
-	 */
-	public boolean enablePacketManager() {
-		if (noNMSMode) {
-			Log.error("NovaCore", "Could not enable packet manager since we are running in NoNMS mode");
-			return false;
-		}
-
-		if (packetManagerEnabled) {
-			return true;
-		}
-		Bukkit.getServer().getPluginManager().registerEvents(VersionIndependentUtils.get().getPacketManager(), this);
-		Log.info("NovaCore", "Packet manager enabled");
-		packetManagerEnabled = true;
-		return true;
-	}
-
-	public boolean enablePacketDebugging() {
-		if (noNMSMode) {
-			Log.error("NovaCore", "Could not enable packet debugging since we are running in NoNMS mode");
-			return false;
-		}
-		if (!packetManagerEnabled) {
-			Log.warn("NovaCore", "Could not enable packet debugging since the packet manager is not enabled");
-			return false;
-		}
-		if (MinecraftChannelDuplexHandler.isDebug()) {
-			Log.warn("NovaCore", "Packet Debugging is already disabled.");
-			return false;
-		}
-		Log.info("NovaCore", "Packet debugging enabled");
-		MinecraftChannelDuplexHandler.setDebug(true);
-		return true;
-	}
-
-	public boolean disablePacketDebugging() {
-		if (noNMSMode) {
-			Log.error("NovaCore", "Could not disable packet debugging since we are running in NoNMS mode");
-			return false;
-		}
-		if (!packetManagerEnabled) {
-			Log.warn("NovaCore", "Could not disable packet debugging since the packet manager is not enabled");
-			return false;
-		}
-		if (!MinecraftChannelDuplexHandler.isDebug()) {
-			Log.warn("NovaCore", "Packet Debugging is already disabled.");
-			return false;
-		}
-		Log.info("NovaCore", "Packet debugging disabled");
-		MinecraftChannelDuplexHandler.setDebug(false);
-		return true;
+	public NovaCoreGameVersion getNovaCoreGameVersion() {
+		return novaCoreGameVersion;
 	}
 
 	@Override
@@ -433,20 +397,43 @@ public class NovaCore extends JavaPlugin implements Listener {
 		NovaCommons.setServerType(ServerType.SPIGOT);
 		NovaCommons.setExtendedDebugging(getConfig().getBoolean("ExtendedDebugging"));
 
+		if (getConfig().getBoolean("DisableBuiltInLogColors")) {
+			Log.setDisableColors(true);
+			Log.info("Logger", "Log colors disabled");
+		}
+
 		Log.setConsoleLogLevel(LogLevel.INFO);
+
+		ConfigurationSection webServicesSettings = getConfig().getConfigurationSection("WebServices");
 
 		Hastebin defaultHastebinInstance;
 		try {
-			String defaultHastebinURL = getConfig().getString("HastebinURL");
-			defaultHastebinInstance = new Hastebin(defaultHastebinURL);
-			Log.info("NovaCore", "Configured hastebin url is " + defaultHastebinInstance.getBaseUrl());
+			ConfigurationSection hastebinSettings = webServicesSettings.getConfigurationSection("Hastebin");
+			String defaultHastebinURL = hastebinSettings.getString("URL");
+			int defaultHastebinTimeout = hastebinSettings.getInt("Timeout");
+			String defaultHastebinUseragent = hastebinSettings.getString("UserAgent");
+			defaultHastebinInstance = new Hastebin(defaultHastebinURL, defaultHastebinTimeout, defaultHastebinUseragent);
+			Log.info("NovaCore", "Configured hastebin url is " + defaultHastebinInstance.getBaseUrl() + " with useragent " + defaultHastebinInstance.getUseragent() + " and a timeout of " + defaultHastebinInstance.getTimeout());
 		} catch (IllegalArgumentException e) {
 			Log.error("NovaCore", "The HastebinURL in config.yml is not valid. Using https://hastebin.novauniverse.net instead");
 			defaultHastebinInstance = new Hastebin("https://hastebin.novauniverse.net");
 		}
+
 		NovaCommons.setDefaultHastebinInstance(defaultHastebinInstance);
 
-		novaParticleProvider = new DefaultNovaParticleProvider();
+		try {
+			ConfigurationSection mojangAPIProxySettings = webServicesSettings.getConfigurationSection("MojangAPIProxy");
+			NovaUniverseAPI.setFetchTimeout(mojangAPIProxySettings.getInt("Timeout"));
+			NovaUniverseAPI.setUseragent(mojangAPIProxySettings.getString("UserAgent"));
+			NovaUniverseAPI.setMojangAPIProxyBaseURL(mojangAPIProxySettings.getString("URL"));
+		} catch (IllegalArgumentException e) {
+			Log.error("NovaCore", "The MojangAPIProxyURL in config.yml is not valid. Using https://mojangapi.novauniverse.net as the default one instead");
+		}
+
+		ConfigurationSection mapDisplaySettings = webServicesSettings.getConfigurationSection("MapDisplays");
+		MapDisplayCommand.disableWebInteractions = mapDisplaySettings.getBoolean("Disable");
+		MapDisplayCommand.useragent = mapDisplaySettings.getString("UserAgent");
+		MapDisplayCommand.IMAGE_FETCH_TIMEOUT = mapDisplaySettings.getInt("Timeout");
 
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
@@ -513,6 +500,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 				}
 
 				versionIndependentUtils = versionIndependantLoader.getVersionIndependentUtils();
+				novaCoreGameVersion = versionIndependentUtils.getNovaCoreGameVersion();
 				if (versionIndependentUtils == null) {
 					Log.warn("NovaCore", "VersionIndependentUtils is not supported for this version");
 					Log.warn("NovaCore", "Could not register events from ChunkLoader and PacketManager");
@@ -527,10 +515,9 @@ public class NovaCore extends JavaPlugin implements Listener {
 				if (versionSpecificParticleProvider == null) {
 					Log.info("NovaCore", "No version specific particle provider found. Using default implementation");
 				} else {
-					Log.info("NovaCore", "Using particle provider " + versionIndependantLoader.getClass().getName());
+					Log.info("NovaCore", "Using particle provider " + versionSpecificParticleProvider.getClass().getName());
 					this.novaParticleProvider = versionSpecificParticleProvider;
 				}
-
 			} else {
 				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
 			}
@@ -540,13 +527,21 @@ public class NovaCore extends JavaPlugin implements Listener {
 			if (this.getConfig().getBoolean("IgnoreMissingNMS")) {
 				noNMSMode = true;
 				Log.warn("NovaCore", "Ignoring missing NMS support due to IgnoreMissingNMS being set to true. The error above can be ignored but some parts of this plugin wont work");
+				Log.warn("NovaCore", "Particles wont display since nms is unavailable");
+				novaParticleProvider = new NullParticleProvider();
 			} else {
 				Bukkit.getPluginManager().disablePlugin(this);
 				return;
 			}
 		}
-		
-		if(forceReflectionCommandRegistrator) {
+
+		if(novaParticleProvider == null) {
+			Log.warn("NovaCore", "No particle proivider was loaded during startup. Particles spawned by NovaCore will not be visible");
+			novaParticleProvider = new NullParticleProvider();
+		}
+		StaticParticleProviderInstance.setInstance(novaParticleProvider);
+
+		if (forceReflectionCommandRegistrator) {
 			Log.info("NovaCore", "Using reflection based command registrator since ForceUseReflectionBasedRegistrator is set to true in config.yml");
 			bukkitCommandRegistrator = reflectionBasedCommandRegistrator;
 		}
@@ -567,10 +562,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		} else {
 			this.hologramsSupport = false;
 			Log.warn("NovaCore", "Hologram support disabled due to HolographicDisplays not being installed");
-		}
-
-		if (getConfig().getBoolean("EnablePacketManager")) {
-			this.enablePacketManager();
 		}
 
 		// Register permissions for log levels
@@ -603,12 +594,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 
-		try {
-			NovaUniverseAPI.setMojangAPIProxyBaseURL(getConfig().getString("MojangAPIProxyURL"));
-		} catch (IllegalArgumentException e) {
-			Log.error("NovaCore", "The MojangAPIProxyURL in config.yml is not valid. Using https://mojangapi.novauniverse.net as the default one instead");
-		}
-
 		lootTableManager = new LootTableManager();
 
 		lootTableManager.addLoader(new LootTableLoaderV1());
@@ -629,18 +614,20 @@ public class NovaCore extends JavaPlugin implements Listener {
 		// Register events
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getPluginManager().registerEvents(customCraftingManager, this);
+		new SpectatorListener();
 
 		// Load modules
 		ModuleManager.loadModule(this, DeltaTime.class);
 		ModuleManager.loadModule(this, GUIManager.class);
 		ModuleManager.loadModule(this, LootDropManager.class);
 		ModuleManager.loadModule(this, ChestLootManager.class);
-		ModuleManager.loadModule(this, MultiverseManager.class);
+		ModuleManager.loadModule(this, MultiverseManager.class, true);
 		ModuleManager.loadModule(this, CompassTracker.class);
 		ModuleManager.loadModule(this, NetherBoardScoreboard.class);
 		ModuleManager.loadModule(this, JumpPadManager.class);
 		ModuleManager.loadModule(this, GlowManager.class);
 		ModuleManager.loadModule(this, CooldownManager.class);
+		ModuleManager.loadModule(this, NovaSpecialEventsManager.class);
 
 		// Modules that might be enabled depending on the configuration
 		ModuleManager.loadModule(this, CustomItemManager.class);
@@ -701,8 +688,17 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.info("NovaCore", "Metrics disabled");
 		} else {
 			Log.info("NovaCore", "Starting metrics provided by bStats. This can be disabled in config.yml");
-			new Metrics(this, 15987);
+			Metrics metrics = new Metrics(this, 15987);
+			metrics.addCustomChart(new SimplePie("gameengine_enabled", () -> NovaCore.isNovaGameEngineEnabled() ? "Yes" : "No"));
 		}
+
+		ConfigurationSection multiverseSettings = getConfig().getConfigurationSection("Multiverse");
+		List<String> loadWorlds = multiverseSettings.getStringList("AutoLoadWorlds");
+		Log.info("NovaCore", loadWorlds.size() + " worlds configured in config.yml");
+		loadWorlds.forEach(name -> {
+			Log.info("NovaCore", "Loading world " + name + " since its configured in config.yml");
+			MultiverseManager.getInstance().createWorld(new WorldOptions(name));
+		});
 	}
 
 	@Override
@@ -819,12 +815,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.warn("NovaCore", player.getName() + " has multiple log level set permissions. Please remove permissions until they only have one of the following: " + perms);
 		}
 	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlaceBlock(BlockPlaceEvent e) {
-
-	}
-
 }
 
 // UwU

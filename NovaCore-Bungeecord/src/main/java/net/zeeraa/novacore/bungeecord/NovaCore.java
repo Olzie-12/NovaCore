@@ -13,6 +13,7 @@ import net.zeeraa.novacore.bungeecord.abstraction.AbstractBungeecordConsoleSende
 import net.zeeraa.novacore.bungeecord.abstraction.AbstractBungeecordPlayerMessageSender;
 import net.zeeraa.novacore.bungeecord.abstraction.BungeecordAsyncManager;
 import net.zeeraa.novacore.bungeecord.abstraction.BungeecordSimpleTaskCreator;
+import net.zeeraa.novacore.bungeecord.delayedrunner.DelayedRunnerImplementationBungee;
 import net.zeeraa.novacore.bungeecord.novaplugin.NovaPlugin;
 import net.zeeraa.novacore.bungeecord.platformindependent.BungeePlatformIndependentBungeecordAPI;
 import net.zeeraa.novacore.bungeecord.platformindependent.BungeecordPlatformIndependentPlayerAPI;
@@ -20,6 +21,7 @@ import net.zeeraa.novacore.commons.NovaCommons;
 import net.zeeraa.novacore.commons.ServerType;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.log.LogLevel;
+import net.zeeraa.novacore.commons.utils.DelayedRunner;
 import net.zeeraa.novacore.commons.utils.Hastebin;
 
 public class NovaCore extends NovaPlugin {
@@ -57,6 +59,8 @@ public class NovaCore extends NovaPlugin {
 		NovaCommons.setPlatformIndependentPlayerAPI(new BungeecordPlatformIndependentPlayerAPI());
 		NovaCommons.setServerType(ServerType.BUNGEECORD);
 
+		DelayedRunner.setImplementation(new DelayedRunnerImplementationBungee());
+		
 		try {
 			FileUtils.forceMkdir(this.getDataFolder());
 

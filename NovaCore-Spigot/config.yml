@@ -27,6 +27,9 @@ MapDisplayManager:
 # To not spam the chat op players this should never be set to anything lower than INFO unless you are trying to debug things
 DefaultOpLogLevel: "ERROR"
 
+# Disable the built in log level colors
+DisableBuiltInLogColors: false
+
 # Enable to show more debug messages
 ExtendedDebugging: false
 
@@ -34,27 +37,37 @@ ExtendedDebugging: false
 # Only enable this if you know what you are doing
 IgnoreMissingNMS: false
 
-# ==============
-# Plugin metrics
-# ==============
-
-# Set to true to disable bStats
-DisableMetrics: false
+# ===================
+# Multiverse Settings
+# ===================
+Multiverse:
+    # Put the names of worlds in this list to load them on start
+    AutoLoadWorlds: []
 
 # ==============================
 # Third party web based services
 # ==============================
-
-# The url of the mojang api proxy to use
-# If you want to self host this check out https://github.com/NovaUniverse/MojangAPIProxy
-# You can also set it up as a docker container using
-# docker run --restart=unless-stopped --name mojangapiproxy -d -p 80:80 novauniverse/mojangapiproxy
-MojangAPIProxyURL: "https://mojangapi.novauniverse.net/"
-
-# The custom hastebin server to use for debugging and for the built in hastebin implementation. Note that this only affects the hastebin instace from NovaCore#getHastebinInstance() and NovaCommons
-# To self host this see https://hub.docker.com/r/rlister/hastebin or https://github.com/toptal/haste-server
-HastebinURL: "https://hastebin.novauniverse.net"
-
+WebServices:
+    # The custom hastebin server to use for debugging and for the built in hastebin implementation. Note that this only affects the hastebin instace from NovaCore#getHastebinInstance() and NovaCommons
+    # To self host this see https://hub.docker.com/r/rlister/hastebin or https://github.com/toptal/haste-server
+    Hastebin:
+        URL: "https://hastebin.novauniverse.net"
+        UserAgent: "NovaCore 2.0.0 Hastebin Java Api"
+        Timeout: 10000
+    # Settings for the mojang api proxy
+    # If you want to self host this check out https://github.com/NovaUniverse/MojangAPIProxy
+    # You can also set it up as a docker container using
+    # docker run --restart=unless-stopped --name mojangapiproxy -d -p 80:80 novauniverse/mojangapiproxy
+    MojangAPIProxy:    
+        URL: "https://mojangapi.novauniverse.net/"
+        UserAgent: "NovaCore 2.0.0"
+        Timeout: 10000
+    # Map display web request settings
+    MapDisplays:
+        Disable: false
+        # If images are not loading you can try to geneare a user agent here https://user-agents.net/random and put it in the field below
+        UserAgent: "NovaCore 2.0.0 MapImageDisplays"
+        Timeout: 10000
 
 # ================================
 # AdvancedGUI + Multiverse support
@@ -65,14 +78,12 @@ HastebinURL: "https://hastebin.novauniverse.net"
 DisableAdvancedGUIAupport: false
 AdvancedGUIMultiverseReloadDelay: 20
 
+# ==============
+# Plugin metrics
+# ==============
 
-# ==========================================
-# Expiremental / Potentially laggy functions
-# ==========================================
-
-# By default the packet manager is turned off until another plugin calls NovaCore#enablePacketManager()
-# By setting this to true the packet manager will be enabled on start
-EnablePacketManager: false
+# Set to true to disable bStats
+DisableMetrics: false
 
 # ===========================
 # Command registrator options
@@ -83,3 +94,11 @@ CommandRegistrator:
     # Disable the unregistration of commands when plugins are disabled
     DisableUnregistation: false
     ForceUseReflectionBasedRegistrator: false
+
+# ==========================================
+# Expiremental / Potentially laggy functions
+# ==========================================
+
+# By default the packet manager is turned off until another plugin calls NovaCore#enablePacketManager()
+# By setting this to true the packet manager will be enabled on start
+EnablePacketManager: false

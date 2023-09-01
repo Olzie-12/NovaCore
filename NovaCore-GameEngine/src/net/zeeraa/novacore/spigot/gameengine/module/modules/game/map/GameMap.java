@@ -64,4 +64,16 @@ public class GameMap extends AbstractMap {
 	public Location getSpectatorLocation() {
 		return spectatorLocation;
 	}
+
+	public String getDisplayName() {
+		return abstractMapData.getDisplayName();
+	}
+
+	public String getMapName() {
+		return abstractMapData.getMapName();
+	}
+
+	public String getDescription() {
+		return abstractMapData.getDescription();
+	}
 }

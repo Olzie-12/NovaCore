@@ -128,6 +128,14 @@ public class TimeBasedTask extends Task {
 		this.task = null;
 	}
 
+	public long getMSLeft() {
+		long timeLeft = targetTimeBetweenExectionMS - Duration.between(lastExecution, Instant.now()).toMillis();
+		if (timeLeft < 0) {
+			timeLeft = 0;
+		}
+		return timeLeft;
+	}
+
 	private void tickCheck() {
 		long sinceLastExec = Duration.between(lastExecution, Instant.now()).toMillis();
 		if (sinceLastExec >= targetTimeBetweenExectionMS) {

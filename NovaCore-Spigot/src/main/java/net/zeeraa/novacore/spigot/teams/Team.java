@@ -1,22 +1,32 @@
 package net.zeeraa.novacore.spigot.teams;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
+import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 
 /**
- * Represents a team used by games
+ * Represents a team used by games.
+ * <p>
+ * After a team object has been constructed you need to call
+ * {@link Team#applyTeamMetadataClasses()} for the
+ * {@link TeamMetadataContainer}s to be initialized
  * 
  * @author Zeeraa
  */
@@ -24,13 +34,67 @@ public abstract class Team {
 	protected UUID teamUuid;
 	protected List<UUID> members;
 
+	protected List<TeamMetadataContainer> metadataContainers;
+
 	public Team() {
 		this.teamUuid = UUID.randomUUID();
-		members = new ArrayList<>();
+		this.members = new ArrayList<>();
+		this.metadataContainers = new ArrayList<>();
 	}
 
 	public List<Player> getOnlinePlayers() {
 		return Bukkit.getServer().getOnlinePlayers().stream().filter(player -> isMember(player)).collect(Collectors.toList());
+	}
+
+	public void applyTeamMetadataClasses() {
+		if (TeamManager.hasTeamManager()) {
+			TeamManager.getTeamManager().getRegisteredMetadataContainerClasses()
+					.stream()
+					.filter(clazz -> metadataContainers
+							.stream()
+							.noneMatch(container -> container.getClass().equals(clazz)))
+					.forEach(clazz -> {
+						Constructor<? extends TeamMetadataContainer> constructor;
+						try {
+							constructor = clazz.getConstructor(Team.class);
+						} catch (NoSuchMethodException e) {
+							Log.error("Team", "Could not fetch constructor of class " + clazz.getName() + " that takes an argument of type " + this.getClass().getName());
+							e.printStackTrace();
+							return;
+						} catch (SecurityException e) {
+							e.printStackTrace();
+							return;
+						}
+
+						try {
+							TeamMetadataContainer container = constructor.newInstance(this);
+							metadataContainers.add(container);
+							Log.trace("Team", "Loaded team metadata container class " + clazz.getName() + " for team " + this.getDisplayName());
+						} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							Log.error("Team", "Failed to create instance of team metadata container class " + clazz.getName() + ". " + e.getClass().getName() + " " + e.getMessage());
+							e.printStackTrace();
+						}
+					});
+		}
+	}
+
+	public boolean hasMetadataContainer(Class<? extends TeamMetadataContainer> clazz) {
+		return metadataContainers.stream().anyMatch(c -> c.getClass().equals(clazz));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nullable
+	public <T extends TeamMetadataContainer> T getMetadataContainer(Class<T> clazz) {
+		return (T) metadataContainers.stream().filter(c -> c.getClass().equals(clazz)).findFirst().orElse(null);
+	}
+
+	@Nullable
+	public <T extends TeamMetadataContainer> T getMetadataContainer(Class<T> clazz, Consumer<T> consumer) {
+		T result = this.getMetadataContainer(clazz);
+		if (result != null) {
+			consumer.accept(result);
+		}
+		return result;
 	}
 
 	@Nullable
@@ -149,8 +213,31 @@ public abstract class Team {
 				}
 			}
 		}
-
 		return count;
+	}
+
+	public void playSound(VersionIndependentSound sound) {
+		this.playSound(sound, 1F, 1F);
+	}
+
+	public void playSound(VersionIndependentSound sound, float volume) {
+		this.playSound(sound, volume, 1F);
+	}
+
+	public void playSound(VersionIndependentSound sound, float volume, float pitch) {
+		getOnlinePlayers().forEach(player -> sound.play(player, volume, pitch));
+	}
+
+	public void playSound(Sound sound) {
+		this.playSound(sound, 1F, 1F);
+	}
+
+	public void playSound(Sound sound, float volume) {
+		this.playSound(sound, volume, 1F);
+	}
+
+	public void playSound(Sound sound, float volume, float pitch) {
+		getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, volume, pitch));
 	}
 
 	/**

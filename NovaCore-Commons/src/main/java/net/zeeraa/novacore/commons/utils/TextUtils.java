@@ -1,9 +1,6 @@
 package net.zeeraa.novacore.commons.utils;
 
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bukkit.ChatColor;
 
 /**
@@ -150,7 +147,7 @@ public class TextUtils {
 	 * @param seconds Seconds to convert
 	 * @return String with seconds in mm:ss format
 	 */
-	public static String secondsToHoursMinutes(int seconds) {
+	public static String secondsToMinutesSeconds(int seconds) {
 		return String.format("%02d:%02d", seconds / 60, seconds % 60);
 	}
 
@@ -160,7 +157,7 @@ public class TextUtils {
 	 * @param seconds Seconds to convert
 	 * @return String with seconds in mm:ss format
 	 */
-	public static String secondsToHoursMinutes(long seconds) {
+	public static String secondsToMinutesSeconds(long seconds) {
 		return String.format("%02d:%02d", seconds / 60, seconds % 60);
 	}
 
@@ -299,36 +296,27 @@ public class TextUtils {
 	 * @return The reason why your dad left you
 	 */
 	public static String englishToUWU(String input) {
-		// Replace L with W
-		input = input.replace('L', 'W');
-		input = input.replace('l', 'w');
+		String[] words = input.split(" ");
+        StringBuilder outputBuilder = new StringBuilder();
 
-		// Replace R with W
-		input = input.replace('R', 'W');
-		input = input.replace('r', 'w');
+        for (String word : words) {
+            if (word.length() == 1) {
+                outputBuilder.append(word).append("w");
+                continue;
+            }
 
-		// Replace vowels with UW
-		input = input.replace('a', 'u');
-		input = input.replace('A', 'U');
-		input = input.replace('e', 'u');
-		input = input.replace('E', 'U');
-		input = input.replace('i', 'u');
-		input = input.replace('I', 'U');
-		input = input.replace('o', 'u');
-		input = input.replace('O', 'U');
-		input = input.replace('u', 'u');
-		input = input.replace('U', 'U');
+            if (word.endsWith("r")) {
+                word = word.substring(0, word.length() - 1) + "w";
+            }
 
-		// Replace ending s with SW
-		Pattern pattern = Pattern.compile("\\b(\\w+)(s)\\b");
-		Matcher matcher = pattern.matcher(input);
-		StringBuffer sb = new StringBuffer();
-		while (matcher.find()) {
-			matcher.appendReplacement(sb, matcher.group(1) + "sw");
-		}
-		matcher.appendTail(sb);
-		input = sb.toString();
+            String[] vowels = {"a", "e", "i", "o", "u"};
+            for (String vowel : vowels) {
+                word = word.replaceAll(vowel, vowel + "w" + vowel);
+            }
 
-		return input;
-	}
+            outputBuilder.append(word).append(" ");
+        }
+
+        return outputBuilder.toString();
+    }
 }

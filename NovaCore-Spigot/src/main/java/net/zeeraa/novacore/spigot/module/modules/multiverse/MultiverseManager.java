@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -26,7 +28,7 @@ public class MultiverseManager extends NovaModule implements Listener {
 	private Map<String, MultiverseWorld> worlds;
 
 	public static String UNLOADING_WORLD_MESSAGE = "Unloading world";
-	
+
 	private static MultiverseManager instance;
 
 	public static MultiverseManager getInstance() {
@@ -55,6 +57,15 @@ public class MultiverseManager extends NovaModule implements Listener {
 
 	public Map<String, MultiverseWorld> getWorlds() {
 		return worlds;
+	}
+
+	public boolean isWorldMultiverse(World world) {
+		return worlds.values().stream().filter(w -> w.getWorld().equals(world)).findFirst().isPresent();
+	}
+
+	@Nullable
+	public MultiverseWorld worldToMultiverse(World world) {
+		return worlds.values().stream().filter(w -> w.getWorld().equals(world)).findFirst().orElse(null);
 	}
 
 	public MultiverseWorld createWorld(WorldOptions options, WorldLoadingFlags... loadFlags) {

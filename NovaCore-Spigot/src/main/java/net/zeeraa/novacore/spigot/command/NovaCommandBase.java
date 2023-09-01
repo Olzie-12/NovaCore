@@ -258,7 +258,7 @@ public abstract class NovaCommandBase {
 	/**
 	 * Add the help sub command to this command
 	 */
-	protected void addHelpSubCommand() {
+	public void addHelpSubCommand() {
 		this.addHelpSubCommand(null);
 	}
 
@@ -268,7 +268,7 @@ public abstract class NovaCommandBase {
 	 * @param permission permission for the help sub command. Default is the same as
 	 *                   the parent
 	 */
-	protected void addHelpSubCommand(String permission) {
+	public void addHelpSubCommand(String permission) {
 		this.addHelpSubCommand(permission, PermissionDefault.FALSE);
 	}
 
@@ -279,7 +279,7 @@ public abstract class NovaCommandBase {
 	 *                               the same as the parent
 	 * @param permissionDefaultValue the {@link PermissionDefault} to use
 	 */
-	protected void addHelpSubCommand(String permission, PermissionDefault permissionDefaultValue) {
+	public void addHelpSubCommand(String permission, PermissionDefault permissionDefaultValue) {
 		this.addHelpSubCommand(permission, "Show help", permissionDefaultValue);
 	}
 
@@ -290,7 +290,7 @@ public abstract class NovaCommandBase {
 	 *                              the same as the parent
 	 * @param permissionDescription the permission description
 	 */
-	protected void addHelpSubCommand(String permission, String permissionDescription) {
+	public void addHelpSubCommand(String permission, String permissionDescription) {
 		this.addHelpSubCommand(permission, permissionDescription, PermissionDefault.FALSE);
 	}
 
@@ -302,7 +302,7 @@ public abstract class NovaCommandBase {
 	 * @param permissionDescription  the permission description
 	 * @param permissionDefaultValue the {@link PermissionDefault} to use
 	 */
-	protected void addHelpSubCommand(String permission, String permissionDescription, PermissionDefault permissionDefaultValue) {
+	public void addHelpSubCommand(String permission, String permissionDescription, PermissionDefault permissionDefaultValue) {
 		HelpSubCommand helpSubCommand = new HelpSubCommand(permission, permissionDescription, permissionDefaultValue);
 
 		helpSubCommand.setRequireOp(this.isRequireOp());
@@ -402,7 +402,7 @@ public abstract class NovaCommandBase {
 	 * 
 	 * @param subCommand {@link NovaSubCommand} to be added
 	 */
-	protected void addSubCommand(NovaSubCommand subCommand) {
+	public void addSubCommand(NovaSubCommand subCommand) {
 		subCommands.add(subCommand);
 		subCommand.setParentCommand(this);
 	}

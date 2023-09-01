@@ -1,6 +1,7 @@
 package net.zeeraa.novacore.spigot.await;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NovaAwaitableGroup implements NovaAwaitable, NovaAwaitableContainer {
@@ -8,9 +9,7 @@ public class NovaAwaitableGroup implements NovaAwaitable, NovaAwaitableContainer
 
 	public NovaAwaitableGroup(NovaAwaitable... awaitables) {
 		this.awaitables = new ArrayList<>();
-		for (NovaAwaitable a : awaitables) {
-			this.awaitables.add(a);
-		}
+		this.awaitables.addAll(Arrays.asList(awaitables));
 	}
 
 	public NovaAwaitableGroup(List<NovaAwaitable> awaitables) {

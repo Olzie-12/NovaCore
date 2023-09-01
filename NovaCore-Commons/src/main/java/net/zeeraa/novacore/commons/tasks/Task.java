@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.commons.tasks;
 
+import javax.annotation.Nullable;
+
 /**
  * Represents a task that can be started or canceled
  * 
@@ -28,13 +30,14 @@ public abstract class Task {
 	public abstract boolean isRunning();
 
 	/**
-	 * Restart the task. This is the same as calling {@link Task#stop()} and then {@link Task#start()}
+	 * Restart the task. This is the same as calling {@link Task#stop()} and then
+	 * {@link Task#start()}
 	 */
 	public void restart() {
 		this.stop();
 		this.start();
 	}
-	
+
 	/**
 	 * Stop the task if its running.
 	 * <p>
@@ -73,7 +76,7 @@ public abstract class Task {
 	 * @return The result of {@link Task#stop()} if the task was running. Will also
 	 *         return <code>false</code> if the task is <code>null</code>
 	 */
-	public static boolean tryStopTask(Task task) {
+	public static boolean tryStopTask(@Nullable Task task) {
 		if (task != null) {
 			if (task.isRunning()) {
 				return task.stop();
@@ -92,7 +95,7 @@ public abstract class Task {
 	 * @return <code>true</code> if the task was started and the task is not
 	 *         <code>null</code>
 	 */
-	public static boolean tryStartTask(Task task) {
+	public static boolean tryStartTask(@Nullable Task task) {
 		if (task != null) {
 			if (!task.isRunning()) {
 				return task.start();

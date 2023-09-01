@@ -1,9 +1,10 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 public class ExperienceUtils {
-
     public static long xpFromLevel(int level) {
         if (level <= 16) {
             return (long) (Math.sqrt(level) + 6L * level);
@@ -41,7 +42,7 @@ public class ExperienceUtils {
         return difference/xpToNextLevel(level);
     }
 
-    public static void setXp(Player player, long xp) {
+    public static void setXp(@Nonnull Player player, long xp) {
         player.setExp(getExpProgress(xp));
         player.setLevel(levelFromXP(xp));
     }

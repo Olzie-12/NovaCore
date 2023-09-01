@@ -21,6 +21,8 @@ public class GameTrigger {
 	private String name;
 	private int triggerCount;
 
+	private String description;
+
 	private List<TriggerCallback> callbacks;
 	private List<TriggerFlag> flags;
 
@@ -36,15 +38,25 @@ public class GameTrigger {
 		this.callbacks = new ArrayList<>();
 		this.flags = new ArrayList<>();
 
+		this.description = "";
+
 		if (callback != null) {
 			this.callbacks.add(callback);
 		}
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public TriggerType getType() {
 		return TriggerType.TRIGGER;
 	}
-	
+
 	/**
 	 * Get a list with all trigger flags
 	 * 

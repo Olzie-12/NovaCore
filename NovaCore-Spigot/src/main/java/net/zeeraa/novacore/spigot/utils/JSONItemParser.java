@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -31,7 +33,7 @@ public class JSONItemParser {
 	 * @throws JSONException if any keys are missing
 	 */
 	@SuppressWarnings("deprecation")
-	public static ItemStack itemFromJSON(JSONObject json) throws IOException {
+	public static ItemStack itemFromJSON(@Nonnull JSONObject json) throws IOException {
 		if (json.has("base64")) {
 			return BukkitSerailization.itemStackFromBase64(json.getString("base64"));
 		}
