@@ -32,8 +32,10 @@ import net.minecraft.server.v1_12_R1.PlayerConnection;
 import net.zeeraa.novacore.commons.utils.ListUtils;
 import net.zeeraa.novacore.commons.utils.ReflectUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
+import net.zeeraa.novacore.spigot.abstraction.INetheriteBoard;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
@@ -47,6 +49,8 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
+import net.zeeraa.novacore.spigot.abstraction.netheriteboard.BPlayerBoard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
@@ -93,6 +97,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import java.awt.Color;
@@ -127,7 +132,8 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation() {
+	public VersionIndependentUtilsImplementation(VersionIndependantLoader loader) {
+		super(loader);
 		itemBuilderRecordList = new ItemBuilderRecordList1_12();
 		materialNameList = MaterialNameList1_12.get();
 	}
@@ -203,6 +209,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		player.getInventory().setItemInOffHand(item);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void sendTabList(Player player, String header, String footer) {
 		CraftPlayer craftplayer = (CraftPlayer) player;
@@ -1272,5 +1279,10 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 	@Override
 	public Block getArrowAttachedBlock(Arrow arrow) {
 		return arrow.getAttachedBlock();
+	}
+
+	@Override
+	public BPlayerBoard initPlayerBoard(INetheriteBoard netheriteBoard, Player player, Scoreboard scoreboard, String name) throws Exception {
+		return new PlayerBoardV1_12_R1(netheriteBoard, player, scoreboard, name);
 	}
 }

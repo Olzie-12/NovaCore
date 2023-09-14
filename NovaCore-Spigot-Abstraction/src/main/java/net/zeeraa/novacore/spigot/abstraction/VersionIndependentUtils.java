@@ -38,7 +38,10 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
+import net.zeeraa.novacore.spigot.abstraction.netheriteboard.BPlayerBoard;
+
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.mojang.authlib.GameProfile;
 
@@ -59,6 +62,8 @@ import javax.annotation.Nullable;
 public abstract class VersionIndependentUtils {
 	private static VersionIndependentUtils instance;
 	protected static List<String> BED_MATERIALS = new ArrayList<>();
+	
+	protected VersionIndependantLoader loader;
 
 	static {
 		BED_MATERIALS.add("BED");
@@ -81,6 +86,14 @@ public abstract class VersionIndependentUtils {
 		BED_MATERIALS.add("YELLOW_BED");
 	}
 
+	public VersionIndependentUtils(VersionIndependantLoader loader) {
+		this.loader = loader;
+	}
+	
+	public VersionIndependantLoader getLoader() {
+		return loader;
+	}
+	
 	public abstract NovaBossBar createBossBar(String text);
 
 	private VersionIndependenceLayerError lastError = VersionIndependenceLayerError.NONE;
@@ -995,4 +1008,6 @@ public abstract class VersionIndependentUtils {
 
 	@Nullable
 	public abstract Block getArrowAttachedBlock(Arrow arrow);
+	
+	public abstract BPlayerBoard initPlayerBoard(INetheriteBoard netheriteBoard, Player player, Scoreboard scoreboard, String name) throws Exception;
 }

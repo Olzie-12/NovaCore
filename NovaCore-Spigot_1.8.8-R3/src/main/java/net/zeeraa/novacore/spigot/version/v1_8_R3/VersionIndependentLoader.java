@@ -12,7 +12,7 @@ public class VersionIndependentLoader extends net.zeeraa.novacore.spigot.abstrac
 
 	@Override
 	public VersionIndependentUtilsImplementation getVersionIndependentUtils() {
-		return new VersionIndependentUtilsImplementation();
+		return new VersionIndependentUtilsImplementation(this);
 	}
 
 	@Override

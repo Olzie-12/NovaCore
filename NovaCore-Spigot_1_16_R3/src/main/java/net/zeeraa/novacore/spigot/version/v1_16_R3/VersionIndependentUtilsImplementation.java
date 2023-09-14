@@ -19,8 +19,10 @@ import net.minecraft.server.v1_16_R3.PlayerConnection;
 import net.novauniverse.spigot.version.shared.v1_16plus.BaseVersionIndependentUtilImplementation1_16Plus;
 import net.zeeraa.novacore.commons.utils.ListUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
+import net.zeeraa.novacore.spigot.abstraction.INetheriteBoard;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -33,6 +35,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
+import net.zeeraa.novacore.spigot.abstraction.netheriteboard.BPlayerBoard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -68,6 +71,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.RayTraceResult;
 
 import java.lang.reflect.Field;
@@ -92,8 +96,8 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation() {
-		super(new DyeColorToMaterialMapper_1_16());
+	public VersionIndependentUtilsImplementation(VersionIndependantLoader loader) {
+		super(loader, new DyeColorToMaterialMapper_1_16());
 		itemBuilderRecordList = new ItemBuilderRecordList1_16();
 	}
 
@@ -526,10 +530,10 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 		case BLAZE_HIT:
 			return Sound.ENTITY_BLAZE_HURT;
-			
+
 		case BURP:
 			return Sound.ENTITY_PLAYER_BURP;
-			
+
 		case FUSE:
 			return Sound.ENTITY_TNT_PRIMED;
 
@@ -620,13 +624,13 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 		case EXP_BOTTLE:
 			return Material.EXPERIENCE_BOTTLE;
-			
+
 		case WOOL:
 			return Material.WHITE_WOOL;
-			
+
 		case FIREBALL:
 			return Material.FIRE_CHARGE;
-			
+
 		case GUNPOWDER:
 			return Material.GUNPOWDER;
 
@@ -1081,9 +1085,14 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 			return 0;
 		}
 	}
-	
+
 	@Override
 	public GameProfile getGameProfile(Player player) {
 		return ((CraftPlayer) player).getHandle().getProfile();
+	}
+
+	@Override
+	public BPlayerBoard initPlayerBoard(INetheriteBoard netheriteBoard, Player player, Scoreboard scoreboard, String name) throws Exception {
+		return new PlayerBoardV1_16_R3(netheriteBoard, player, scoreboard, name);
 	}
 }
