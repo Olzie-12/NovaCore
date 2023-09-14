@@ -41,15 +41,16 @@ public abstract class BPlayerBoard implements PlayerBoard<String, Integer, Strin
 		if (this.scoreboard == null) {
 			Scoreboard sb = player.getScoreboard();
 
-			if (sb == null || sb == Bukkit.getScoreboardManager().getMainScoreboard())
+			if (sb == null || sb == Bukkit.getScoreboardManager().getMainScoreboard()) {
 				sb = Bukkit.getScoreboardManager().getNewScoreboard();
+			}
 
 			this.scoreboard = sb;
 		}
 
 		this.name = name;
 	}
-	
+
 	protected void init() throws Exception {
 		String subName = player.getName().length() <= 14
 				? player.getName()
@@ -58,10 +59,13 @@ public abstract class BPlayerBoard implements PlayerBoard<String, Integer, Strin
 		this.objective = this.scoreboard.getObjective("sb" + subName);
 		this.buffer = this.scoreboard.getObjective("bf" + subName);
 
-		if (this.objective == null)
+		if (this.objective == null) {
 			this.objective = this.scoreboard.registerNewObjective("sb" + subName, "dummy");
-		if (this.buffer == null)
+		}
+		
+		if (this.buffer == null) {
 			this.buffer = this.scoreboard.registerNewObjective("bf" + subName, "dummy");
+		}
 
 		this.objective.setDisplayName(name);
 		sendObjective(this.objective, ObjectiveMode.CREATE);

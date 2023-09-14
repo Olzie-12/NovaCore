@@ -42,14 +42,14 @@ public class PlayerBoardV1_8_R3 extends BPlayerBoard {
 
 	@Override
 	protected void sendObjective(Objective objective, ObjectiveMode mode) throws Exception {
-		ScoreboardObjective nmsObjective = (ScoreboardObjective) ReflectUtils.getHandle(this.objective);
+		ScoreboardObjective nmsObjective = (ScoreboardObjective) ReflectUtils.getHandle(objective);
 		PacketPlayOutScoreboardObjective packet = new PacketPlayOutScoreboardObjective(nmsObjective, mode.ordinal());
 		playerHandle.playerConnection.sendPacket(packet);
 	}
 
 	@Override
 	protected void sendObjectiveDisplay(Objective objective) throws Exception {
-		ScoreboardObjective nmsObjective = (ScoreboardObjective) ReflectUtils.getHandle(this.objective);
+		ScoreboardObjective nmsObjective = (ScoreboardObjective) ReflectUtils.getHandle(objective);
 		PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective(1, nmsObjective);
 		playerHandle.playerConnection.sendPacket(packet);
 	}
@@ -57,7 +57,7 @@ public class PlayerBoardV1_8_R3 extends BPlayerBoard {
 	@Override
 	protected void sendScore(Objective objective, String name, int score, boolean remove) throws Exception {
 		net.minecraft.server.v1_8_R3.Scoreboard nmsScoreboard = ((CraftScoreboard) this.scoreboard).getHandle();
-		ScoreboardObjective nmsObjective = (ScoreboardObjective) ReflectUtils.getHandle(this.objective);
+		ScoreboardObjective nmsObjective = (ScoreboardObjective) ReflectUtils.getHandle(objective);
 
 		ScoreboardScore scoreboardScore = new ScoreboardScore(nmsScoreboard, nmsObjective, name);
 		scoreboardScore.setScore(score);
