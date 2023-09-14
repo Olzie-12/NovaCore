@@ -13,7 +13,8 @@ public enum NovaCoreGameVersion {
 	V_1_18_R2(2300),
 	V_1_19_R1(2400),
 	V_1_19_R2(2500),
-	V_1_19_R3(2600);
+	V_1_19_R3(2600),
+	V_1_20_R1(3000);
 
 	private int versionId;
 
