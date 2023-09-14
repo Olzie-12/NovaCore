@@ -18,19 +18,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Team;
 
-import fr.minuskube.netherboard.Netherboard;
-import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.NovaCore;
-import net.zeeraa.novacore.spigot.module.MissingPluginDependencyException;
+import net.zeeraa.novacore.spigot.abstraction.netheriteboard.BPlayerBoard;
 import net.zeeraa.novacore.spigot.module.NovaModule;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.event.PlayerNetherboardScoreboardInitEvent;
+import net.zeeraa.novacore.spigot.netheriteboard.NetheriteBoard;
 
 /**
- * This module creates a scoreboard for all players using the Netherboard
- * plugin. This can also be used to change the name color of players
- * <p>
- * The Netherboard plugin is required for this module to work
+ * This module creates a scoreboard for all players using the Netheriteboard
+ * board included in NovaCore. This can also be used to change the name color of
+ * players
  * 
  * @author Zeeraa
  */
@@ -72,10 +70,6 @@ public class NetherBoardScoreboard extends NovaModule implements Listener {
 
 	@Override
 	public void onEnable() throws Exception {
-		if (Bukkit.getServer().getPluginManager().getPlugin("Netherboard") == null) {
-			throw new MissingPluginDependencyException("Netherboard");
-		}
-
 		for (int i = 0; i < lineCount; i++) {
 			globalLines.put(i, "");
 		}
@@ -125,7 +119,7 @@ public class NetherBoardScoreboard extends NovaModule implements Listener {
 
 			Bukkit.getServer().getPluginManager().callEvent(event);
 
-			BPlayerBoard board = Netherboard.instance().createBoard(player, event.getTitle());
+			BPlayerBoard board = NetheriteBoard.instance().createBoard(player, event.getTitle());
 
 			HashMap<Integer, String> pLines = new HashMap<>();
 
