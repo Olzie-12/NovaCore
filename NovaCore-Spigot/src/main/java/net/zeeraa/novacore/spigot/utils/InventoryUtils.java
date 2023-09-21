@@ -30,6 +30,25 @@ public class InventoryUtils {
 	}
 
 	/**
+	 * Remove one item from the players offhand
+	 *
+	 * @param player The player to remove the item from
+	 * @return The new amount in offhand
+	 */
+	public static int removeOneFromOffHand(@Nonnull Player player) {
+		final ItemStack item = NovaCore.getInstance().getVersionIndependentUtils().getItemInOffHand(player);
+		final int a = item.getAmount();
+		if (a <= 1) {
+			NovaCore.getInstance().getVersionIndependentUtils().setItemInOffHand(player, new ItemStack(Material.AIR));
+			return 0;
+		} else {
+			item.setAmount(a - 1);
+			NovaCore.getInstance().getVersionIndependentUtils().setItemInOffHand(player, item);
+			return item.getAmount();
+		}
+	}
+
+	/**
 	 * Count the amount of a specified {@link Material} in an inventory
 	 * 
 	 * @param inventory The {@link Inventory} to scan
