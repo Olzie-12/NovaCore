@@ -33,11 +33,15 @@ public class InventoryUtils {
 	 * Remove one item from the players offhand
 	 *
 	 * @param player The player to remove the item from
-	 * @return The new amount in offhand
+	 * @return The new amount in offhand, or -1 if item is null
 	 */
 	public static int removeOneFromOffHand(@Nonnull Player player) {
 		final ItemStack item = NovaCore.getInstance().getVersionIndependentUtils().getItemInOffHand(player);
+		if (item == null) {
+			return -1;
+		}
 		final int a = item.getAmount();
+
 		if (a <= 1) {
 			NovaCore.getInstance().getVersionIndependentUtils().setItemInOffHand(player, new ItemStack(Material.AIR));
 			return 0;
