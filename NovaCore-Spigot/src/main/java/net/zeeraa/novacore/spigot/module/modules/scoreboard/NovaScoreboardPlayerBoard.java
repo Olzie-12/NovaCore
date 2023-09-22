@@ -64,7 +64,7 @@ public class NovaScoreboardPlayerBoard {
 		for (ChatColor color : NovaScoreboardManager.VALID_COLORS) {
 			boolean needColorFix = false;
 
-			if (VersionIndependentUtils.get().getNovaCoreGameVersion() == NovaCoreGameVersion.V_1_8) {
+			if (VersionIndependentUtils.get().getNovaCoreGameVersion().isBeforeOrEqual(NovaCoreGameVersion.V_1_12)) {
 				needColorFix = true;
 			}
 
