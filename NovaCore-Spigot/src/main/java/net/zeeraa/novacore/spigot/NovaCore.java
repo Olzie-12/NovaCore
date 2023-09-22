@@ -304,8 +304,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			return false;
 		}
 
-		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
-
 		try {
 			boolean ok = true;
 			VersionIndependentUtils.get().resetLastError();
@@ -379,6 +377,9 @@ public class NovaCore extends JavaPlugin implements Listener {
 		this.teamManager = null;
 		this.citizensUtils = null;
 		this.noNMSMode = false;
+		
+		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
+		
 		this.reflectionBasedCommandRegistrator = new ReflectionBasedCommandRegistrator();
 
 		this.disableUnregisteringCommands = false;
