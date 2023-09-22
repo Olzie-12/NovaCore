@@ -33,7 +33,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.zeeraa.novacore.commons.utils.ReflectUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
-import net.zeeraa.novacore.spigot.abstraction.INetheriteBoard;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
@@ -51,7 +50,6 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
-import net.zeeraa.novacore.spigot.abstraction.netheriteboard.BPlayerBoard;
 import net.zeeraa.novacore.spigot.version.v1_8_R3.bossbar.NovaExternalBossBarImplementation;
 
 import org.bukkit.Bukkit;
@@ -102,10 +100,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
-import org.json.HTTP;
-
 import java.lang.reflect.Field;
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -1309,10 +1304,5 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 			ex.printStackTrace();
 		}
 		return null;
-	}
-
-	@Override
-	public BPlayerBoard initPlayerBoard(INetheriteBoard netheriteBoard, Player player, Scoreboard scoreboard, String name) throws Exception {
-		return new PlayerBoardV1_8_R3(netheriteBoard, player, scoreboard, name);
 	}
 }
