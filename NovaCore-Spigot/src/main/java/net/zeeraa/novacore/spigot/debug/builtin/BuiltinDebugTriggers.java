@@ -2,6 +2,8 @@ package net.zeeraa.novacore.spigot.debug.builtin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,6 +23,7 @@ import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.DebugTrigger;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NovaScoreboardManager;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.DynamicTextLine;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.StaticTextLine;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.StaticScoreboardTitle;
 import net.zeeraa.novacore.spigot.utils.BukkitSerailization;
@@ -35,7 +38,7 @@ public class BuiltinDebugTriggers {
 			public void onExecute(CommandSender sender, String commandLabel, String[] args) {
 				ModuleManager.require(NovaScoreboardManager.class);
 
-				int lines = 16;
+				int lines = 15;
 
 				NovaScoreboardManager.getInstance().setLineCount(lines);
 				NovaScoreboardManager.getInstance().setDefaultTitle(new StaticScoreboardTitle(ChatColor.GOLD + "Scoreboard Test"));
@@ -43,6 +46,11 @@ public class BuiltinDebugTriggers {
 				for (int i = 0; i < lines; i++) {
 					NovaScoreboardManager.getInstance().setGlobalLine(i, new StaticTextLine(ChatColor.GREEN + "Test line " + i));
 				}
+
+				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+				NovaScoreboardManager.getInstance().setGlobalLine(0, new DynamicTextLine(() -> {
+					return ChatColor.AQUA + sdf.format(new Date());
+				}));
 			}
 
 			@Override

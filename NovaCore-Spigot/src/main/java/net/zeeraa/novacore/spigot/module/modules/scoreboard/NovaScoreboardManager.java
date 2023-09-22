@@ -83,6 +83,7 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 		defaultTitle = new StaticScoreboardTitle("Score");
 		globalLines = new HashMap<>();
 		NovaScoreboardManager.instance = this;
+		defaultLineCount = 15;
 		tickTask = new SimpleTask(getPlugin(), this::tick, 1L);
 	}
 
