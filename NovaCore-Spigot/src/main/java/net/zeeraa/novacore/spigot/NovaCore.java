@@ -84,7 +84,7 @@ import net.zeeraa.novacore.spigot.module.modules.jumppad.JumpPadManager;
 import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
-import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.NovaScoreboardManager;
 import net.zeeraa.novacore.spigot.module.modules.specialevents.NovaSpecialEventsManager;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
@@ -623,7 +623,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		ModuleManager.loadModule(this, ChestLootManager.class);
 		ModuleManager.loadModule(this, MultiverseManager.class, true);
 		ModuleManager.loadModule(this, CompassTracker.class);
-		ModuleManager.loadModule(this, NetherBoardScoreboard.class);
+		ModuleManager.loadModule(this, NovaScoreboardManager.class);
 		ModuleManager.loadModule(this, JumpPadManager.class);
 		ModuleManager.loadModule(this, GlowManager.class);
 		ModuleManager.loadModule(this, CooldownManager.class);

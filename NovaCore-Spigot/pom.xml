@@ -39,6 +39,14 @@
 							<pattern>net.coobird</pattern>
 							<shadedPattern>net.novauniverse.novacore.thridparty.net.coobird</shadedPattern>
 						</relocation>
+						<relocation>
+							<pattern>net.megavex</pattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.net.megavex</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>net.kyori</pattern>
+							<shadedPattern>net.novauniverse.novacore.thridparty.net.kyori</shadedPattern>
+						</relocation>
 					</relocations>
 				</configuration>
 				<executions>
@@ -139,7 +147,8 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<!--Spigot API -->
+		<!--Spigot
+	API -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
@@ -147,6 +156,42 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- Mixed dependencies -->
+		<dependency>
+			<groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+			<artifactId>scoreboard-library-api</artifactId>
+			<version>${scoreboard-library-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+			<artifactId>scoreboard-library-implementation</artifactId>
+			<version>${scoreboard-library-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+			<artifactId>scoreboard-library-modern</artifactId>
+			<version>${scoreboard-library-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+			<artifactId>scoreboard-library-packetevents</artifactId>
+			<version>${scoreboard-library-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+			<artifactId>scoreboard-library-v1_8_R3</artifactId>
+			<version>${scoreboard-library-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.kyori</groupId>
+			<artifactId>adventure-platform-bukkit</artifactId>
+			<version>4.0.1</version>
+			<scope>compile</scope>
+		  </dependency>
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>

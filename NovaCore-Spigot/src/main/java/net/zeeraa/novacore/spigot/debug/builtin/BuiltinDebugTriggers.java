@@ -19,6 +19,10 @@ import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.command.AllowedSenders;
 import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.DebugTrigger;
+import net.zeeraa.novacore.spigot.module.ModuleManager;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.NovaScoreboardManager;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.StaticText;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.StaticScoreboardTitle;
 import net.zeeraa.novacore.spigot.utils.BukkitSerailization;
 import net.zeeraa.novacore.spigot.utils.ItemBuilder;
 import net.zeeraa.novacore.spigot.utils.JSONItemParser;
@@ -26,6 +30,42 @@ import net.zeeraa.novacore.spigot.utils.LocationUtils;
 
 public class BuiltinDebugTriggers {
 	public BuiltinDebugTriggers() {
+		DebugCommandRegistrator.getInstance().addDebugTrigger(new DebugTrigger() {
+			@Override
+			public void onExecute(CommandSender sender, String commandLabel, String[] args) {
+				ModuleManager.require(NovaScoreboardManager.class);
+
+				int lines = 16;
+
+				NovaScoreboardManager.getInstance().setLineCount(lines);
+				NovaScoreboardManager.getInstance().setDefaultTitle(new StaticScoreboardTitle(ChatColor.GOLD + "Scoreboard Test"));
+
+				for (int i = 0; i < lines; i++) {
+					NovaScoreboardManager.getInstance().setGlobalLine(i, new StaticText(ChatColor.GREEN + "Test line " + i));
+				}
+			}
+
+			@Override
+			public PermissionDefault getPermissionDefault() {
+				return PermissionDefault.OP;
+			}
+
+			@Override
+			public String getPermission() {
+				return "novacore.debug.debugscoreboard";
+			}
+
+			@Override
+			public String getName() {
+				return "debugnetherboard";
+			}
+
+			@Override
+			public AllowedSenders getAllowedSenders() {
+				return AllowedSenders.ALL;
+			}
+		});
+
 		DebugCommandRegistrator.getInstance().addDebugTrigger(new DebugTrigger() {
 
 			@Override
