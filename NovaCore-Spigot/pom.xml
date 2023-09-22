@@ -43,10 +43,6 @@
 							<pattern>net.megavex</pattern>
 							<shadedPattern>net.novauniverse.novacore.thridparty.net.megavex</shadedPattern>
 						</relocation>
-						<relocation>
-							<pattern>net.kyori</pattern>
-							<shadedPattern>net.novauniverse.novacore.thridparty.net.kyori</shadedPattern>
-						</relocation>
 					</relocations>
 				</configuration>
 				<executions>
@@ -191,7 +187,7 @@
 			<artifactId>adventure-platform-bukkit</artifactId>
 			<version>4.0.1</version>
 			<scope>compile</scope>
-		  </dependency>
+		</dependency>
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
