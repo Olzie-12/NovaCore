@@ -3,6 +3,8 @@ package net.zeeraa.novacore.spigot;
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
@@ -63,6 +65,8 @@ import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.builtin.BuiltinDebugTriggers;
 import net.zeeraa.novacore.spigot.delayedrunner.DelayedRunnerImplementationSpigot;
 import net.zeeraa.novacore.spigot.language.LanguageReader;
+import net.zeeraa.novacore.spigot.librarymanagement.LibraryBlockedException;
+import net.zeeraa.novacore.spigot.librarymanagement.NovaCoreLibraryManager;
 import net.zeeraa.novacore.spigot.logger.SpigotAbstractionLogger;
 import net.zeeraa.novacore.spigot.loottable.LootTableManager;
 import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootTableLoaderV1;
@@ -132,6 +136,16 @@ public class NovaCore extends JavaPlugin implements Listener {
 	private NovaCoreGameVersion novaCoreGameVersion;
 
 	private boolean disableUnregisteringCommands;
+
+	private File libraryFolder;
+
+	private List<String> blockedLibraries;
+
+	private static final HashMap<String, String> BUILTIN_LIBRARIES = new HashMap<>();
+
+	static {
+		BUILTIN_LIBRARIES.put("net.kyori.adventure.Adventure", "libs.adventure-api-4.14.0.jar");
+	}
 
 	/**
 	 * Check if the NovaCoreGameEngine plugin is enabled
@@ -293,6 +307,14 @@ public class NovaCore extends JavaPlugin implements Listener {
 		return novaParticleProvider;
 	}
 
+	public File getLibraryFolder() {
+		return libraryFolder;
+	}
+
+	public List<String> getBlockedLibraries() {
+		return blockedLibraries;
+	}
+
 	public void setNovaParticleProvider(NovaParticleProvider novaParticleProvider) {
 		this.novaParticleProvider = novaParticleProvider;
 		StaticParticleProviderInstance.setInstance(novaParticleProvider);
@@ -377,16 +399,97 @@ public class NovaCore extends JavaPlugin implements Listener {
 		this.teamManager = null;
 		this.citizensUtils = null;
 		this.noNMSMode = false;
-		
+		this.blockedLibraries = new ArrayList<>();
+
 		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
-		
+
 		this.reflectionBasedCommandRegistrator = new ReflectionBasedCommandRegistrator();
 
 		this.disableUnregisteringCommands = false;
 
 		AbstractionLogger.setLogger(new SpigotAbstractionLogger());
 
+		Log.setConsoleLogLevel(LogLevel.INFO);
+
+		try {
+			if (!logSeverityConfigFile.exists()) {
+				Log.info("NovaCore", "Creating log_severity.yml");
+				FileUtils.touch(logSeverityConfigFile);
+			}
+			logSeverityConfig = YamlConfiguration.loadConfiguration(logSeverityConfigFile);
+
+			if (!logSeverityConfig.contains("severity")) {
+				logSeverityConfig.set("severity", LogLevel.INFO.name());
+				logSeverityConfig.save(logSeverityConfigFile);
+			}
+
+			String logLevelName = logSeverityConfig.getString("severity");
+
+			try {
+				LogLevel logLevel = LogLevel.valueOf(logLevelName);
+				Log.setConsoleLogLevel(logLevel);
+			} catch (Exception e) {
+				Log.warn("NovaCore", "The value " + logLevelName + " is not a valid LogLevel. Resetting it to " + LogLevel.INFO.name());
+				logSeverityConfig.set("severity", LogLevel.INFO.name());
+				logSeverityConfig.save(logSeverityConfigFile);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.fatal("NovaCore", "Failed to read log_severity.yml");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+
 		saveDefaultConfig();
+
+		ConfigurationSection libraryConfig = getConfig().getConfigurationSection("LibrarySettings");
+
+		String libraryFolderOverride = libraryConfig.getString("LibraryDirectoryOverride", "");
+		if (libraryFolderOverride.trim().length() > 0) {
+			libraryFolder = new File(libraryFolderOverride);
+			Log.info("NovaCore", "Using custom library folder path: " + libraryFolder.getAbsolutePath());
+		} else {
+			libraryFolder = new File(getDataFolder().getAbsolutePath() + File.separator + "Lib");
+			Log.info("NovaCore", "Using default library folder path: " + libraryFolder.getAbsolutePath());
+		}
+
+		try {
+			NovaCoreLibraryManager.extractLibrariesToDisk(this, "libs");
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.fatal("NovaCore", "Failed to extract libraries");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+
+		ConfigurationSection blockedLibrariesSection = libraryConfig.getConfigurationSection("BlockedLibraries");
+		blockedLibrariesSection.getKeys(false).forEach(key -> {
+			if (blockedLibrariesSection.getBoolean(key, false)) {
+				Log.info("NovaCore", "Blocking loading of library " + key + " since it is in the list of blocked libraries in config.yml");
+				blockedLibraries.add(key.toLowerCase());
+			}
+		});
+
+		boolean dontShutdownOnFail = libraryConfig.getBoolean("DoNotShutdownOnFail", false);
+		for (String className : BUILTIN_LIBRARIES.keySet()) {
+			String libraryName = BUILTIN_LIBRARIES.get(className);
+			Log.debug("NovaCore", "Checking if library " + libraryName + " needs to be loaded. Class: " + className);
+			try {
+				if (NovaCoreLibraryManager.loadIfClassIsMissing(libraryName, className)) {
+					Log.info("NovaCore", "Loaded library " + libraryName);
+				}
+			} catch (LibraryBlockedException e) {
+				Log.error("NovaCore", "Could not load library " + libraryName + " since its blocked in config.yml");
+			} catch (IOException e) {
+				LogLevel level = dontShutdownOnFail ? LogLevel.ERROR : LogLevel.FATAL;
+				Log.log("NovaCore", "Failed to load library " + libraryName + ". " + e.getClass().getName() + " " + e.getMessage(), level);
+				e.printStackTrace();
+				if (!dontShutdownOnFail) {
+					Bukkit.getPluginManager().disablePlugin(this);
+					return;
+				}
+			}
+		}
 
 		ConfigurationSection commandRegistratorOptions = getConfig().getConfigurationSection("CommandRegistrator");
 
@@ -402,8 +505,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.setDisableColors(true);
 			Log.info("Logger", "Log colors disabled");
 		}
-
-		Log.setConsoleLogLevel(LogLevel.INFO);
 
 		ConfigurationSection webServicesSettings = getConfig().getConfigurationSection("WebServices");
 
@@ -447,33 +548,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 
 		try {
-			FileUtils.forceMkdir(this.getDataFolder());
 			FileUtils.forceMkdir(lootTableFolder);
 
 			if (!jumpPadFile.exists()) {
 				JSONFileUtils.createEmpty(jumpPadFile, JSONFileType.JSONArray);
-			}
-
-			if (!logSeverityConfigFile.exists()) {
-				Log.info("NovaCore", "Creating log_severity.yml");
-				FileUtils.touch(logSeverityConfigFile);
-			}
-			logSeverityConfig = YamlConfiguration.loadConfiguration(logSeverityConfigFile);
-
-			if (!logSeverityConfig.contains("severity")) {
-				logSeverityConfig.set("severity", LogLevel.INFO.name());
-				logSeverityConfig.save(logSeverityConfigFile);
-			}
-
-			String logLevelName = logSeverityConfig.getString("severity");
-
-			try {
-				LogLevel logLevel = LogLevel.valueOf(logLevelName);
-				Log.setConsoleLogLevel(logLevel);
-			} catch (Exception e) {
-				Log.warn("NovaCore", "The value " + logLevelName + " is not a valid LogLevel. Resetting it to " + LogLevel.INFO.name());
-				logSeverityConfig.set("severity", LogLevel.INFO.name());
-				logSeverityConfig.save(logSeverityConfigFile);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -536,7 +614,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			}
 		}
 
-		if(novaParticleProvider == null) {
+		if (novaParticleProvider == null) {
 			Log.warn("NovaCore", "No particle proivider was loaded during startup. Particles spawned by NovaCore will not be visible");
 			novaParticleProvider = new NullParticleProvider();
 		}

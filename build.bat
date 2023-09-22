@@ -1,4 +1,4 @@
-call mvn package
+call mvn clean package
 
 if exist %cd%\NovaCore-Spigot.jar del %cd%\NovaCore-Spigot.jar
 if exist %cd%\NovaCore-Bungeecord.jar del %cd%\NovaCore-Bungeecord.jar

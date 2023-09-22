@@ -12,19 +12,24 @@
 	</properties>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<resources>
-			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>.</directory>
-				<includes>
-					<include>plugin.yml</include>
-					<include>config.yml</include>
-					<include>lang/en-us.json</include>
-				</includes>
-			</resource>
-		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/included_libs</outputDirectory>
+							<includeArtifactIds>adventure-api</includeArtifactIds>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -44,6 +49,14 @@
 							<shadedPattern>net.novauniverse.novacore.thridparty.net.megavex</shadedPattern>
 						</relocation>
 					</relocations>
+					<filters>
+						<filter>
+							<artifact>*</artifact>
+							<excludes>
+								<exclude>net/kyori/**</exclude>
+							</excludes>
+						</filter>
+					</filters>
 				</configuration>
 				<executions>
 					<execution>
@@ -51,6 +64,46 @@
 						<goals>
 							<goal>shade</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin-version}</version>
+				<executions>
+					<execution>
+						<id>copy-libs-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<nonFilteredFileExtensions>
+								<nonFilteredFileExtension>jar</nonFilteredFileExtension>
+							</nonFilteredFileExtensions>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<resource>
+									<targetPath>.</targetPath>
+									<filtering>true</filtering>
+									<directory>.</directory>
+									<includes>
+										<include>plugin.yml</include>
+										<include>config.yml</include>
+										<include>lang/en-us.json</include>
+									</includes>
+								</resource>
+								<resource>
+									<targetPath>./libs</targetPath>
+									<filtering>true</filtering>
+									<directory>${project.build.directory}/included_libs</directory>
+									<includes>
+										<include>*.*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -80,12 +133,10 @@
 					</execution>
 				</executions>
 				<configuration>
-					<excludePackageNames>com.darkblade12.particledemo.*</excludePackageNames>
+					<excludePackageNames>com.darkblade12.particledemo.*,libs.*</excludePackageNames>
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- explicitly define maven-deploy-plugin after other to force exec 
-					order -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>${maven-deploy-plugin-version}</version>
 				<executions>
@@ -99,6 +150,43 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.8,)
+										</versionRange>
+										<goals>
+											<goal>
+												copy-dependencies
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<parent>
 		<groupId>net.novauniverse.novacore</groupId>
@@ -184,9 +272,9 @@
 		</dependency>
 		<dependency>
 			<groupId>net.kyori</groupId>
-			<artifactId>adventure-platform-bukkit</artifactId>
-			<version>4.0.1</version>
-			<scope>compile</scope>
+			<artifactId>adventure-api</artifactId>
+			<version>4.14.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>

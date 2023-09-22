@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.novauniverse.novacore</groupId>
 	<artifactId>novacore-parent</artifactId>
@@ -21,6 +23,10 @@
 		<maven-source-plugin-version>3.2.0</maven-source-plugin-version>
 		<maven-javadoc-plugin-version>3.2.0</maven-javadoc-plugin-version>
 		<maven-deploy-plugin-version>3.0.0-M1</maven-deploy-plugin-version>
+		<maven-dependency-plugin-version>3.2.0</maven-dependency-plugin-version>
+		<maven-assembly-plugin-version>3.3.0</maven-assembly-plugin-version>
+		<maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
+		<maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
 	</properties>
 
 	<distributionManagement>
@@ -51,7 +57,9 @@
 		<module>NovaCore-GameMapDesignToolkit</module>
 	</modules>
 
-	<repositories></repositories>
+	<repositories>
+	</repositories>
 
-	<dependencies></dependencies>
+	<dependencies>
+	</dependencies>
 </project>
