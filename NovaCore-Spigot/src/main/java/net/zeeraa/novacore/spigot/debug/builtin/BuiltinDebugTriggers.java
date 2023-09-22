@@ -21,7 +21,7 @@ import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.DebugTrigger;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.NovaScoreboardManager;
-import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.StaticText;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.StaticTextLine;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.StaticScoreboardTitle;
 import net.zeeraa.novacore.spigot.utils.BukkitSerailization;
 import net.zeeraa.novacore.spigot.utils.ItemBuilder;
@@ -41,7 +41,7 @@ public class BuiltinDebugTriggers {
 				NovaScoreboardManager.getInstance().setDefaultTitle(new StaticScoreboardTitle(ChatColor.GOLD + "Scoreboard Test"));
 
 				for (int i = 0; i < lines; i++) {
-					NovaScoreboardManager.getInstance().setGlobalLine(i, new StaticText(ChatColor.GREEN + "Test line " + i));
+					NovaScoreboardManager.getInstance().setGlobalLine(i, new StaticTextLine(ChatColor.GREEN + "Test line " + i));
 				}
 			}
 

@@ -19,7 +19,7 @@ import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent;
 import net.megavex.scoreboardlibrary.api.team.ScoreboardTeam;
 import net.megavex.scoreboardlibrary.api.team.TeamDisplay;
 import net.megavex.scoreboardlibrary.api.team.TeamManager;
-import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.ScoreboardEntry;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.ScoreboardLine;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.ScoreboardTitle;
 
 public class NovaScoreboardPlayerBoard {
@@ -39,7 +39,7 @@ public class NovaScoreboardPlayerBoard {
 
 	private Map<ChatColor, ScoreboardTeam> colorTeams;
 
-	private Map<Integer, ScoreboardEntry> playerLines;
+	private Map<Integer, ScoreboardLine> playerLines;
 
 	public NovaScoreboardPlayerBoard(NovaScoreboardManager novaScoreboardManager, Player player) {
 		this.novaScoreboardManager = novaScoreboardManager;
@@ -95,12 +95,12 @@ public class NovaScoreboardPlayerBoard {
 		}
 	}
 
-	public void setPlayerLine(int line, ScoreboardEntry content) {
+	public void setPlayerLine(int line, ScoreboardLine content) {
 		playerLines.put(line, content);
 		forceContentUpdate();
 	}
 
-	public void setPlayerLines(Map<Integer, ScoreboardEntry> lines) {
+	public void setPlayerLines(Map<Integer, ScoreboardLine> lines) {
 		lines.forEach((key, val) -> playerLines.put(key, val));
 		forceContentUpdate();
 	}
@@ -118,7 +118,7 @@ public class NovaScoreboardPlayerBoard {
 	private void updateLayout() {
 		SidebarComponent.Builder builder = SidebarComponent.builder();
 
-		Map<Integer, ScoreboardEntry> content = new HashMap<>();
+		Map<Integer, ScoreboardLine> content = new HashMap<>();
 		novaScoreboardManager.getGlobalLines().forEach((k, v) -> content.put(k, v));
 
 		playerLines.forEach((k, v) -> {

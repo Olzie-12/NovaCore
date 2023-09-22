@@ -26,7 +26,7 @@ import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.commons.utils.DelayedRunner;
 import net.zeeraa.novacore.spigot.module.NovaModule;
-import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.ScoreboardEntry;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.ScoreboardLine;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.ScoreboardTitle;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.StaticScoreboardTitle;
 import net.zeeraa.novacore.spigot.tasks.SimpleTask;
@@ -68,7 +68,7 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 	private Map<UUID, NovaScoreboardPlayerBoard> boards;
 
 	private Map<Player, ChatColor> globalPlayerNameColors;
-	private Map<Integer, ScoreboardEntry> globalLines;
+	private Map<Integer, ScoreboardLine> globalLines;
 
 	private ScoreboardLibrary scoreboardLibrary = null;
 
@@ -126,7 +126,7 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 	private void tick() {
 		defaultTitle.tick();
 		boards.values().stream().forEach(NovaScoreboardPlayerBoard::tick);
-		globalLines.values().forEach(ScoreboardEntry::tick);
+		globalLines.values().forEach(ScoreboardLine::tick);
 	}
 
 	public boolean initPlayer(Player player) {
@@ -154,12 +154,12 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 		return globalPlayerNameColors;
 	}
 
-	public void setGlobalLine(int line, ScoreboardEntry content) {
+	public void setGlobalLine(int line, ScoreboardLine content) {
 		globalLines.put(line, content);
 		globalContentUpdate();
 	}
 
-	public void setGlobalLines(Map<Integer, ScoreboardEntry> lines) {
+	public void setGlobalLines(Map<Integer, ScoreboardLine> lines) {
 		lines.forEach((key, val) -> globalLines.put(key, val));
 		globalContentUpdate();
 	}
@@ -174,11 +174,11 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 		globalContentUpdate();
 	}
 
-	public void setPlayerLine(Player player, int line, ScoreboardEntry content) {
+	public void setPlayerLine(Player player, int line, ScoreboardLine content) {
 		getPlayerBoard(player, b -> b.setPlayerLine(line, content));
 	}
 
-	public void setPlayerLine(UUID uuid, int line, ScoreboardEntry content) {
+	public void setPlayerLine(UUID uuid, int line, ScoreboardLine content) {
 		getPlayerBoard(uuid, b -> b.setPlayerLine(line, content));
 	}
 
@@ -226,7 +226,7 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 		return false;
 	}
 
-	public Map<Integer, ScoreboardEntry> getGlobalLines() {
+	public Map<Integer, ScoreboardLine> getGlobalLines() {
 		return globalLines;
 	}
 
