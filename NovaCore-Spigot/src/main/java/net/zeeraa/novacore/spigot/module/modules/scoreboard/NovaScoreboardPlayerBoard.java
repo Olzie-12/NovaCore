@@ -19,6 +19,8 @@ import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent;
 import net.megavex.scoreboardlibrary.api.team.ScoreboardTeam;
 import net.megavex.scoreboardlibrary.api.team.TeamDisplay;
 import net.megavex.scoreboardlibrary.api.team.TeamManager;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
+import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.ScoreboardLine;
 import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.ScoreboardTitle;
 
@@ -60,11 +62,32 @@ public class NovaScoreboardPlayerBoard {
 		title = null;
 
 		for (ChatColor color : NovaScoreboardManager.VALID_COLORS) {
+			boolean needColorFix = false;
+
+			if (VersionIndependentUtils.get().getNovaCoreGameVersion() == NovaCoreGameVersion.V_1_8) {
+				needColorFix = true;
+			}
+
 			String name = "NC_" + color.name();
+
+			if (needColorFix) {
+				name = color + "NC_" + color.name();
+			}
+
+			if (name.length() > 16) {
+				name = name.substring(0, 15);
+			}
+
 			ScoreboardTeam team = teamManager.createIfAbsent(name);
 			NamedTextColor namedColor = NovaScoreboardManager.Utils.ChatColorToNamedTextColor(color);
-			team.defaultDisplay().displayName(Component.text(name));
-			team.defaultDisplay().playerColor(namedColor);
+			TeamDisplay defaultDisplay = team.defaultDisplay();
+			defaultDisplay.displayName(Component.text(name));
+			defaultDisplay.playerColor(namedColor);
+
+			if (needColorFix) {
+				defaultDisplay.prefix(Component.text("" + color));
+			}
+
 			colorTeams.put(color, team);
 		}
 
