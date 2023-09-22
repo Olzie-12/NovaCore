@@ -328,6 +328,7 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 				return NamedTextColor.YELLOW;
 
 			default:
+				Log.warn("NovaScoreboardManager", "Invalid color selected: " + color.name());
 				return NamedTextColor.WHITE;
 			}
 		}

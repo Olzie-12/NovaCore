@@ -157,6 +157,7 @@ public class NovaScoreboardPlayerBoard {
 
 		colorTeams.forEach((color, team) -> {
 			TeamDisplay display = team.defaultDisplay();
+
 			List<String> oldEntries = new ArrayList<>(display.entries());
 			oldEntries.forEach(display::removeEntry);
 			colors.forEach((player, playerColor) -> {

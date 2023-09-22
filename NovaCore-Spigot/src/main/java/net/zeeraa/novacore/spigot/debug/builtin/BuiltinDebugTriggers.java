@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +15,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionDefault;
 import org.json.JSONArray;
 
+import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
@@ -51,6 +53,15 @@ public class BuiltinDebugTriggers {
 				NovaScoreboardManager.getInstance().setGlobalLine(0, new DynamicTextLine(() -> {
 					return ChatColor.AQUA + sdf.format(new Date());
 				}));
+				
+				ChatColor[] randomColors = {ChatColor.RED, ChatColor.GREEN, ChatColor.BLUE};
+				Random random = new Random();
+				
+				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+					ChatColor color = randomColors[random.nextInt(randomColors.length)];
+					Log.trace("NovaDebug", "Set name color of " + player.getName() + " to " + color.name());
+					NovaScoreboardManager.getInstance().setPlayerNameColor(player, color);
+				});
 			}
 
 			@Override
