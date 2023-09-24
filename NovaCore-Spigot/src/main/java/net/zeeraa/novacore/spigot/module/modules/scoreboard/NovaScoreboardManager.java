@@ -92,19 +92,24 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 
 	@Override
 	public void onEnable() throws Exception {
-		if (VersionIndependentUtils.get().getNovaCoreGameVersion().matchesAny(NovaCoreGameVersion.V_1_12, NovaCoreGameVersion.V_1_16)) {
-			if (Bukkit.getServer().getPluginManager().getPlugin("packetevents") == null) {
-				Log.error("NovaScoreboardManager", "To use scoreboard on 1.12 you need to install packetevents https://github.com/retrooper/packetevents");
-				throw new MissingPluginDependencyException("packetevents");
-			}
-		}
-
-		try {
-			scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(getPlugin());
-		} catch (NoPacketAdapterAvailableException e) {
-			// If no packet adapter was found, you can fallback to the no-op implementation:
+		if (VersionIndependentUtils.get().getNovaCoreGameVersion() == NovaCoreGameVersion.V_1_16) {
 			scoreboardLibrary = new NoopScoreboardLibrary();
-			Log.error("NovaScoreboardManager", "Failed to init scoreboard api. All scoreboard calls will be no-oped. " + e.getClass().getName() + " " + e.getMessage());
+			Log.error("NovaScoreboardManager", "1.16 is not supported by this scoreboard implementation due to a bug. This module will still be loaded but all scoreboard calls will be no-oped");
+		} else {
+			if (VersionIndependentUtils.get().getNovaCoreGameVersion().matchesAny(NovaCoreGameVersion.V_1_12, NovaCoreGameVersion.V_1_16)) {
+				if (Bukkit.getServer().getPluginManager().getPlugin("packetevents") == null) {
+					Log.error("NovaScoreboardManager", "To use scoreboard on 1.12 or 1.16 you need to install packetevents https://github.com/retrooper/packetevents");
+					throw new MissingPluginDependencyException("packetevents");
+				}
+			}
+
+			try {
+				scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(getPlugin());
+			} catch (NoPacketAdapterAvailableException e) {
+				// If no packet adapter was found, you can fallback to the no-op implementation:
+				scoreboardLibrary = new NoopScoreboardLibrary();
+				Log.error("NovaScoreboardManager", "Failed to init scoreboard api. All scoreboard calls will be no-oped. " + e.getClass().getName() + " " + e.getMessage());
+			}
 		}
 
 		Task.tryStartTask(tickTask);
