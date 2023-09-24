@@ -43,9 +43,15 @@ public class NovaScoreboardPlayerBoard {
 
 	private Map<Integer, ScoreboardLine> playerLines;
 
+	private boolean doTextUpdate;
+	private boolean doTeamUpdate;
+
 	public NovaScoreboardPlayerBoard(NovaScoreboardManager novaScoreboardManager, Player player) {
 		this.novaScoreboardManager = novaScoreboardManager;
 		this.owner = player;
+
+		doTextUpdate = false;
+		doTeamUpdate = false;
 
 		playerNameColors = new HashMap<>();
 		colorTeams = new HashMap<>();
@@ -99,6 +105,15 @@ public class NovaScoreboardPlayerBoard {
 		if (title != null) {
 			title.tick();
 		}
+
+		if (doTeamUpdate) {
+			updateTeams();
+		}
+
+		if (doTextUpdate) {
+			updateLayout();
+		}
+
 		layout.apply(sidebar);
 	}
 
@@ -193,11 +208,13 @@ public class NovaScoreboardPlayerBoard {
 	}
 
 	public void forceTeamColorUpdate() {
-		updateTeams();
+		doTeamUpdate = true;
+		// updateTeams();
 	}
 
 	public void forceContentUpdate() {
-		updateLayout();
+		doTextUpdate = true;
+		// updateLayout();
 	}
 
 	public Map<Player, ChatColor> getPlayerNameColors() {
