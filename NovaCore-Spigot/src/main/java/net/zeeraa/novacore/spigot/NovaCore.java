@@ -144,7 +144,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 	private static final HashMap<String, String> BUILTIN_LIBRARIES = new HashMap<>();
 
 	static {
-		BUILTIN_LIBRARIES.put("net.kyori.adventure.Adventure", "libs.adventure-api-4.14.0.jar");
+		BUILTIN_LIBRARIES.put("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar");
 	}
 
 	/**
@@ -411,6 +411,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		Log.setConsoleLogLevel(LogLevel.INFO);
 
+		logSeverityConfigFile = new File(this.getDataFolder(), "log_severity.yml");
 		try {
 			if (!logSeverityConfigFile.exists()) {
 				Log.info("NovaCore", "Creating log_severity.yml");
@@ -540,7 +541,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
-		logSeverityConfigFile = new File(this.getDataFolder(), "log_severity.yml");
 
 		this.disableUnregisteringCommands = commandRegistratorOptions.getBoolean("DisableUnregistation");
 		if (disableUnregisteringCommands) {
