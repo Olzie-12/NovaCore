@@ -5,9 +5,11 @@ import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent.Buil
 
 public class ModifiableTextLine extends ScoreboardLine {
 	private String text;
+	private Component comp;
 
 	public ModifiableTextLine(String text) {
 		this.text = text;
+		comp = Component.text(text);
 	}
 
 	public String getText() {
@@ -16,13 +18,19 @@ public class ModifiableTextLine extends ScoreboardLine {
 
 	public void setText(String text) {
 		this.text = text;
+		comp = Component.text(text);
 	}
 
 	@Override
 	public Builder apply(Builder builder) {
 		builder.addDynamicLine(() -> {
-			return Component.text(text);
+			return comp;
 		});
 		return builder;
+	}
+	
+	@Override
+	public Component getComponent() {
+		return comp;
 	}
 }

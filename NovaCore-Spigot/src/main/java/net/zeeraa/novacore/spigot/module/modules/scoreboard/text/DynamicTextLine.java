@@ -19,4 +19,9 @@ public class DynamicTextLine extends ScoreboardLine {
 		});
 		return builder;
 	}
+
+	@Override
+	public Component getComponent() {
+		return Component.text(supplier.get());
+	}
 }
