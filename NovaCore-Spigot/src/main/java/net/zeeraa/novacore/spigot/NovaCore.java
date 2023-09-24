@@ -145,6 +145,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.examination.Examinable", "examination-api-1.3.1-SNAPSHOT.jar"));
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.key.Keyed", "adventure-key-4.14.0.jar"));
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar"));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer", "adventure-text-serializer-legacy-4.14.0.jar"));
+
 	}
 
 	/**
@@ -479,12 +481,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 
 		List<String> blockedLibraries = new ArrayList<>();
-		ConfigurationSection blockedLibrariesSection = libraryConfig.getConfigurationSection("BlockedLibraries");
-		blockedLibrariesSection.getKeys(false).forEach(key -> {
-			if (blockedLibrariesSection.getBoolean(key, false)) {
-				Log.info("NovaCore", "Blocking loading of library " + key + " since it is in the list of blocked libraries in config.yml");
-				blockedLibraries.add(key.toLowerCase());
+		List<String> blockedLibNames = libraryConfig.getStringList("BlockedLibraries");
+		blockedLibNames.forEach(name -> {
+			if (libLoaderVerboseMode) {
+				Log.trace("NovaCore", "Adding library " + name + " to the block list");
 			}
+			blockedLibraries.add(name);
 		});
 
 		if (libLoaderVerboseMode) {

@@ -92,7 +92,7 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 
 	@Override
 	public void onEnable() throws Exception {
-		if (VersionIndependentUtils.get().getNovaCoreGameVersion() == NovaCoreGameVersion.V_1_12) {
+		if (VersionIndependentUtils.get().getNovaCoreGameVersion().matchesAny(NovaCoreGameVersion.V_1_12, NovaCoreGameVersion.V_1_16)) {
 			if (Bukkit.getServer().getPluginManager().getPlugin("packetevents") == null) {
 				Log.error("NovaScoreboardManager", "To use scoreboard on 1.12 you need to install packetevents https://github.com/retrooper/packetevents");
 				throw new MissingPluginDependencyException("packetevents");

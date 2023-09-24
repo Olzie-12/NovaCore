@@ -25,11 +25,9 @@ LibrarySettings:
    
    # If a library is set to true here the library loader will not attempt to load it even it even if it detects that the library does not exist
    # Note that blocking the built in libraries might cause some parts of NovaCore to not work
-   BlockedLibraries:
-      # The following libraries are used by the scoreboard
-      examination-api-1.3.1-SNAPSHOT: false
-      adventure-api-4.14.0: false
-      adventure-key-4.14.0: false
+   # Put the name of the ar files in here without .jar at the end
+   BlockedLibraries: [ "example_library_1" ]
+      
    
    # Set to true to not shutdown if a library fails to load
    DoNotShutdownOnFail: false
