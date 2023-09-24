@@ -15,7 +15,10 @@ If you run 1.17 or later you also need the 1.17 support plugin that can either b
 
 <details>
   <summary> <b>📔 Documentation <tt>CLICK FOR MENU</tt> </b> </summary>
-  
+
+- ### [Nova Game Spigot](https://github.com/NovaUniverse/NovaCore/tree/master/NovaCore-Spigot)
+  - [Command line args.](#-command-line-args)
+
 - ### [Nova Game Engine](https://github.com/NovaUniverse/NovaCore/tree/master/NovaCore-GameEngine)
   - [Starting and Using the game lobby module.](#-using-the-game-lobby-module)
     - [Maps and starting.](#--maps-and-starting)
@@ -32,6 +35,16 @@ If you run 1.17 or later you also need the 1.17 support plugin that can either b
   - [Sending Players Back](#-sending-players-back-to-the-lobby)
 
 </details>
+
+# NovaCore Spigot
+## 🡺 Command line args
+There are a few command line args you can add to directly affect NovaCores behaviour. These arguments only work on the spigot version of NovaCore
+|Argument|Description|Values|
+|---|---|---|
+|-DnovaCoreLogLevel|Sets the console log level|NONE, FATAL, ERROR, WARN, SUCCESS, INFO, DEBUG, TRACE|
+|-DnovacoreClearLibraryFolder|Clears the lib folder every time NovaCore starts|true, false|
+
+# NovaCore GameEngine
 
 ## 🡺 Using the game lobby module
 

@@ -408,6 +408,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		Log.setConsoleLogLevel(LogLevel.INFO);
 
+		String cmdLineArgLogLevel = System.getProperty("novacoreConsoleLogLevel");
+
 		logSeverityConfigFile = new File(this.getDataFolder(), "log_severity.yml");
 		try {
 			if (!logSeverityConfigFile.exists()) {
@@ -439,6 +441,16 @@ public class NovaCore extends JavaPlugin implements Listener {
 			return;
 		}
 
+		if (cmdLineArgLogLevel != null) {
+			try {
+				LogLevel logLevel = LogLevel.valueOf(cmdLineArgLogLevel.toUpperCase());
+				Log.setConsoleLogLevel(logLevel);
+				Log.info("NovaCore", "Setting log level to " + logLevel.name() + " due to -DnovaCoreLogLevel argument being present");
+			} catch (Exception e) {
+				Log.warn("NovaCore", "The value of -DnovaCoreLogLevel=" + cmdLineArgLogLevel + " is not a valid LogLevel");
+			}
+		}
+
 		saveDefaultConfig();
 
 		ConfigurationSection libraryConfig = getConfig().getConfigurationSection("LibrarySettings");
@@ -453,6 +465,17 @@ public class NovaCore extends JavaPlugin implements Listener {
 		} else {
 			libraryFolder = new File(getDataFolder().getAbsolutePath() + File.separator + "Lib");
 			Log.info("NovaCore", "Using default library folder path: " + libraryFolder.getAbsolutePath());
+		}
+
+		if (Boolean.getBoolean("novacoreClearLibraryFolder")) {
+			if (libraryFolder.exists()) {
+				try {
+					FileUtils.deleteDirectory(libraryFolder);
+				} catch (IOException e) {
+					Log.error("NovaCore", "Failed to delete library folder (auto delete enabled by -DnovacoreClearLibraryFolder=true)");
+					e.printStackTrace();
+				}
+			}
 		}
 
 		List<String> blockedLibraries = new ArrayList<>();
@@ -809,8 +832,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		// Unregister plugin channels
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
-		
-		if(libraryManager != null) {
+
+		if (libraryManager != null) {
 			libraryManager.close();
 		}
 	}
