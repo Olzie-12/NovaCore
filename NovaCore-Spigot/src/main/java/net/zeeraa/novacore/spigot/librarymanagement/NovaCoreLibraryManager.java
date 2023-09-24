@@ -156,6 +156,15 @@ public class NovaCoreLibraryManager {
 						Log.debug("NovaCoreLibraryManager", "Found class " + entry.getName());
 					}
 					String className = entry.getName().replace('/', '.').replaceAll(".class$", "");
+					
+					try {
+						Class.forName(className);
+						if (verboseMode) {
+							Log.trace("NovaCoreLibraryManager", "Skipping class " + className + " since it was already found");
+						}
+						continue;
+					} catch(ClassNotFoundException e) {
+					}
 
 					try {
 						Class<?> clazz = classLoader.loadClass(className);
