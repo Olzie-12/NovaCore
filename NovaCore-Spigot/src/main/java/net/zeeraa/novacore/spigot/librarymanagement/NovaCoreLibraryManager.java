@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -19,12 +18,17 @@ import java.util.jar.JarFile;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.commons.log.Log;
-import net.zeeraa.novacore.spigot.NovaCore;
 
 public class NovaCoreLibraryManager {
-	private static List<URLClassLoader> loaders = new ArrayList<>();
+	private List<URLClassLoader> loaders = new ArrayList<>();
 
-	public static void closeClassLoaders() {
+	private Plugin owner;
+	private File libFolder;
+	private List<String> blockedLibraries;
+	private boolean verboseMode;
+	private ClassLoader parentClassLoader;
+	
+	public void close() {
 		loaders.forEach(t -> {
 			try {
 				t.close();
@@ -35,8 +39,16 @@ public class NovaCoreLibraryManager {
 		loaders.clear();
 	}
 
-	public static void extractLibrariesToDisk(Plugin owner, String pathInJar) throws IOException {
-		Files.createDirectories(Paths.get(NovaCore.getInstance().getLibraryFolder().getAbsolutePath()));
+	public NovaCoreLibraryManager(Plugin owner, File libFolder, List<String> blockedLibraries, boolean verboseMode, ClassLoader parentClassLoader) {
+		this.owner = owner;
+		this.libFolder = libFolder;
+		this.blockedLibraries = blockedLibraries;
+		this.verboseMode = verboseMode;
+		this.parentClassLoader = parentClassLoader;
+	}
+
+	public void extractLibrariesToDisk(String pathInJar) throws IOException {
+		Files.createDirectories(Paths.get(libFolder.getAbsolutePath()));
 		File file = new File(owner.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
 
 		JarFile jar = new JarFile(file);
@@ -46,7 +58,7 @@ public class NovaCoreLibraryManager {
 			JarEntry entry = entries.nextElement();
 			String entryName = entry.getName();
 			if (entryName.startsWith(pathInJar + "/") && !entry.isDirectory()) {
-				File output = new File(NovaCore.getInstance().getLibraryFolder().getAbsolutePath() + File.separator + entryName.substring(pathInJar.length() + 1));
+				File output = new File(libFolder.getAbsolutePath() + File.separator + entryName.substring(pathInJar.length() + 1));
 				if (!output.exists()) {
 					Log.trace("NovaCoreLibraryManager", "Extracting lib " + pathInJar + " to " + output.getAbsolutePath());
 					InputStream inputStream = owner.getClass().getClassLoader().getResourceAsStream(entryName);
@@ -64,7 +76,7 @@ public class NovaCoreLibraryManager {
 		jar.close();
 	}
 
-	public static boolean loadIfClassIsMissing(String libraryName, String className) throws LibraryBlockedException, IOException {
+	public boolean loadIfClassIsMissing(String libraryName, String className) throws LibraryBlockedException, IOException {
 		try {
 			Class.forName(className);
 			return false; // Already loaded
@@ -72,12 +84,12 @@ public class NovaCoreLibraryManager {
 		}
 
 		String libraryFileNameNoExt = removeExtension(libraryName);
-		File libraryFile = new File(NovaCore.getInstance().getLibraryFolder().getAbsolutePath() + File.separator + libraryFileNameNoExt + ".jar");
+		File libraryFile = new File(libFolder.getAbsolutePath() + File.separator + libraryFileNameNoExt + ".jar");
 		if (!libraryFile.exists()) {
 			throw new FileNotFoundException("Cant find library " + libraryFile.getAbsolutePath());
 		}
 
-		if (NovaCore.getInstance().getBlockedLibraries().contains(libraryFileNameNoExt.toLowerCase())) {
+		if (blockedLibraries.contains(libraryFileNameNoExt.toLowerCase())) {
 			throw new LibraryBlockedException("The library " + libraryName + " is blocked in config.yml");
 		}
 
@@ -86,33 +98,18 @@ public class NovaCoreLibraryManager {
 		return true;
 	}
 
-	private static URL getJarUrl(final File file) throws IOException {
-		return new URL("jar:" + file.toURI().toURL().toExternalForm() + "!/");
-	}
-
-	private static void addClassPath(final URL url) throws IOException {
-		final URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		final Class<URLClassLoader> sysclass = URLClassLoader.class;
-		try {
-			final Method method = sysclass.getDeclaredMethod("addURL",
-					new Class[] { URL.class });
-			method.setAccessible(true);
-			method.invoke(sysloader, new Object[] { url });
-		} catch (final Throwable t) {
-			t.printStackTrace();
-			throw new IOException("Error adding " + url + " to system classloader");
-		}
-	}
-
-	public static void loadJarFile(File jarFile) throws IOException {
+	public void loadJarFile(File jarFile) throws IOException {
 		URL jarUrl = jarFile.toURI().toURL();
-		URLClassLoader classLoader = new URLClassLoader(new URL[] { jarUrl });
+		URLClassLoader classLoader = new URLClassLoader(new URL[] { jarUrl }, parentClassLoader);
 		try (JarFile jar = new JarFile(jarFile)) {
 			Enumeration<JarEntry> entries = jar.entries();
 			while (entries.hasMoreElements()) {
 				JarEntry entry = entries.nextElement();
 
 				if (entry.getName().endsWith(".class")) {
+					if (verboseMode) {
+						Log.debug("NovaCoreLibraryManager", "Found class " + entry.getName());
+					}
 					String className = entry.getName().replace('/', '.').replaceAll(".class$", "");
 					try {
 						classLoader.loadClass(className);
@@ -125,7 +122,7 @@ public class NovaCoreLibraryManager {
 		loaders.add(classLoader);
 	}
 
-	private static String removeExtension(String filePath) {
+	private String removeExtension(String filePath) {
 		int lastDotIndex = filePath.lastIndexOf(".");
 		if (lastDotIndex != -1) {
 			return filePath.substring(0, lastDotIndex);

@@ -137,13 +137,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private boolean disableUnregisteringCommands;
 
-	private File libraryFolder;
-
-	private List<String> blockedLibraries;
+	private NovaCoreLibraryManager libraryManager;
 
 	private static final HashMap<String, String> BUILTIN_LIBRARIES = new HashMap<>();
 
 	static {
+		BUILTIN_LIBRARIES.put("net.kyori.examination.Examinable", "examination-api-1.3.1-SNAPSHOT.jar");
 		BUILTIN_LIBRARIES.put("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar");
 	}
 
@@ -307,12 +306,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 		return novaParticleProvider;
 	}
 
-	public File getLibraryFolder() {
-		return libraryFolder;
-	}
-
-	public List<String> getBlockedLibraries() {
-		return blockedLibraries;
+	public NovaCoreLibraryManager getLibraryManager() {
+		return libraryManager;
 	}
 
 	public void setNovaParticleProvider(NovaParticleProvider novaParticleProvider) {
@@ -399,7 +394,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		this.teamManager = null;
 		this.citizensUtils = null;
 		this.noNMSMode = false;
-		this.blockedLibraries = new ArrayList<>();
+		this.libraryManager = null;
 
 		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
 
@@ -445,6 +440,9 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		ConfigurationSection libraryConfig = getConfig().getConfigurationSection("LibrarySettings");
 
+		boolean libLoaderVerboseMode = libraryConfig.getBoolean("Verbose", false);
+
+		File libraryFolder;
 		String libraryFolderOverride = libraryConfig.getString("LibraryDirectoryOverride", "");
 		if (libraryFolderOverride.trim().length() > 0) {
 			libraryFolder = new File(libraryFolderOverride);
@@ -454,15 +452,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.info("NovaCore", "Using default library folder path: " + libraryFolder.getAbsolutePath());
 		}
 
-		try {
-			NovaCoreLibraryManager.extractLibrariesToDisk(this, "libs");
-		} catch (IOException e) {
-			e.printStackTrace();
-			Log.fatal("NovaCore", "Failed to extract libraries");
-			Bukkit.getPluginManager().disablePlugin(this);
-			return;
-		}
-
+		List<String> blockedLibraries = new ArrayList<>();
 		ConfigurationSection blockedLibrariesSection = libraryConfig.getConfigurationSection("BlockedLibraries");
 		blockedLibrariesSection.getKeys(false).forEach(key -> {
 			if (blockedLibrariesSection.getBoolean(key, false)) {
@@ -471,12 +461,27 @@ public class NovaCore extends JavaPlugin implements Listener {
 			}
 		});
 
+		if (libLoaderVerboseMode) {
+			Log.info("NovaCore", "Verbose mode enabled for library loader");
+		}
+
+		libraryManager = new NovaCoreLibraryManager(this, libraryFolder, blockedLibraries, libLoaderVerboseMode, getClassLoader());
+
+		try {
+			libraryManager.extractLibrariesToDisk("libs");
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.fatal("NovaCore", "Failed to extract libraries");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+
 		boolean dontShutdownOnFail = libraryConfig.getBoolean("DoNotShutdownOnFail", false);
 		for (String className : BUILTIN_LIBRARIES.keySet()) {
 			String libraryName = BUILTIN_LIBRARIES.get(className);
 			Log.debug("NovaCore", "Checking if library " + libraryName + " needs to be loaded. Class: " + className);
 			try {
-				if (NovaCoreLibraryManager.loadIfClassIsMissing(libraryName, className)) {
+				if (libraryManager.loadIfClassIsMissing(libraryName, className)) {
 					Log.info("NovaCore", "Loaded library " + libraryName);
 				}
 			} catch (LibraryBlockedException e) {
@@ -782,7 +787,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		// VersionIndependentUtils.get().getPacketManager().removeOnlinePlayers();
 		// Cancel scheduler tasks
 		Bukkit.getScheduler().cancelTasks(this);
 
@@ -804,6 +808,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		// Unregister plugin channels
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
+		
+		if(libraryManager != null) {
+			libraryManager.close();
+		}
 	}
 
 	/**
