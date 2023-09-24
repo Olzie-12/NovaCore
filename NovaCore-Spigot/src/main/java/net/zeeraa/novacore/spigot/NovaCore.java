@@ -145,9 +145,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.examination.Examinable", "examination-api-1.3.1-SNAPSHOT.jar"));
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.key.Keyed", "adventure-key-4.14.0.jar"));
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar"));
-		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.text.serializer.ComponentSerializer", "adventure-api-4.14.0.jar")); // Fix issue when packetevents is installed  
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.text.serializer.ComponentSerializer", "adventure-api-4.14.0.jar")); // Fix issue when packetevents is installed
 		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer", "adventure-text-serializer-legacy-4.14.0.jar"));
-
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.json.JSONComponentSerializer", "adventure-text-serializer-json-4.14.0.jar"));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.gson.GsonComponentSerializer", "adventure-text-serializer-gson-4.14.0.jar"));
 	}
 
 	/**
