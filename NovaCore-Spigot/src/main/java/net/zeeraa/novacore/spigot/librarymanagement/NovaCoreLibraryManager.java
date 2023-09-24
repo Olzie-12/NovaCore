@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -13,8 +14,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.commons.log.Log;
@@ -27,7 +31,9 @@ public class NovaCoreLibraryManager {
 	private List<String> blockedLibraries;
 	private boolean verboseMode;
 	private ClassLoader parentClassLoader;
-	
+
+	private Map<String, Class<?>> pluginClassLoaderClassMap;
+
 	public void close() {
 		loaders.forEach(t -> {
 			try {
@@ -39,12 +45,43 @@ public class NovaCoreLibraryManager {
 		loaders.clear();
 	}
 
+	@SuppressWarnings("unchecked")
 	public NovaCoreLibraryManager(Plugin owner, File libFolder, List<String> blockedLibraries, boolean verboseMode, ClassLoader parentClassLoader) {
 		this.owner = owner;
 		this.libFolder = libFolder;
 		this.blockedLibraries = blockedLibraries;
 		this.verboseMode = verboseMode;
 		this.parentClassLoader = parentClassLoader;
+
+		if (verboseMode) {
+			Log.trace("NovaCoreLibraryManager", "Enumerating fields in " + parentClassLoader.getClass().getName());
+			for (Field field : parentClassLoader.getClass().getDeclaredFields()) {
+				Log.trace("NovaCoreLibraryManager", "Detected field named: " + field.getName());
+			}
+		}
+
+		if (parentClassLoader.getClass().getName().equalsIgnoreCase("org.bukkit.plugin.java.PluginClassLoader")) {
+			Field field = null;
+			try {
+				field = parentClassLoader.getClass().getDeclaredField("classes");
+			} catch (NoSuchFieldException e) {
+				if (verboseMode) {
+					Log.debug("NovaCoreLibraryManager", "Could not find field classes in " + parentClassLoader.getClass().getName());
+				}
+			}
+
+			if (field == null) {
+				throw new RuntimeException("Failed to start NovaCoreLibraryManager. " + parentClassLoader.getClass().getName() + " does not contain a field for classes");
+			}
+			field.setAccessible(true);
+			try {
+				pluginClassLoaderClassMap = (Map<String, Class<?>>) field.get(parentClassLoader);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new NestableRuntimeException("Failed to start NovaCoreLibraryManager. Could not set field " + field.getName() + " to accessible in " + parentClassLoader.getClass().getName(), e);
+			}
+		} else {
+			throw new RuntimeException("Failed to start NovaCoreLibraryManager. The provided class loader of type " + parentClassLoader.getClass().getName() + " is not supported by novacore");
+		}
 	}
 
 	public void extractLibrariesToDisk(String pathInJar) throws IOException {
@@ -77,8 +114,12 @@ public class NovaCoreLibraryManager {
 	}
 
 	public boolean loadIfClassIsMissing(String libraryName, String className) throws LibraryBlockedException, IOException {
+		Log.debug("NovaCoreLibraryManager", "Checking if " + libraryName + " needs to be loaded (" + className + ")");
 		try {
 			Class.forName(className);
+			if (verboseMode) {
+				Log.debug("NovaCoreLibraryManager", "No need to load " + libraryName + " because " + className + " was already found");
+			}
 			return false; // Already loaded
 		} catch (ClassNotFoundException e) {
 		}
@@ -106,13 +147,24 @@ public class NovaCoreLibraryManager {
 			while (entries.hasMoreElements()) {
 				JarEntry entry = entries.nextElement();
 
+				if (entry.getName().endsWith("module-info.class")) {
+					continue;
+				}
+
 				if (entry.getName().endsWith(".class")) {
 					if (verboseMode) {
 						Log.debug("NovaCoreLibraryManager", "Found class " + entry.getName());
 					}
 					String className = entry.getName().replace('/', '.').replaceAll(".class$", "");
+
 					try {
-						classLoader.loadClass(className);
+						Class<?> clazz = classLoader.loadClass(className);
+						if (!pluginClassLoaderClassMap.containsKey(clazz.getName())) {
+							if (verboseMode) {
+								Log.debug("NovaCoreLibraryManager", "Adding class " + clazz.getName() + " to plugin class loader");
+							}
+							pluginClassLoaderClassMap.put(clazz.getName(), clazz);
+						}
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
@@ -66,6 +65,7 @@ import net.zeeraa.novacore.spigot.debug.builtin.BuiltinDebugTriggers;
 import net.zeeraa.novacore.spigot.delayedrunner.DelayedRunnerImplementationSpigot;
 import net.zeeraa.novacore.spigot.language.LanguageReader;
 import net.zeeraa.novacore.spigot.librarymanagement.LibraryBlockedException;
+import net.zeeraa.novacore.spigot.librarymanagement.LibraryEntry;
 import net.zeeraa.novacore.spigot.librarymanagement.NovaCoreLibraryManager;
 import net.zeeraa.novacore.spigot.logger.SpigotAbstractionLogger;
 import net.zeeraa.novacore.spigot.loottable.LootTableManager;
@@ -139,11 +139,12 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private NovaCoreLibraryManager libraryManager;
 
-	private static final HashMap<String, String> BUILTIN_LIBRARIES = new HashMap<>();
+	private static final List<LibraryEntry> BUILTIN_LIBRARIES = new ArrayList<>();
 
 	static {
-		BUILTIN_LIBRARIES.put("net.kyori.examination.Examinable", "examination-api-1.3.1-SNAPSHOT.jar");
-		BUILTIN_LIBRARIES.put("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar");
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.examination.Examinable", "examination-api-1.3.1-SNAPSHOT.jar"));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.key.Keyed", "adventure-key-4.14.0.jar"));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar"));
 	}
 
 	/**
@@ -402,6 +403,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		this.disableUnregisteringCommands = false;
 
+		NovaCommons.setAbstractConsoleSender(new AbstractBukkitConsoleSender());
 		AbstractionLogger.setLogger(new SpigotAbstractionLogger());
 
 		Log.setConsoleLogLevel(LogLevel.INFO);
@@ -424,6 +426,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			try {
 				LogLevel logLevel = LogLevel.valueOf(logLevelName);
 				Log.setConsoleLogLevel(logLevel);
+				Log.info("NovaCore", "Log level is " + logLevel.name());
 			} catch (Exception e) {
 				Log.warn("NovaCore", "The value " + logLevelName + " is not a valid LogLevel. Resetting it to " + LogLevel.INFO.name());
 				logSeverityConfig.set("severity", LogLevel.INFO.name());
@@ -477,18 +480,17 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 
 		boolean dontShutdownOnFail = libraryConfig.getBoolean("DoNotShutdownOnFail", false);
-		for (String className : BUILTIN_LIBRARIES.keySet()) {
-			String libraryName = BUILTIN_LIBRARIES.get(className);
-			Log.debug("NovaCore", "Checking if library " + libraryName + " needs to be loaded. Class: " + className);
+		for (LibraryEntry lib : BUILTIN_LIBRARIES) {
+			Log.debug("NovaCore", "Checking if library " + lib.getLibraryName() + " needs to be loaded. Class: " + lib.getClassName());
 			try {
-				if (libraryManager.loadIfClassIsMissing(libraryName, className)) {
-					Log.info("NovaCore", "Loaded library " + libraryName);
+				if (libraryManager.loadIfClassIsMissing(lib.getLibraryName(), lib.getClassName())) {
+					Log.info("NovaCore", "Loaded library " + lib.getLibraryName());
 				}
 			} catch (LibraryBlockedException e) {
-				Log.error("NovaCore", "Could not load library " + libraryName + " since its blocked in config.yml");
+				Log.error("NovaCore", "Could not load library " + lib.getLibraryName() + " since its blocked in config.yml");
 			} catch (IOException e) {
 				LogLevel level = dontShutdownOnFail ? LogLevel.ERROR : LogLevel.FATAL;
-				Log.log("NovaCore", "Failed to load library " + libraryName + ". " + e.getClass().getName() + " " + e.getMessage(), level);
+				Log.log("NovaCore", "Failed to load library " + lib.getLibraryName() + ". " + e.getClass().getName() + " " + e.getMessage(), level);
 				e.printStackTrace();
 				if (!dontShutdownOnFail) {
 					Bukkit.getPluginManager().disablePlugin(this);
@@ -499,7 +501,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		ConfigurationSection commandRegistratorOptions = getConfig().getConfigurationSection("CommandRegistrator");
 
-		NovaCommons.setAbstractConsoleSender(new AbstractBukkitConsoleSender());
 		NovaCommons.setAbstractPlayerMessageSender(new AbstractBukkitPlayerMessageSender());
 		NovaCommons.setAbstractSimpleTaskCreator(new BukkitSimpleTaskCreator());
 		NovaCommons.setAbstractAsyncManager(new BukkitAsyncManager(this));
