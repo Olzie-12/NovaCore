@@ -447,7 +447,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 				Log.setConsoleLogLevel(logLevel);
 				Log.info("NovaCore", "Setting log level to " + logLevel.name() + " due to -DnovaCoreLogLevel argument being present");
 			} catch (Exception e) {
-				Log.warn("NovaCore", "The value of -DnovaCoreLogLevel=" + cmdLineArgLogLevel + " is not a valid LogLevel");
+				Log.error("NovaCore", "The value of -DnovaCoreLogLevel=" + cmdLineArgLogLevel + " is not a valid LogLevel");
 			}
 		}
 
