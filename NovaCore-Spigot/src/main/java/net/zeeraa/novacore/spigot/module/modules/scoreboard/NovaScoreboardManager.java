@@ -351,6 +351,10 @@ public class NovaScoreboardManager extends NovaModule implements Listener {
 
 	public void clear() {
 		globalLines.clear();
+		this.clearAllPlayerLines();
+	}
+
+	public void clearAllPlayerLines() {
 		boards.values().forEach(b -> b.clearAllPlayerlLines());
 	}
 }
