@@ -42,6 +42,15 @@ public enum NovaCoreGameVersion {
 		return this.getVersionId() >= version.getVersionId();
 	}
 
+	public boolean matchesAny(NovaCoreGameVersion... versions) {
+		for (NovaCoreGameVersion version : versions) {
+			if (version.getVersionId() == this.versionId) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean hasOffhand() {
 		return this != V_1_8;
 	}

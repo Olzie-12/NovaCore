@@ -2,9 +2,11 @@ package net.zeeraa.novacore.spigot.debug.builtin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,12 +15,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionDefault;
 import org.json.JSONArray;
 
+import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.command.AllowedSenders;
 import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.DebugTrigger;
+import net.zeeraa.novacore.spigot.module.ModuleManager;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.NovaScoreboardManager;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.DynamicTextLine;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.text.StaticTextLine;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.title.StaticScoreboardTitle;
 import net.zeeraa.novacore.spigot.utils.BukkitSerailization;
 import net.zeeraa.novacore.spigot.utils.ItemBuilder;
 import net.zeeraa.novacore.spigot.utils.JSONItemParser;
@@ -26,6 +35,56 @@ import net.zeeraa.novacore.spigot.utils.LocationUtils;
 
 public class BuiltinDebugTriggers {
 	public BuiltinDebugTriggers() {
+		DebugCommandRegistrator.getInstance().addDebugTrigger(new DebugTrigger() {
+			@Override
+			public void onExecute(CommandSender sender, String commandLabel, String[] args) {
+				ModuleManager.require(NovaScoreboardManager.class);
+
+				int lines = 15;
+
+				NovaScoreboardManager.getInstance().setLineCount(lines);
+				NovaScoreboardManager.getInstance().setDefaultTitle(new StaticScoreboardTitle(ChatColor.GOLD + "Scoreboard Test"));
+
+				for (int i = 0; i < lines; i++) {
+					NovaScoreboardManager.getInstance().setGlobalLine(i, new StaticTextLine(ChatColor.GREEN + "Test line " + i));
+				}
+
+				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+				NovaScoreboardManager.getInstance().setGlobalLine(0, new DynamicTextLine(() -> {
+					return ChatColor.AQUA + sdf.format(new Date());
+				}));
+				
+				ChatColor[] randomColors = {ChatColor.RED, ChatColor.GREEN, ChatColor.BLUE};
+				Random random = new Random();
+				
+				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+					ChatColor color = randomColors[random.nextInt(randomColors.length)];
+					Log.trace("NovaDebug", "Set name color of " + player.getName() + " to " + color.name());
+					NovaScoreboardManager.getInstance().setPlayerNameColor(player, color);
+				});
+			}
+
+			@Override
+			public PermissionDefault getPermissionDefault() {
+				return PermissionDefault.OP;
+			}
+
+			@Override
+			public String getPermission() {
+				return "novacore.debug.debugscoreboard";
+			}
+
+			@Override
+			public String getName() {
+				return "debugnetherboard";
+			}
+
+			@Override
+			public AllowedSenders getAllowedSenders() {
+				return AllowedSenders.ALL;
+			}
+		});
+
 		DebugCommandRegistrator.getInstance().addDebugTrigger(new DebugTrigger() {
 
 			@Override

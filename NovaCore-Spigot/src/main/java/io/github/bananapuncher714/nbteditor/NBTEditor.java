@@ -532,6 +532,7 @@ public final class NBTEditor {
 	}
 
 	// Gets the NBTTagCompound
+	@SuppressWarnings("deprecation")
 	private static Object getCompound(ItemStack item) {
 		if (item == null) {
 			return null;
@@ -571,6 +572,7 @@ public final class NBTEditor {
 			Object stack = null;
 			stack = getMethod("asNMSCopy").invoke(null, item);
 
+			@SuppressWarnings("deprecation")
 			Object tag = getNMSClass("NBTTagCompound").newInstance();
 
 			tag = getMethod("save").invoke(stack, tag);
@@ -592,6 +594,7 @@ public final class NBTEditor {
 	 *              NBTTagList
 	 * @return A new ItemStack with the updated NBT tags
 	 */
+	@SuppressWarnings("deprecation")
 	private static ItemStack setItemTag(ItemStack item, Object value, Object... keys) {
 		if (item == null) {
 			return null;
@@ -675,6 +678,7 @@ public final class NBTEditor {
 		try {
 			Object NMSEntity = getMethod("getEntityHandle").invoke(entity);
 
+			@SuppressWarnings("deprecation")
 			Object tag = getNMSClass("NBTTagCompound").newInstance();
 
 			getMethod("getEntityTag").invoke(NMSEntity, tag);
@@ -701,6 +705,7 @@ public final class NBTEditor {
 		try {
 			Object NMSEntity = getMethod("getEntityHandle").invoke(entity);
 
+			@SuppressWarnings("deprecation")
 			Object tag = getNMSClass("NBTTagCompound").newInstance();
 
 			getMethod("getEntityTag").invoke(NMSEntity, tag);
@@ -728,6 +733,7 @@ public final class NBTEditor {
 		try {
 			Object NMSEntity = getMethod("getEntityHandle").invoke(entity);
 
+			@SuppressWarnings("deprecation")
 			Object tag = getNMSClass("NBTTagCompound").newInstance();
 
 			getMethod("getEntityTag").invoke(NMSEntity, tag);
@@ -766,6 +772,7 @@ public final class NBTEditor {
 	}
 
 	// Gets the NBTTagCompound
+	@SuppressWarnings("deprecation")
 	private static Object getCompound(Block block) {
 		try {
 			if (block == null || !getNMSClass("CraftBlockState").isInstance(block.getState())) {
@@ -801,6 +808,7 @@ public final class NBTEditor {
 	 * @param keys  Keys in descending order
 	 * @return An NBTCompound
 	 */
+	@SuppressWarnings("deprecation")
 	private static NBTCompound getBlockNBTTag(Block block, Object... keys) {
 		try {
 			if (block == null || !getNMSClass("CraftBlockState").isInstance(block.getState())) {
@@ -838,6 +846,7 @@ public final class NBTEditor {
 	 * @param keys  The keys to set, String for NBTCompound, int or null for an
 	 *              NBTTagList
 	 */
+	@SuppressWarnings("deprecation")
 	private static void setBlockTag(Block block, Object value, Object... keys) {
 		try {
 			if (block == null || !getNMSClass("CraftBlockState").isInstance(block.getState())) {
@@ -1207,6 +1216,7 @@ public final class NBTEditor {
 	 * 
 	 * @return A new NBTCompound that contains a NBTTagCompound object.
 	 */
+	@SuppressWarnings("deprecation")
 	public static NBTCompound getEmptyNBTCompound() {
 		try {
 			return new NBTCompound(getNMSClass("NBTTagCompound").newInstance());
@@ -1216,6 +1226,7 @@ public final class NBTEditor {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void setTag(Object tag, Object value, Object... keys) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Object wrappedValue;
 		// Get the real value of what we want to set here

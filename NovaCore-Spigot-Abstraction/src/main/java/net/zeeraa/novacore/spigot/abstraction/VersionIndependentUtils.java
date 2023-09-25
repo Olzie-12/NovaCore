@@ -38,7 +38,6 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
-import net.zeeraa.novacore.spigot.abstraction.netheriteboard.BPlayerBoard;
 
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
@@ -1008,6 +1007,4 @@ public abstract class VersionIndependentUtils {
 
 	@Nullable
 	public abstract Block getArrowAttachedBlock(Arrow arrow);
-	
-	public abstract BPlayerBoard initPlayerBoard(INetheriteBoard netheriteBoard, Player player, Scoreboard scoreboard, String name) throws Exception;
 }
