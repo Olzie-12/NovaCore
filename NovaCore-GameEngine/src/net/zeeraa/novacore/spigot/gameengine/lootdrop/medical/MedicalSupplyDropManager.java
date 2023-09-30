@@ -141,6 +141,7 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 	public boolean spawnDrop(Location location, String lootTable, boolean announce) {
 		if (canSpawnAt(location)) {
 			LootDropSpawnEvent event = new LootDropSpawnEvent(location, lootTable, "medical", !announce);
+			Bukkit.getServer().getPluginManager().callEvent(event);
 			if (!event.isCancelled()) {
 
 				MedicalSupplyDropEffect effect = new MedicalSupplyDropEffect(location, lootTable);

@@ -60,6 +60,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 
 	public void refillChests(boolean announce) {
 		ChestRefillEvent event = new ChestRefillEvent(announce);
+		Bukkit.getServer().getPluginManager().callEvent(event);
 		if (!event.isCancelled()) {
 			enderChests.clear();
 			chests.clear();
