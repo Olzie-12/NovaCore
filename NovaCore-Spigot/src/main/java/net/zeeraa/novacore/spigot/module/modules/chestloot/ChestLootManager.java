@@ -28,6 +28,7 @@ import net.zeeraa.novacore.spigot.language.LanguageManager;
 import net.zeeraa.novacore.spigot.loottable.LootTable;
 import net.zeeraa.novacore.spigot.module.NovaModule;
 import net.zeeraa.novacore.spigot.module.modules.chestloot.events.ChestFillEvent;
+import net.zeeraa.novacore.spigot.module.modules.chestloot.events.ChestRefillEvent;
 
 public class ChestLootManager extends NovaModule implements Listener {
 	private static ChestLootManager instance;
@@ -58,14 +59,16 @@ public class ChestLootManager extends NovaModule implements Listener {
 	}
 
 	public void refillChests(boolean announce) {
-		enderChests.clear();
-		chests.clear();
-		if (announce) {
-			
-			Bukkit.getOnlinePlayers().forEach(player -> {
-				player.sendMessage(LanguageManager.getString(player, "novacore.game.modules.chestloot.refill"));
-				VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1F);
-			});
+		ChestRefillEvent event = new ChestRefillEvent(announce);
+		if (!event.isCancelled()) {
+			enderChests.clear();
+			chests.clear();
+			if (event.isShowMessage()) {
+				Bukkit.getOnlinePlayers().forEach(player -> {
+					player.sendMessage(LanguageManager.getString(player, "novacore.game.modules.chestloot.refill"));
+					VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1F);
+				});
+			}
 		}
 	}
 
@@ -202,7 +205,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 							inventory.setItem(slot, item);
 						}
 					}
-					
+
 					for (BlockFace face : chestBlockFaces) {
 						Block nextBlock = block.getRelative(face);
 

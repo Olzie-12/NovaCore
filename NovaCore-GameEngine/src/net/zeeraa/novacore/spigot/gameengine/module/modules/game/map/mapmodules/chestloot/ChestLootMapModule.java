@@ -8,7 +8,6 @@ import net.zeeraa.novacore.commons.utils.RandomGenerator;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.Game;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.GameMap;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.chestloot.event.ChestRefillEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.DelayedGameTrigger;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.GameTrigger;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.TriggerCallback;
@@ -46,12 +45,7 @@ public class ChestLootMapModule extends MapModule {
 		this.trigger = new DelayedGameTrigger("novacore.chest.refill", minRefillTime * 20, new TriggerCallback() {
 			@Override
 			public void run(GameTrigger trigger, TriggerFlag reason) {
-				ChestRefillEvent event = new ChestRefillEvent(announceRefills);
-				if (!event.isCancelled()) {
-					ChestLootManager.getInstance().refillChests(event.isShowMessage());
-				} else {
-					Log.debug("ChestLootMapModule", "Chest refill cancelled");
-				}
+				ChestLootManager.getInstance().refillChests(announceRefills);
 				startTask();
 			}
 		});

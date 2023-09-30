@@ -1,4 +1,4 @@
-package net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.chestloot.event;
+package net.zeeraa.novacore.spigot.module.modules.chestloot.events;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
