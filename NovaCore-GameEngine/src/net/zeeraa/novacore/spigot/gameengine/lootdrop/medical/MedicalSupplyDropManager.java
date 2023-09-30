@@ -33,6 +33,7 @@ import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.NovaModule;
+import net.zeeraa.novacore.spigot.module.modules.lootdrop.event.LootDropSpawnEvent;
 import net.zeeraa.novacore.spigot.module.modules.lootdrop.particles.LootdropParticleEffect;
 import net.zeeraa.novacore.spigot.module.modules.lootdrop.particles.LootdropParticleEffectProvider;
 import net.zeeraa.novacore.spigot.tasks.SimpleTask;
@@ -72,7 +73,7 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 		chests = new ArrayList<>();
 		dropEffects = new ArrayList<>();
 		particleEffects = new HashMap<>();
-		
+
 		particleProvider = new MedicalLootdropParticleProvider();
 
 		this.defaultSpawnTimeTicks = 60 * 20 * 2;
@@ -139,12 +140,17 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 
 	public boolean spawnDrop(Location location, String lootTable, boolean announce) {
 		if (canSpawnAt(location)) {
-			MedicalSupplyDropEffect effect = new MedicalSupplyDropEffect(location, lootTable);
-			dropEffects.add(effect);
-			if (announce) {
-				Bukkit.getServer().broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "A medical supply drop is spawning at X: " + ChatColor.AQUA + "" + ChatColor.BOLD + location.getBlockX() + ChatColor.RED + "" + ChatColor.BOLD + " Z: " + ChatColor.AQUA + "" + ChatColor.BOLD + location.getBlockZ());
+			LootDropSpawnEvent event = new LootDropSpawnEvent(location, lootTable, "medical", !announce);
+			if (!event.isCancelled()) {
+
+				MedicalSupplyDropEffect effect = new MedicalSupplyDropEffect(location, lootTable);
+				dropEffects.add(effect);
+				if (announce) {
+					Bukkit.getServer().broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "A medical supply drop is spawning at X: " + ChatColor.AQUA + "" + ChatColor.BOLD + location.getBlockX() + ChatColor.RED + "" + ChatColor.BOLD + " Z: " + ChatColor.AQUA + "" + ChatColor.BOLD + location.getBlockZ());
+				}
+				return true;
 			}
-			return true;
+
 		}
 		return false;
 	}

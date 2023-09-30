@@ -201,13 +201,13 @@ public class LootDropManager extends NovaModule implements Listener {
 	 */
 	public boolean spawnDrop(Location location, String lootTable, boolean announce) {
 		if (canSpawnAt(location)) {
-			LootDropSpawnEvent event = new LootDropSpawnEvent(location, lootTable);
+			LootDropSpawnEvent event = new LootDropSpawnEvent(location, lootTable, "normal", !announce);
 			Bukkit.getServer().getPluginManager().callEvent(event);
 
 			if (!event.isCancelled()) {
 				LootDropEffect effect = new LootDropEffect(location, lootTable);
 				dropEffects.add(effect);
-				if (announce) {
+				if (!event.isHideMessage()) {
 					spawnMessage.showLootDropSpawnMessage(effect);
 				}
 				return true;
