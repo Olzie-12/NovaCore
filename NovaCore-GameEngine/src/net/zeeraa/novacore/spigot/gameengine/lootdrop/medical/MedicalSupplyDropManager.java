@@ -143,10 +143,9 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 			LootDropSpawnEvent event = new LootDropSpawnEvent(location, lootTable, "medical", !announce);
 			Bukkit.getServer().getPluginManager().callEvent(event);
 			if (!event.isCancelled()) {
-
 				MedicalSupplyDropEffect effect = new MedicalSupplyDropEffect(location, lootTable);
 				dropEffects.add(effect);
-				if (announce) {
+				if (!event.isHideMessage()) {
 					Bukkit.getServer().broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "A medical supply drop is spawning at X: " + ChatColor.AQUA + "" + ChatColor.BOLD + location.getBlockX() + ChatColor.RED + "" + ChatColor.BOLD + " Z: " + ChatColor.AQUA + "" + ChatColor.BOLD + location.getBlockZ());
 				}
 				return true;
