@@ -86,6 +86,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -148,7 +149,6 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		skull.setSkullType(SkullType.PLAYER);
 
 		block.getState().update(true);
-
 		// TODO: fix
 		block.setData((byte) 1);
 	}
