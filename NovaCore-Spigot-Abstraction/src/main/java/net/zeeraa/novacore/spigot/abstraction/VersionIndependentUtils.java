@@ -40,8 +40,6 @@ import org.bukkit.plugin.Plugin;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.scoreboard.Scoreboard;
-
 import com.mojang.authlib.GameProfile;
 
 import java.awt.Color;
