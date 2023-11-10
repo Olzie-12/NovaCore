@@ -16,7 +16,7 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<scoreboard-library-version>2.0.0-RC12</scoreboard-library-version>
+		<scoreboard-library-version>2.0.0</scoreboard-library-version>
 
 		<maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
 		<maven-shade-plugin-version>3.3.0</maven-shade-plugin-version>
