@@ -126,8 +126,12 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		this.preProcessHeadMetaApplication(headMeta, profile, head);
 		head.setItemMeta(headMeta);
 		return head;
+	}
+
+	protected void preProcessHeadMetaApplication(ItemMeta meta, GameProfile profile, ItemStack stack) {
 	}
 
 	@Override
