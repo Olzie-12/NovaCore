@@ -245,6 +245,10 @@ public class ItemBuilder {
 		meta.setLore(lore);
 		return this;
 	}
+	
+	public void setLore(List<String> lore) {
+		meta.setLore(lore);
+	}
 
 	/**
 	 * Add an empty line to the items lore
@@ -408,6 +412,10 @@ public class ItemBuilder {
 		return this;
 	}
 
+	public ItemMeta getItemMeta() {
+		return meta;
+	}
+	
 	/**
 	 * Get a {@link List} containing all lines from a array of strings
 	 * 
