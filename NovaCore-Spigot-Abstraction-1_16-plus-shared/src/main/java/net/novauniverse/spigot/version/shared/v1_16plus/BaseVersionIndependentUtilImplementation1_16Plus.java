@@ -1,6 +1,7 @@
 package net.novauniverse.spigot.version.shared.v1_16plus;
 
 import java.awt.Color;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
+import org.json.JSONObject;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -39,6 +41,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.novauniverse.spigot.version.shared.v1_16plus.bossbar.NovaNativeBossBar;
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.LoopableIterator;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
@@ -64,13 +67,54 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 		return new NovaNativeBossBar(text);
 	}
 
+	public static String addDashesToUUID(String uuidWithoutDashes) {
+		if (uuidWithoutDashes.length() != 32) {
+			throw new IllegalArgumentException("Cant extend non uuid with non 32 length");
+		}
+
+		StringBuilder formattedUUID = new StringBuilder(uuidWithoutDashes);
+		formattedUUID.insert(8, "-");
+		formattedUUID.insert(13, "-");
+		formattedUUID.insert(18, "-");
+		formattedUUID.insert(23, "-");
+
+		return formattedUUID.toString();
+	}
+
 	@Override
 	public ItemStack getPlayerSkullWithBase64Texture(String b64stringtexture) {
-		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		UUID uuid = UUID.randomUUID();
+		String name = null;
+
+		byte[] decodedBytes = Base64.getDecoder().decode(b64stringtexture);
+		String decodedString = new String(decodedBytes);
+		try {
+			JSONObject json = new JSONObject(decodedString);
+
+			if (json.has("profileName")) {
+				name = json.getString("profileName");
+			}
+
+			if (json.has("profileId")) {
+				String profileId = json.getString("profileId");
+				if (profileId.length() == 32) {
+					uuid = UUID.fromString(addDashesToUUID(profileId));
+				} else if (profileId.length() == 36) {
+					uuid = UUID.fromString(profileId);
+				} else {
+					Log.warn("getPlayerSkullWithBase64Texture", "Profile id: " + profileId + " seems to be invalid");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		GameProfile profile = new GameProfile(uuid, name);
 		PropertyMap propertyMap = profile.getProperties();
 		if (propertyMap == null) {
 			throw new IllegalStateException("Profile doesn't contain a property map");
 		}
+
 		propertyMap.put("textures", new Property("textures", b64stringtexture));
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
 		ItemMeta headMeta = head.getItemMeta();
