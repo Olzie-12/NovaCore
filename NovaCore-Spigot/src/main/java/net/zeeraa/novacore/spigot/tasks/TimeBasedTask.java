@@ -2,6 +2,7 @@ package net.zeeraa.novacore.spigot.tasks;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -124,6 +125,7 @@ public class TimeBasedTask extends Task {
 		this.taskExecutionMode = taskExecutionMode;
 		this.lastExecution = Instant.now();
 		this.actualTimeSinceLastRun = 0L;
+		this.callbacks = new ArrayList<>();
 
 		if (taskExecutionMode == null) {
 			throw new IllegalArgumentException("TaskExecutionMode cant be null");
