@@ -296,7 +296,7 @@ public class TimeBasedTask extends Task {
 		return actualTimeSinceLastRun;
 	}
 
-	public class TimeBasedTaskCallback {
+	public static class TimeBasedTaskCallback {
 		protected Consumer<TimeBasedTask> callback;
 		protected TimeBasedTaskCallbackMode mode;
 		protected long timeMS;
@@ -346,7 +346,7 @@ public class TimeBasedTask extends Task {
 		protected void run(TimeBasedTask timeBasedTask) {
 			didRun = true;
 			try {
-				runnable.run();
+				callback.accept(timeBasedTask);
 			} catch (Exception e) {
 				if (logExceptionsWithNovaLogger) {
 					Log.error("TimeBasedTaskCallback", "An error occured in " + this.toString() + " belonging to task " + timeBasedTask + ". " + e.getClass().getName() + " " + e.getMessage() + (e.getCause() == null ? "" : ". Caused by " + e.getCause().getClass().getName() + ". " + e.getCause().getMessage()));
@@ -372,7 +372,7 @@ public class TimeBasedTask extends Task {
 		}
 	}
 
-	public enum TimeBasedTaskCallbackMode {
+	public static enum TimeBasedTaskCallbackMode {
 		RUN_AFTER_TIME, RUN_WHEN_TIME_LEFT;
 	}
 }
