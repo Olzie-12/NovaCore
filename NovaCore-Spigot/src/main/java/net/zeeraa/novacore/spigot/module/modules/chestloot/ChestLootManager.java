@@ -1,6 +1,7 @@
 package net.zeeraa.novacore.spigot.module.modules.chestloot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +49,10 @@ public class ChestLootManager extends NovaModule implements Listener {
 	private List<DefinedArea> lootAreas;
 	private List<UUID> worlds;
 
+	private boolean clearOldItems;
+
+	private Random random;
+
 	public static ChestLootManager getInstance() {
 		return instance;
 	}
@@ -62,6 +67,16 @@ public class ChestLootManager extends NovaModule implements Listener {
 		this.mode = ChestLootMode.GLOBAL;
 		this.lootAreas = new ArrayList<>();
 		this.worlds = new ArrayList<>();
+		this.clearOldItems = true;
+		this.random = new Random();
+	}
+
+	public Random getRandom() {
+		return random;
+	}
+
+	public void setRandom(Random random) {
+		this.random = random;
 	}
 
 	public ChestLootMode getMode() {
@@ -95,6 +110,14 @@ public class ChestLootManager extends NovaModule implements Listener {
 
 	public void addLootArea(DefinedArea area) {
 		this.lootAreas.add(area);
+	}
+
+	public boolean isClearOldItems() {
+		return clearOldItems;
+	}
+
+	public void setClearOldItems(boolean clearOldItems) {
+		this.clearOldItems = clearOldItems;
 	}
 
 	public void refillChests() {
@@ -148,7 +171,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 			}
 
 			if (e.getClickedBlock().getType() == Material.CHEST || e.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
-				fillChest(e.getClickedBlock());
+				fillChest(e.getClickedBlock(), clearOldItems);
 			} else if (e.getClickedBlock().getType() == Material.ENDER_CHEST) {
 				if (enderChestLootTable != null) {
 					e.setCancelled(true);
@@ -179,25 +202,25 @@ public class ChestLootManager extends NovaModule implements Listener {
 								lootTable = event.getLootTable();
 							}
 
-							inventory.clear();
+							if (clearOldItems) {
+								inventory.clear();
+							}
 
 							List<ItemStack> loot = lootTable.generateLoot();
 
-							inventory.clear();
+							List<Integer> slots = getAvailableSlots(inventory);
 
-							while (loot.size() > inventory.getSize()) {
+							while (loot.size() > slots.size()) {
 								loot.remove(0);
 							}
 
+							Collections.shuffle(slots, random);
+
 							while (loot.size() > 0) {
-								Random random = new Random();
+								int slot = slots.remove(0);
+								ItemStack item = loot.remove(0);
 
-								int slot = random.nextInt(inventory.getSize());
-
-								if (inventory.getItem(slot) == null) {
-									ItemStack item = loot.remove(0);
-									inventory.setItem(slot, item);
-								}
+								inventory.setItem(slot, item);
 							}
 
 							enderChests.put(e.getClickedBlock().getLocation(), inventory);
@@ -210,7 +233,17 @@ public class ChestLootManager extends NovaModule implements Listener {
 		}
 	}
 
-	private void fillChest(Block block) {
+	private List<Integer> getAvailableSlots(Inventory inventory) {
+		List<Integer> result = new ArrayList<>();
+		for (int i = 0; i < inventory.getSize(); i++) {
+			if (inventory.getItem(i) == null) {
+				result.add(i);
+			}
+		}
+		return result;
+	}
+
+	private void fillChest(Block block, boolean clearOldItems) {
 		if (block.getState() instanceof Chest) {
 			if (chestLootTable != null) {
 				if (!chests.contains(block.getLocation())) {
@@ -241,25 +274,25 @@ public class ChestLootManager extends NovaModule implements Listener {
 						lootTable = event.getLootTable();
 					}
 
-					inventory.clear();
+					if (clearOldItems) {
+						inventory.clear();
+					}
 
 					List<ItemStack> loot = lootTable.generateLoot();
 
-					inventory.clear();
+					List<Integer> slots = getAvailableSlots(inventory);
 
-					while (loot.size() > inventory.getSize()) {
+					while (loot.size() > slots.size()) {
 						loot.remove(0);
 					}
 
+					Collections.shuffle(slots, random);
+
 					while (loot.size() > 0) {
-						Random random = new Random();
+						int slot = slots.remove(0);
+						ItemStack item = loot.remove(0);
 
-						int slot = random.nextInt(inventory.getSize());
-
-						if (inventory.getItem(slot) == null) {
-							ItemStack item = loot.remove(0);
-							inventory.setItem(slot, item);
-						}
+						inventory.setItem(slot, item);
 					}
 
 					for (BlockFace face : chestBlockFaces) {
@@ -268,7 +301,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 						if (nextBlock.getType() == Material.CHEST || nextBlock.getType() == Material.TRAPPED_CHEST) {
 							if (!chests.contains(nextBlock.getLocation())) {
 								Log.trace("Executing recursive fill to chest at location " + nextBlock.getLocation().toString());
-								this.fillChest(nextBlock);
+								this.fillChest(nextBlock, clearOldItems);
 							}
 						}
 					}
