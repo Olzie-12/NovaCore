@@ -23,6 +23,14 @@ public class DefinedBoxArea extends DefinedArea {
 		this.upperPoint = new Vector((Math.max(position1.getX(), position2.getX())), (Math.max(position1.getY(), position2.getY())), (Math.max(position1.getZ(), position2.getZ())));
 	}
 
+	public DefinedBoxArea(double x1, double y1, double z1, double x2, double y2, double z2) {
+		this(null, x1, y1, z1, x2, y2, z2);
+	}
+
+	public DefinedBoxArea(@Nullable World world, double x1, double y1, double z1, double x2, double y2, double z2) {
+		this(world, new Vector(x1, y1, z1), new Vector(x2, y2, z2));
+	}
+
 	@Override
 	public boolean isInside(Location location, boolean ignoreWorld, boolean useBlockPosition) {
 		boolean shouldIgnoreWorld = ignoreWorld;
