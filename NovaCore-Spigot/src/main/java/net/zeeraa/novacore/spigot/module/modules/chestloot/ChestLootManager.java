@@ -190,7 +190,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 								return;
 							}
 
-							ChestFillEvent event = new ChestFillEvent(e.getClickedBlock(), lootTable, ChestType.ENDERCHEST);
+							ChestFillEvent event = new ChestFillEvent(e.getClickedBlock(), lootTable, ChestType.ENDERCHEST, clearOldItems);
 
 							Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -202,7 +202,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 								lootTable = event.getLootTable();
 							}
 
-							if (clearOldItems) {
+							if (event.isClearOldItems()) {
 								inventory.clear();
 							}
 
@@ -262,7 +262,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 
 					Inventory inventory = chest.getBlockInventory();
 
-					ChestFillEvent event = new ChestFillEvent(block, lootTable, ChestType.CHEST);
+					ChestFillEvent event = new ChestFillEvent(block, lootTable, ChestType.CHEST, clearOldItems);
 
 					Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -274,7 +274,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 						lootTable = event.getLootTable();
 					}
 
-					if (clearOldItems) {
+					if (event.isClearOldItems()) {
 						inventory.clear();
 					}
 
@@ -301,7 +301,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 						if (nextBlock.getType() == Material.CHEST || nextBlock.getType() == Material.TRAPPED_CHEST) {
 							if (!chests.contains(nextBlock.getLocation())) {
 								Log.trace("Executing recursive fill to chest at location " + nextBlock.getLocation().toString());
-								this.fillChest(nextBlock, clearOldItems);
+								this.fillChest(nextBlock, event.isClearOldItems());
 							}
 						}
 					}
