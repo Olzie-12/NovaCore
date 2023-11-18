@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -29,6 +31,7 @@ import net.zeeraa.novacore.spigot.loottable.LootTable;
 import net.zeeraa.novacore.spigot.module.NovaModule;
 import net.zeeraa.novacore.spigot.module.modules.chestloot.events.ChestFillEvent;
 import net.zeeraa.novacore.spigot.module.modules.chestloot.events.ChestRefillEvent;
+import net.zeeraa.novacore.spigot.utils.definedarea.DefinedArea;
 
 public class ChestLootManager extends NovaModule implements Listener {
 	private static ChestLootManager instance;
@@ -41,6 +44,10 @@ public class ChestLootManager extends NovaModule implements Listener {
 	private String chestLootTable;
 	private String enderChestLootTable;
 
+	private ChestLootMode mode;
+	private List<DefinedArea> lootAreas;
+	private List<UUID> worlds;
+
 	public static ChestLootManager getInstance() {
 		return instance;
 	}
@@ -52,6 +59,42 @@ public class ChestLootManager extends NovaModule implements Listener {
 		this.chests = new ArrayList<Location>();
 		this.chestLootTable = null;
 		this.enderChestLootTable = null;
+		this.mode = ChestLootMode.GLOBAL;
+		this.lootAreas = new ArrayList<>();
+		this.worlds = new ArrayList<>();
+	}
+
+	public ChestLootMode getMode() {
+		return mode;
+	}
+
+	public void setMode(ChestLootMode mode) {
+		this.mode = mode;
+	}
+
+	public List<UUID> getWorldUIDs() {
+		return worlds;
+	}
+
+	public boolean addWorld(World world) {
+		UUID uid = world.getUID();
+		if (!worlds.contains(uid)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean removeWorld(World world) {
+		UUID uid = world.getUID();
+		return worlds.remove(uid);
+	}
+
+	public List<DefinedArea> getLootAreas() {
+		return lootAreas;
+	}
+
+	public void addLootArea(DefinedArea area) {
+		this.lootAreas.add(area);
 	}
 
 	public void refillChests() {
@@ -92,6 +135,18 @@ public class ChestLootManager extends NovaModule implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (mode == ChestLootMode.DEFINED_AREAS_ONLY) {
+				if (lootAreas.stream().noneMatch(a -> a.isInside(e.getClickedBlock(), false))) {
+					// Not in defined area. Stop
+					return;
+				}
+			} else if (mode == ChestLootMode.LIMITED_WORLDS) {
+				if (!worlds.contains(e.getClickedBlock().getWorld().getUID())) {
+					// Not in specified worlds. Stop
+					return;
+				}
+			}
+
 			if (e.getClickedBlock().getType() == Material.CHEST || e.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
 				fillChest(e.getClickedBlock());
 			} else if (e.getClickedBlock().getType() == Material.ENDER_CHEST) {
