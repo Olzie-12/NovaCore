@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.loottable.LootTableManager;
 import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootEntryV1;
 
@@ -66,7 +67,7 @@ public class ItemStackBasedLootEntryV1 implements LootEntryV1 {
 			return min;
 		}
 
-		if (max > min) {
+		if (min > max) {
 			min = max;
 		}
 
