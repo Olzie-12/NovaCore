@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -37,8 +38,8 @@ import net.zeeraa.novacore.spigot.utils.definedarea.DefinedArea;
 public class ChestLootManager extends NovaModule implements Listener {
 	private static ChestLootManager instance;
 
-	private ArrayList<Location> chests;
-	private HashMap<Location, Inventory> enderChests;
+	private List<Location> chests;
+	private Map<Location, EnderchestData> enderChests;
 
 	private BlockFace chestBlockFaces[] = { BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
 
@@ -51,6 +52,8 @@ public class ChestLootManager extends NovaModule implements Listener {
 
 	private boolean clearOldItems;
 
+	private boolean paused;
+
 	private Random random;
 
 	public static ChestLootManager getInstance() {
@@ -60,7 +63,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 	public ChestLootManager() {
 		super("NovaCore.ChestLootManager");
 		ChestLootManager.instance = this;
-		this.enderChests = new HashMap<Location, Inventory>();
+		this.enderChests = new HashMap<Location, EnderchestData>();
 		this.chests = new ArrayList<Location>();
 		this.chestLootTable = null;
 		this.enderChestLootTable = null;
@@ -69,6 +72,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 		this.worlds = new ArrayList<>();
 		this.clearOldItems = true;
 		this.random = new Random();
+		this.paused = false;
 	}
 
 	public Random getRandom() {
@@ -128,7 +132,7 @@ public class ChestLootManager extends NovaModule implements Listener {
 		ChestRefillEvent event = new ChestRefillEvent(announce);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if (!event.isCancelled()) {
-			enderChests.clear();
+			enderChests.values().forEach(EnderchestData::setRefillReady);
 			chests.clear();
 			if (event.isShowMessage()) {
 				Bukkit.getOnlinePlayers().forEach(player -> {
@@ -155,6 +159,14 @@ public class ChestLootManager extends NovaModule implements Listener {
 		this.enderChestLootTable = enderChestLootTable;
 	}
 
+	public boolean isPaused() {
+		return paused;
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -171,7 +183,9 @@ public class ChestLootManager extends NovaModule implements Listener {
 			}
 
 			if (e.getClickedBlock().getType() == Material.CHEST || e.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
-				fillChest(e.getClickedBlock(), clearOldItems);
+				if (!paused) {
+					fillChest(e.getClickedBlock(), clearOldItems);
+				}
 			} else if (e.getClickedBlock().getType() == Material.ENDER_CHEST) {
 				if (enderChestLootTable != null) {
 					e.setCancelled(true);
@@ -180,53 +194,62 @@ public class ChestLootManager extends NovaModule implements Listener {
 					if (e.getClickedBlock() != null) {
 						Log.trace("Filling ender chest at location " + e.getClickedBlock().getLocation().toString());
 
-						if (!enderChests.containsKey(e.getClickedBlock().getLocation())) {
-							Inventory inventory = Bukkit.createInventory(new EnderChestHolder(), 27, "Ender chest");
+						Location location = e.getClickedBlock().getLocation();
 
-							LootTable lootTable = NovaCore.getInstance().getLootTableManager().getLootTable(enderChestLootTable);
-
-							if (lootTable == null) {
-								Log.warn("Missing loot table " + enderChestLootTable);
-								return;
-							}
-
-							ChestFillEvent event = new ChestFillEvent(e.getClickedBlock(), lootTable, ChestType.ENDERCHEST, clearOldItems);
-
-							Bukkit.getServer().getPluginManager().callEvent(event);
-
-							if (event.isCancelled()) {
-								return;
-							}
-
-							if (event.hasLootTableChanged()) {
-								lootTable = event.getLootTable();
-							}
-
-							if (event.isClearOldItems()) {
-								inventory.clear();
-							}
-
-							List<ItemStack> loot = lootTable.generateLoot();
-
-							List<Integer> slots = getAvailableSlots(inventory);
-
-							while (loot.size() > slots.size()) {
-								loot.remove(0);
-							}
-
-							Collections.shuffle(slots, random);
-
-							while (loot.size() > 0) {
-								int slot = slots.remove(0);
-								ItemStack item = loot.remove(0);
-
-								inventory.setItem(slot, item);
-							}
-
-							enderChests.put(e.getClickedBlock().getLocation(), inventory);
+						Inventory inventory;
+						if (!enderChests.containsKey(location)) {
+							inventory = Bukkit.createInventory(new EnderChestHolder(), 27, "Ender chest");
+							enderChests.put(location, new EnderchestData(inventory, false));
 						}
 
-						p.openInventory(enderChests.get(e.getClickedBlock().getLocation()));
+						EnderchestData chestData = enderChests.get(location);
+						inventory = chestData.getInventory();
+						if (!paused) {
+							if (!chestData.isHasFilled()) {
+								LootTable lootTable = NovaCore.getInstance().getLootTableManager().getLootTable(enderChestLootTable);
+
+								if (lootTable == null) {
+									Log.warn("Missing loot table " + enderChestLootTable);
+								} else {
+									chestData.setHasFilled(true);
+									ChestFillEvent event = new ChestFillEvent(e.getClickedBlock(), lootTable, ChestType.ENDERCHEST, clearOldItems);
+									Bukkit.getServer().getPluginManager().callEvent(event);
+
+									if (event.isCancelled()) {
+										return;
+									}
+
+									if (event.hasLootTableChanged()) {
+										lootTable = event.getLootTable();
+									}
+
+									if (event.isClearOldItems()) {
+										inventory.clear();
+									}
+
+									List<ItemStack> loot = lootTable.generateLoot();
+
+									List<Integer> slots = getAvailableSlots(inventory);
+
+									while (loot.size() > slots.size()) {
+										loot.remove(0);
+									}
+
+									Collections.shuffle(slots, random);
+
+									while (loot.size() > 0) {
+										int slot = slots.remove(0);
+										ItemStack item = loot.remove(0);
+
+										inventory.setItem(slot, item);
+									}
+
+									chestData.setHasFilled(true);
+								}
+							}
+						}
+
+						p.openInventory(inventory);
 					}
 				}
 			}
@@ -308,5 +331,35 @@ public class ChestLootManager extends NovaModule implements Listener {
 				}
 			}
 		}
+	}
+}
+
+class EnderchestData {
+	private Inventory inventory;
+	private boolean hasFilled;
+
+	public EnderchestData(Inventory inventory, boolean hasFilled) {
+		this.inventory = inventory;
+		this.hasFilled = hasFilled;
+	}
+
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
+	}
+
+	public void setRefillReady() {
+		this.setHasFilled(false);
+	}
+
+	public boolean isHasFilled() {
+		return hasFilled;
+	}
+
+	public void setHasFilled(boolean hasFilled) {
+		this.hasFilled = hasFilled;
 	}
 }
