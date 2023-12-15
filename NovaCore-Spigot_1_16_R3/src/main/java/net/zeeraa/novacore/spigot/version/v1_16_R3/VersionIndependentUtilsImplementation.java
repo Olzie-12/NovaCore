@@ -544,7 +544,7 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 	@Override
 	public VersionIndependentItems getVersionIndependantItems() {
-		return new net.zeeraa.novacore.spigot.version.v1_16_R3.VersionIndependantItemsImplementation();
+		return new net.zeeraa.novacore.spigot.version.v1_16_R3.VersionIndependentItemsImplementation();
 	}
 
 	@Override
