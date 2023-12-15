@@ -9,6 +9,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -38,6 +39,39 @@ public class BuiltinDebugTriggers {
 		DebugCommandRegistrator.getInstance().addDebugTrigger(new DebugTrigger() {
 			@Override
 			public void onExecute(CommandSender sender, String commandLabel, String[] args) {
+				Player player = (Player) sender;
+				ItemStack item = VersionIndependentUtils.get().getItemInMainHand(player);
+				YamlConfiguration config = new YamlConfiguration();
+				config.set("item", item);
+				String data = config.saveToString();
+				sender.sendMessage(data);
+				Bukkit.getServer().getConsoleSender().sendMessage(data);
+			}
+
+			@Override
+			public PermissionDefault getPermissionDefault() {
+				return PermissionDefault.OP;
+			}
+
+			@Override
+			public String getPermission() {
+				return "novacore.debug.debugdumpitemyml";
+			}
+
+			@Override
+			public String getName() {
+				return "dumpitemyml";
+			}
+
+			@Override
+			public AllowedSenders getAllowedSenders() {
+				return AllowedSenders.PLAYERS;
+			}
+		});
+
+		DebugCommandRegistrator.getInstance().addDebugTrigger(new DebugTrigger() {
+			@Override
+			public void onExecute(CommandSender sender, String commandLabel, String[] args) {
 				ModuleManager.require(NovaScoreboardManager.class);
 
 				int lines = 15;
@@ -53,10 +87,10 @@ public class BuiltinDebugTriggers {
 				NovaScoreboardManager.getInstance().setGlobalLine(0, new DynamicTextLine(() -> {
 					return ChatColor.AQUA + sdf.format(new Date());
 				}));
-				
-				ChatColor[] randomColors = {ChatColor.RED, ChatColor.GREEN, ChatColor.BLUE};
+
+				ChatColor[] randomColors = { ChatColor.RED, ChatColor.GREEN, ChatColor.BLUE };
 				Random random = new Random();
-				
+
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 					ChatColor color = randomColors[random.nextInt(randomColors.length)];
 					Log.trace("NovaDebug", "Set name color of " + player.getName() + " to " + color.name());
