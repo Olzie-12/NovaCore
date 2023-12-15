@@ -1043,14 +1043,7 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 	public void setSource(TNTPrimed tnt, LivingEntity source) {
 		EntityTNTPrimed etp = ((CraftTNTPrimed) tnt).getHandle();
 		EntityLiving el = ((CraftLivingEntity) source).getHandle();
-		try {
-			Field f = etp.getClass().getDeclaredField("source");
-			f.setAccessible(true);
-			f.set(etp, el);
-		} catch (Exception e) {
-			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
-			e.printStackTrace();
-		}
+		etp.source = el;
 	}
 
 	@Override
