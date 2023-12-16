@@ -60,7 +60,7 @@ public abstract class VersionIndependentUtils {
 	private static VersionIndependentUtils instance;
 	protected static List<String> BED_MATERIALS = new ArrayList<>();
 	
-	protected VersionIndependantLoader loader;
+	protected VersionIndependentLoader loader;
 
 	static {
 		BED_MATERIALS.add("BED");
@@ -83,11 +83,11 @@ public abstract class VersionIndependentUtils {
 		BED_MATERIALS.add("YELLOW_BED");
 	}
 
-	public VersionIndependentUtils(VersionIndependantLoader loader) {
+	public VersionIndependentUtils(VersionIndependentLoader loader) {
 		this.loader = loader;
 	}
 	
-	public VersionIndependantLoader getLoader() {
+	public VersionIndependentLoader getLoader() {
 		return loader;
 	}
 	

@@ -34,7 +34,7 @@ import net.zeeraa.novacore.commons.utils.ReflectUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
-import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
@@ -129,7 +129,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation(VersionIndependantLoader loader) {
+	public VersionIndependentUtilsImplementation(VersionIndependentLoader loader) {
 		super(loader);
 		itemBuilderRecordList = new ItemBuilderRecordList1_12();
 		materialNameList = MaterialNameList1_12.get();

@@ -46,7 +46,7 @@ import net.novauniverse.spigot.version.shared.v1_16plus.bossbar.NovaNativeBossBa
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.LoopableIterator;
 import net.zeeraa.novacore.commons.utils.RandomGenerator;
-import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -56,7 +56,7 @@ public abstract class BaseVersionIndependentUtilImplementation1_16Plus extends V
 	private DyeColorToMaterialMapper dyeColorToMaterialMapper;
 	protected Random random;
 
-	public BaseVersionIndependentUtilImplementation1_16Plus(VersionIndependantLoader loader, DyeColorToMaterialMapper colorToMaterialMapper) {
+	public BaseVersionIndependentUtilImplementation1_16Plus(VersionIndependentLoader loader, DyeColorToMaterialMapper colorToMaterialMapper) {
 		super(loader);
 		this.dyeColorToMaterialMapper = colorToMaterialMapper;
 		this.random = new Random();

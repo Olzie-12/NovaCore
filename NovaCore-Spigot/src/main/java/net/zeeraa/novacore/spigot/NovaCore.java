@@ -42,7 +42,7 @@ import net.zeeraa.novacore.commons.utils.JSONFileType;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.abstraction.CommandRegistrator;
 import net.zeeraa.novacore.spigot.abstraction.NovaCoreAbstraction;
-import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.commons.AbstractBukkitConsoleSender;
 import net.zeeraa.novacore.spigot.abstraction.commons.AbstractBukkitPlayerMessageSender;
@@ -613,8 +613,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		try {
 			Class<?> clazz = Class.forName("net.zeeraa.novacore.spigot.version." + version + ".VersionIndependentLoader");
-			if (VersionIndependantLoader.class.isAssignableFrom(clazz)) {
-				VersionIndependantLoader versionIndependantLoader = (VersionIndependantLoader) clazz.getConstructor().newInstance();
+			if (VersionIndependentLoader.class.isAssignableFrom(clazz)) {
+				VersionIndependentLoader versionIndependantLoader = (VersionIndependentLoader) clazz.getConstructor().newInstance();
 
 				if (!forceReflectionCommandRegistrator) {
 					bukkitCommandRegistrator = versionIndependantLoader.getCommandRegistrator();
@@ -643,7 +643,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 					this.novaParticleProvider = versionSpecificParticleProvider;
 				}
 			} else {
-				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
+				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependentLoader.class.getName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

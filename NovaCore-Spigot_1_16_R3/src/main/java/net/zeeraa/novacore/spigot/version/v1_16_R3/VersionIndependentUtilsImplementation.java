@@ -21,7 +21,7 @@ import net.zeeraa.novacore.commons.utils.ListUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
-import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -93,7 +93,7 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation(VersionIndependantLoader loader) {
+	public VersionIndependentUtilsImplementation(VersionIndependentLoader loader) {
 		super(loader, new DyeColorToMaterialMapper_1_16());
 		itemBuilderRecordList = new ItemBuilderRecordList1_16();
 	}
