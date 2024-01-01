@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
-import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.loottable.LootTableManager;
 import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootEntryV1;
 
