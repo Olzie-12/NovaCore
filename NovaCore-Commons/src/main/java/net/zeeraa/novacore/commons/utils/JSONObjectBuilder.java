@@ -20,36 +20,44 @@ public class JSONObjectBuilder {
 		this.obj = clone ? new JSONObject(obj.toString()) : obj;
 	}
 
-	public void put(String key, boolean value) {
+	public JSONObjectBuilder put(String key, boolean value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, Collection<?> value) {
+	public JSONObjectBuilder put(String key, Collection<?> value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, double value) {
+	public JSONObjectBuilder put(String key, double value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, float value) {
+	public JSONObjectBuilder put(String key, float value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, int value) {
+	public JSONObjectBuilder put(String key, int value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, long value) {
+	public JSONObjectBuilder put(String key, long value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, Map<?, ?> value) {
+	public JSONObjectBuilder put(String key, Map<?, ?> value) {
 		obj.put(key, value);
+		return this;
 	}
 
-	public void put(String key, Object value) {
+	public JSONObjectBuilder put(String key, Object value) {
 		obj.put(key, value);
+		return this;
 	}
 
 	public JSONObject build() {
