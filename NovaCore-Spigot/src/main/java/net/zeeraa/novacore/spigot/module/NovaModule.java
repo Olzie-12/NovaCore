@@ -201,6 +201,9 @@ public abstract class NovaModule {
 		ModuleEnableEvent event = new ModuleEnableEvent(this, returnValue, enableFailureReason);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 
+		if (returnValue) {
+			this.onPostEnable();
+		}
 		return returnValue;
 	}
 
@@ -275,6 +278,12 @@ public abstract class NovaModule {
 	 */
 	public final boolean isEnabled() {
 		return enabled;
+	}
+
+	/**
+	 * Called after the module has been enabled
+	 */
+	public void onPostEnable() {
 	}
 
 	/**
