@@ -87,7 +87,7 @@ public class FallDamageGracePeriodMapModule extends MapModule implements Listene
 		Log.info("FallDamageGracePeriodMapModule", "Received GameBeginEvent");
 		isActive = true;
 		// TODO: language file
-		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Fall damage will be enabled in " + seconds + " seconds");
+		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Fall damage will be enabled in " + seconds + " seconds");
 		endTimer.start();
 	}
 
