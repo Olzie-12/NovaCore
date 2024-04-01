@@ -67,13 +67,13 @@ public class NovaScoreboardPlayerBoard {
 
 		title = null;
 
+		boolean needColorFix = false;
+
+		if (VersionIndependentUtils.get().getNovaCoreGameVersion().isBeforeOrEqual(NovaCoreGameVersion.V_1_12)) {
+			needColorFix = true;
+		}
+		
 		for (ChatColor color : NovaScoreboardManager.VALID_COLORS) {
-			boolean needColorFix = false;
-
-			if (VersionIndependentUtils.get().getNovaCoreGameVersion().isBeforeOrEqual(NovaCoreGameVersion.V_1_12)) {
-				needColorFix = true;
-			}
-
 			String name = "NC_" + color.name();
 
 			if (needColorFix) {
