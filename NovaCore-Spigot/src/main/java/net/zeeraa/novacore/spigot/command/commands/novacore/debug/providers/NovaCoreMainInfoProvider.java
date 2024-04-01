@@ -15,7 +15,6 @@ public class NovaCoreMainInfoProvider implements NovaCoreDebugCommandInfoProvide
 			message += "VersionIndependent layer class: null\n";
 		}
 		message += "Particle provider: " + NovaCore.getInstance().getNovaParticleProvider().getClass().getName() + "\n";
-		message += "Has hologram support: " + NovaCore.getInstance().hasHologramsSupport() + "\n";
 		message += "Has team manager: " + NovaCore.getInstance().hasTeamManager() + "\n";
 		message += "\n";
 

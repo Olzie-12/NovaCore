@@ -119,8 +119,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private CitizensUtils citizensUtils;
 
-	private boolean hologramsSupport;
-
 	private boolean loadingDone;
 
 	private boolean noNMSMode;
@@ -241,15 +239,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 	 */
 	public static VersionIndependentUtils versionIndependantUtils() {
 		return NovaCore.getInstance().getVersionIndependentUtils();
-	}
-
-	/**
-	 * Check in holographic displays is installed
-	 *
-	 * @return <code>true</code> if the holographic displays plugin is installed
-	 */
-	public boolean hasHologramsSupport() {
-		return hologramsSupport;
 	}
 
 	/**
@@ -678,14 +667,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		if (bukkitCommandRegistrator == null) {
 			Log.warn("NovaCore", "No command registrator defined. Using the reflection based fallback");
 			bukkitCommandRegistrator = reflectionBasedCommandRegistrator;
-		}
-
-		if (Bukkit.getServer().getPluginManager().getPlugin("HolographicDisplays") != null) {
-			this.hologramsSupport = true;
-			Log.info("NovaCore", "Hologram support enabled");
-		} else {
-			this.hologramsSupport = false;
-			Log.warn("NovaCore", "Hologram support disabled due to HolographicDisplays not being installed");
 		}
 
 		// Register permissions for log levels
