@@ -32,6 +32,7 @@ import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.GameLobbyMapActivatedEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.GameLobbyStartingEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.PlayerJoinGameLobbyEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.map.GameLobbyMap;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.map.GameLobbyMapData;
@@ -244,6 +245,12 @@ public class GameLobby extends NovaModule implements Listener {
 		}
 
 		try {
+			GameLobbyStartingEvent event = new GameLobbyStartingEvent(waitingPlayers);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			if (event.isCancelled()) {
+				return false;
+			}
+
 			waitingPlayers.forEach(uuid -> PlayerUtils.ifOnline(uuid, (player) -> {
 				if (!disableAutoAddPlayers) {
 					if (!ignoreNoTeam) {
