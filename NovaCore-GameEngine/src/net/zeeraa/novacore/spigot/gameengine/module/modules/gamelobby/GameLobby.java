@@ -245,17 +245,16 @@ public class GameLobby extends NovaModule implements Listener {
 
 		try {
 			waitingPlayers.forEach(uuid -> PlayerUtils.ifOnline(uuid, (player) -> {
-				if (!ignoreNoTeam) {
-					if (NovaCore.getInstance().hasTeamManager()) {
-						Team team = NovaCore.getInstance().getTeamManager().getPlayerTeam(player);
-						if (team == null) {
-							player.sendMessage(LanguageManager.getString(player, "novacore.game.lobby.spectator_no_team"));
-							return;
+				if (!disableAutoAddPlayers) {
+					if (!ignoreNoTeam) {
+						if (NovaCore.getInstance().hasTeamManager()) {
+							Team team = NovaCore.getInstance().getTeamManager().getPlayerTeam(player);
+							if (team == null) {
+								player.sendMessage(LanguageManager.getString(player, "novacore.game.lobby.spectator_no_team"));
+								return;
+							}
 						}
 					}
-				}
-
-				if (!disableAutoAddPlayers) {
 					GameManager.getInstance().getActiveGame().addPlayer(player);
 				}
 			}));
