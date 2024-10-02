@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
@@ -7,15 +9,15 @@ import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 
 public class ChatColorRGBMapper {
-	public static RGBColorData chatColorToRGBColorData(ChatColor color) {
+	public static RGBColorData chatColorToRGBColorData(@Nonnull ChatColor color) {
 		return ChatColorRGBMapper.colorNameToRGBColorData(color.name());
 	}
 
-	public static RGBColorData chatColorToRGBColorData(net.md_5.bungee.api.ChatColor color) {
+	public static RGBColorData chatColorToRGBColorData(@Nonnull net.md_5.bungee.api.ChatColor color) {
 		return ChatColorRGBMapper.chatColorToRGBColorData(color, Color.WHITE);
 	}
 
-	public static RGBColorData chatColorToRGBColorData(net.md_5.bungee.api.ChatColor color, Color fallback) {
+	public static RGBColorData chatColorToRGBColorData(@Nonnull net.md_5.bungee.api.ChatColor color, @Nonnull Color fallback) {
 		if (!NovaCore.getInstance().isNoNMSMode()) {
 			return new RGBColorData(VersionIndependentUtils.get().bungeecordChatColorToJavaColor(color));
 		}
@@ -23,11 +25,11 @@ public class ChatColorRGBMapper {
 		return ChatColorRGBMapper.colorNameToRGBColorData(color.getName(), fallback);
 	}
 
-	public static RGBColorData colorNameToRGBColorData(String colorName) {
+	public static RGBColorData colorNameToRGBColorData(@Nonnull String colorName) {
 		return ChatColorRGBMapper.colorNameToRGBColorData(colorName, Color.WHITE);
 	}
 
-	public static RGBColorData colorNameToRGBColorData(String colorName, Color fallback) {
+	public static RGBColorData colorNameToRGBColorData(@Nonnull String colorName, @Nonnull Color fallback) {
 		switch (colorName.toLowerCase()) {
 		case "black":
 			return new RGBColorData(0, 0, 0);

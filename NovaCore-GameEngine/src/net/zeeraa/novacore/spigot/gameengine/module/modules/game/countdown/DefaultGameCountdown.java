@@ -4,6 +4,7 @@ import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
+import net.md_5.bungee.api.ChatColor;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
@@ -67,8 +68,33 @@ public class DefaultGameCountdown extends GameCountdown {
 
 			if (timeLeft <= 10) {
 				LanguageManager.broadcast("novacore.game.starting_in", timeLeft);
-
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1F));
+
+				String spacing = "";
+				for (int i = 1; i < timeLeft; i++) {
+					spacing += " ";
+				}
+
+				ChatColor color = ChatColor.GREEN;
+
+				if (timeLeft == 1) {
+					color = ChatColor.DARK_RED;
+				}
+				if (timeLeft == 2) {
+					color = ChatColor.RED;
+				} else if (timeLeft == 3) {
+					color = ChatColor.YELLOW;
+				} else if (timeLeft == 4) {
+					color = ChatColor.GOLD;
+				}
+
+				String progress = color + ">" + spacing + timeLeft + spacing + "<";
+
+				Bukkit.getServer().getOnlinePlayers().forEach(p -> {
+
+					VersionIndependentUtils.get().broadcastTitle(LanguageManager.getString(p, "novacore.game.starting_in.title"), progress, 0, 21, 5);
+				});
+
 			}
 		}, 20L, 20L);
 

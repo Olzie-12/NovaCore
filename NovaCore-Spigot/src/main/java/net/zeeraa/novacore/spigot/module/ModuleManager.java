@@ -39,10 +39,12 @@ public class ModuleManager {
 	 * 
 	 * @since 1.0
 	 * @param clazz The class of the module
+	 * @param <T>   The class type to return
 	 * @return {@link NovaModule} or null if not loaded
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends NovaModule> T getModule(Class<T> clazz) {
+		new HashMap<Class<? extends NovaModule>, NovaModule>();
 		return (T) modules.get(clazz.getName());
 	}
 
@@ -274,6 +276,11 @@ public class ModuleManager {
 			Object module = clazz.getConstructor().newInstance(new Object[] {});
 
 			if (module instanceof NovaModule) {
+				if (((NovaModule) module).getName().trim().length() == 0) {
+					Log.error("ModuleManager", "The module name can't be empty. Module class: " + module.getClass().getName());
+					throw new InvalidModuleNameException("The module name can't be empty. Module class: " + module.getClass().getName());
+				}
+
 				if (((NovaModule) module).getName().contains(" ")) {
 					Log.error("ModuleManager", "The module name can't contain spaces. Module class: " + module.getClass().getName());
 					throw new InvalidModuleNameException("The module name can't contain spaces. Module class: " + module.getClass().getName());

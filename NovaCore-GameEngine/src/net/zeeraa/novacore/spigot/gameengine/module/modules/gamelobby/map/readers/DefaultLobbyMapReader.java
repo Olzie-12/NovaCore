@@ -50,6 +50,6 @@ public class DefaultLobbyMapReader extends GameLobbyReader {
 			}
 		}
 
-		return new GameLobbyMapData(spawnLocation, mapName, displayName, description, worldFile, holograms);
+		return new GameLobbyMapData(spawnLocation, mapName, displayName, description, worldFile, holograms, json);
 	}
 }

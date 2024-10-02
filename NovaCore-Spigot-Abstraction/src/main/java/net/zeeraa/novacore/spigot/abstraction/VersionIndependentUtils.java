@@ -2,13 +2,28 @@ package net.zeeraa.novacore.spigot.abstraction;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import net.md_5.bungee.api.ChatColor;
+import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
-import net.zeeraa.novacore.spigot.abstraction.enums.*;
-import org.bukkit.*;
+import net.zeeraa.novacore.spigot.abstraction.commons.EntityBoundingBox;
+import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
+import net.zeeraa.novacore.spigot.abstraction.enums.DeathType;
+import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
+import net.zeeraa.novacore.spigot.abstraction.enums.PlayerDamageReason;
+import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependenceLayerError;
+import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
+import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
+
+import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -23,10 +38,15 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
-import net.zeeraa.novacore.spigot.abstraction.packet.PacketManager;
+
 import org.bukkit.potion.PotionEffect;
+import com.mojang.authlib.GameProfile;
+
 import java.awt.Color;
 import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A utility to make your plugins support multiple versions of the game without
@@ -39,6 +59,8 @@ import java.util.function.Consumer;
 public abstract class VersionIndependentUtils {
 	private static VersionIndependentUtils instance;
 	protected static List<String> BED_MATERIALS = new ArrayList<>();
+	
+	protected VersionIndependentLoader loader;
 
 	static {
 		BED_MATERIALS.add("BED");
@@ -60,6 +82,16 @@ public abstract class VersionIndependentUtils {
 		BED_MATERIALS.add("WHITE_BED");
 		BED_MATERIALS.add("YELLOW_BED");
 	}
+
+	public VersionIndependentUtils(VersionIndependentLoader loader) {
+		this.loader = loader;
+	}
+	
+	public VersionIndependentLoader getLoader() {
+		return loader;
+	}
+	
+	public abstract NovaBossBar createBossBar(String text);
 
 	private VersionIndependenceLayerError lastError = VersionIndependenceLayerError.NONE;
 
@@ -721,8 +753,6 @@ public abstract class VersionIndependentUtils {
 	 */
 	public abstract String colorizeRainbow(Color[] colors, int charsPerColor, String message);
 
-	public abstract PacketManager getPacketManager();
-
 	public abstract boolean canBreakBlock(ItemStack item, Material material);
 
 	public abstract MaterialNameList getMaterialNameList();
@@ -737,7 +767,11 @@ public abstract class VersionIndependentUtils {
 
 	public abstract Block getReacheableBlockExact(LivingEntity entity);
 
-	public abstract FallingBlock spawnFallingBlock(Location location, Material material, byte data, Consumer<FallingBlock> consumer);
+	public FallingBlock spawnFallingBlock(Location location, Material material, byte data) {
+		return this.spawnFallingBlock(location, material, data, null);
+	}
+
+	public abstract FallingBlock spawnFallingBlock(Location location, Material material, byte data, @Nullable Consumer<FallingBlock> consumer);
 
 	public abstract void setPotionEffect(ItemStack item, ItemMeta meta, PotionEffect effect, boolean color);
 
@@ -802,15 +836,173 @@ public abstract class VersionIndependentUtils {
 		Bukkit.getServer().getOnlinePlayers().stream().filter(player -> player.getWorld().equals(world)).forEach(player -> this.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut));
 	}
 
+	/**
+	 * Converts Bungeecord's {@link ChatColor} to java.awt's {@link Color}
+	 *
+	 * @param color the Bungeecord color
+	 * @return The java.awt color
+	 *
+	 * @author Zeeraa
+	 */
 	public Color bungeecordChatColorToJavaColor(ChatColor color) {
 		return DefaultBungeecordColorMapper.getColorOfChatcolor(color);
 	}
 
+	/**
+	 * Converts Bungeecord's {@link ChatColor} to bukkit {@link org.bukkit.Color}
+	 *
+	 * @param color the Bungeecord color
+	 * @return The org.bukkit.Color
+	 *
+	 * @author Zeeraa
+	 */
+	public org.bukkit.Color bungeecordChatColorToBukkitColor(ChatColor color) {
+		Color awt = this.bungeecordChatColorToJavaColor(color);
+		return org.bukkit.Color.fromRGB(awt.getRed(), awt.getGreen(), awt.getBlue());
+	}
+
+	/**
+	 * Displays a totem of undying to player if version has
+	 *
+	 * @param player Player to display
+	 *
+	 * @author Bruno
+	 */
 	public abstract void displayTotem(Player player);
 
+	/**
+	 * Displays a custom totem with custom model data to player
+	 *
+	 * @param player Player to display
+	 * @param cmd    The Custom Model Data
+	 *
+	 * @author Bruno
+	 */
 	public abstract void displayCustomTotem(Player player, int cmd);
 
+	/**
+	 * Sets an {@link ArmorStand} as a marker
+	 *
+	 * @param stand the Armor Stand to modify
+	 * @param value true if change to marker, false if normal armor stand
+	 *
+	 * @author Bruno
+	 */
 	public abstract void setMarker(ArmorStand stand, boolean value);
 
+	/**
+	 * Checks if {@link ArmorStand} is a marker
+	 *
+	 * @param stand The {@link ArmorStand} to check
+	 * @return If it's a marker
+	 *
+	 * @author Bruno
+	 */
 	public abstract boolean isMarker(ArmorStand stand);
+
+	/**
+	 * Sets the player as a custom spectator depending on the value
+	 *
+	 * @param player The player to be set
+	 * @param value  If player will be removed or set as a custom spectator
+	 *
+	 * @author Bruno
+	 */
+	public void setCustomSpectator(Player player, boolean value) {
+		setCustomSpectator(player, value, Bukkit.getOnlinePlayers());
+	}
+
+	/**
+	 * Sets the player as a custom spectator depending on the value
+	 *
+	 * @param player  The player to be set
+	 * @param value   If player will be removed or set as a custom spectator
+	 * @param players The player to hide from
+	 *
+	 * @author Bruno
+	 */
+	public abstract void setCustomSpectator(Player player, boolean value, Collection<? extends Player> players);
+
+	/**
+	 * Gets the bounding box of an entity
+	 * 
+	 * @param entity The entity to get
+	 * @return The {@link EntityBoundingBox} from the entity
+	 *
+	 * @author Bruno
+	 */
+	public abstract EntityBoundingBox getEntityBoundingBox(Entity entity);
+
+	/**
+	 * Sets the source of a tnt
+	 * 
+	 * @param tnt    The {@link TNTPrimed} to be changed
+	 * @param source The {@link LivingEntity} to be set as source
+	 */
+	public abstract void setSource(TNTPrimed tnt, LivingEntity source);
+
+	/**
+	 * Gets the {@link ItemStack} for a colored banner
+	 *
+	 * @param color The color to set the banner
+	 * @return The banner item stack
+	 *
+	 * @author Zeeraa
+	 */
+	public abstract ItemStack getColoredBannerItemStack(DyeColor color);
+
+	/**
+	 * Registers a custom NMS entity (There's no need to do this on versions 1.14+)
+	 *
+	 * @param entity The entity class (Must extend nms's Entity)
+	 * @param name   The name to give the entity
+	 */
+	public abstract void registerCustomEntity(Class<?> entity, String name);
+
+	/**
+	 * Spawns a custom NMS entity
+	 *
+	 * @param entity   The entity class (Must extend nms's Entity)
+	 * @param location The {@link Location} to spawn
+	 */
+	public abstract void spawnCustomEntity(Object entity, Location location);
+
+	/**
+	 * Registers a custom NMS entity with custom entity id (There's no need to do
+	 * this on versions 1.14+)
+	 * 
+	 * @param entity The entity class (Must extend nms's Entity)
+	 * @param name   The name to give the entity
+	 * @param id     the Entity ID to give the entity
+	 *               <a href="https://mcreator.net/wiki/entity-ids">CLICK HERE FOR
+	 *               REFERENCE</a>
+	 */
+	public abstract void registerCustomEntityWithEntityId(Class<?> entity, String name, int id);
+
+	public float getBlockBlastResistance(Block block) {
+		return getBlockBlastResistance(block.getType());
+	}
+
+	public abstract float getBlockBlastResistance(Material material);
+
+	public abstract GameProfile getGameProfile(@Nonnull Player player);
+
+	/**
+	 * Checks if a {@link Arrow} is in ground. This version uses the native
+	 * implementation for 1.12+ and for 1.8 it gets the value from the EntityArrow
+	 * class
+	 * 
+	 * @param arrow The {@link Arrow} to check
+	 * @return <code>true</code> if the arrow is in a block
+	 */
+	public abstract boolean isArrowInBlock(Arrow arrow);
+
+	public void showBlockBreakParticles(Block block) {
+		this.showBlockBreakParticles(block, 10);
+	}
+
+	public abstract void showBlockBreakParticles(Block block, int particleCount);
+
+	@Nullable
+	public abstract Block getArrowAttachedBlock(Arrow arrow);
 }

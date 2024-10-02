@@ -8,7 +8,6 @@ public class NovaCoreMainInfoProvider implements NovaCoreDebugCommandInfoProvide
 		String message = "";
 
 		message += "No NMS Mode: " + NovaCore.getInstance().isNoNMSMode() + "\n";
-		message += "Packet manager enabled: " + NovaCore.getInstance().isPacketManagerEnabled() + "\n";
 		message += "GameEngine enabled: " + NovaCore.isNovaGameEngineEnabled() + "\n";
 		if (NovaCore.getInstance().getVersionIndependentUtils() != null) {
 			message += "VersionIndependent layer class: " + NovaCore.getInstance().getVersionIndependentUtils().getClass().getName() + "\n";
@@ -16,7 +15,6 @@ public class NovaCoreMainInfoProvider implements NovaCoreDebugCommandInfoProvide
 			message += "VersionIndependent layer class: null\n";
 		}
 		message += "Particle provider: " + NovaCore.getInstance().getNovaParticleProvider().getClass().getName() + "\n";
-		message += "Has hologram support: " + NovaCore.getInstance().hasHologramsSupport() + "\n";
 		message += "Has team manager: " + NovaCore.getInstance().hasTeamManager() + "\n";
 		message += "\n";
 

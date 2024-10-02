@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import java.util.HashMap;
 
 public class MaterialNameList1_8 implements MaterialNameList {
-
 	private final HashMap<String, Material> materialMap;
 
 	public static MaterialNameList1_8 get() {
@@ -93,7 +92,5 @@ public class MaterialNameList1_8 implements MaterialNameList {
 		materialMap.put("log2", Material.LOG_2);
 		materialMap.put("slime", Material.SLIME_BLOCK);
 		materialMap.put("hardened_clay", Material.HARD_CLAY);
-
 	}
-
 }

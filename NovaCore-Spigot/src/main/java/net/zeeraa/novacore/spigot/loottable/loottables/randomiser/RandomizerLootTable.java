@@ -24,7 +24,7 @@ public class RandomizerLootTable extends LootTable {
 	}
 
 	@Override
-	public List<ItemStack> generateLoot(Random random, int count) {
+	public List<ItemStack> generate(Random random, int count) {
 		List<String> pool = new ArrayList<String>();
 		lootTables.forEach((name, chance) -> {
 			if (!NovaCore.getInstance().getLootTableManager().hasLootTable(name)) {

@@ -1,15 +1,24 @@
 # 👨‍💻 NovaCore
+[![Java CI with Maven](https://github.com/NovaUniverse/NovaCore/actions/workflows/maven.yml/badge.svg)](https://github.com/NovaUniverse/NovaCore/actions/workflows/maven.yml)
+[![bStats Servers](https://img.shields.io/bstats/servers/15987)](https://bstats.org/plugin/bukkit/NovaCore/15987)
+[![bStats Players](https://img.shields.io/bstats/players/15987)](https://bstats.org/plugin/bukkit/NovaCore/15987)
+[![GitHub contributors](https://img.shields.io/github/contributors/NovaUniverse/NovaCore)](https://github.com/NovaUniverse/NovaCore/graphs/contributors)
+[![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.novauniverse.net%2Fjob%2FNovaCore%2F)](https://jenkins.novauniverse.net/job/NovaCore/)
+
 A plugin with a lot of useful features to make plugins with less code and better compatibility between versions
 
 Downloads can be found here https://jenkins.novauniverse.net/job/NovaCore/
 
-If you run 1.17 or later you also need the 1.17 support plugin that can wither be compiled from [here](https://github.com/NovaUniverse/NovaCore1.17plus) or downloaded from [here](https://jenkins.novauniverse.net/job/NovaCore1.17plus/lastSuccessfulBuild/)
+If you run 1.17 or later you also need the 1.17 support plugin that can either be compiled from [here](https://github.com/NovaUniverse/NovaCore1.17plus) or downloaded from [here](https://jenkins.novauniverse.net/job/NovaCore1.17plus/lastSuccessfulBuild/)
 
 <br>
 
 <details>
   <summary> <b>📔 Documentation <tt>CLICK FOR MENU</tt> </b> </summary>
-  
+
+- ### [Nova Game Spigot](https://github.com/NovaUniverse/NovaCore/tree/master/NovaCore-Spigot)
+  - [Command line args.](#-command-line-args)
+
 - ### [Nova Game Engine](https://github.com/NovaUniverse/NovaCore/tree/master/NovaCore-GameEngine)
   - [Starting and Using the game lobby module.](#-using-the-game-lobby-module)
     - [Maps and starting.](#--maps-and-starting)
@@ -26,6 +35,16 @@ If you run 1.17 or later you also need the 1.17 support plugin that can wither b
   - [Sending Players Back](#-sending-players-back-to-the-lobby)
 
 </details>
+
+# NovaCore Spigot
+## 🡺 Command line args
+There are a few command line args you can add to directly affect NovaCores behaviour. These arguments only work on the spigot version of NovaCore
+|Argument|Description|Values|
+|---|---|---|
+|-DnovaCoreLogLevel|Sets the console log level|NONE, FATAL, ERROR, WARN, SUCCESS, INFO, DEBUG, TRACE|
+|-DnovacoreClearLibraryFolder|Clears the lib folder every time NovaCore starts|true, false|
+
+# NovaCore GameEngine
 
 ## 🡺 Using the game lobby module
 

@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Entity;
 
 import net.citizensnpcs.api.npc.NPC;
@@ -12,7 +14,7 @@ public class CitizensUtils {
 	 * @param entity The entity to check
 	 * @return <code>true</code> if the npc is an entity
 	 */
-	public static boolean isNPC(Entity entity) {
+	public static boolean isNPC(@Nonnull Entity entity) {
 		return entity.hasMetadata("NPC");
 	}
 
@@ -43,7 +45,7 @@ public class CitizensUtils {
 	 * @param username The username of the player to get the skin from
 	 */
 	@SuppressWarnings("deprecation")
-	public void setSkin(NPC npc, String username) {
+	public void setSkin(@Nonnull NPC npc, @Nonnull String username) {
 		npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, username);
 	}
 }

@@ -1,9 +1,11 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 public class DirectionUtils {
-	public static String getCardinalDirection(Player player) {
+	public static String getCardinalDirection(@Nonnull Player player) {
 		double rotation = (player.getLocation().getYaw() - 180) % 360;
 		if (rotation < 0) {
 			rotation += 360.0;

@@ -24,14 +24,70 @@ import net.zeeraa.novacore.spigot.utils.ItemBuilder;
 public abstract class ConsumableCustomItem extends CustomItem {
 	private List<RegisteredClickType> registeredClickTypes;
 	private AllowedHand allowedHand;
+	private boolean cancelRightClickBlock;
+	private boolean cancelRightClickAir;
 
 	public ConsumableCustomItem(AllowedHand allowedHand, RegisteredClickType... types) {
 		super();
 
 		this.allowedHand = allowedHand;
 		this.registeredClickTypes = new ArrayList<>();
+		this.cancelRightClickBlock = true;
+		this.cancelRightClickAir = true;
 
 		registeredClickTypes.addAll(Arrays.asList(types));
+	}
+
+	/**
+	 * Set if the event will be canceled if the type is RightClickBlock. The default
+	 * value is <code>true</code>. This wont have any effect unless the registered
+	 * click types contains {@link RegisteredClickType#RIGHT_CLICK_BLOCK}
+	 * 
+	 * @param cancelRightClickBlock <code>true</code> if the the event should be
+	 *                              canceled when right clicking a block
+	 */
+	protected void setCancelRightClickBlock(boolean cancelRightClickBlock) {
+		this.cancelRightClickBlock = cancelRightClickBlock;
+	}
+
+	/**
+	 * Get if the event will be canceled if the type is RightClickBlock. The default
+	 * value is <code>true</code>. This can be modified by calling
+	 * {@link ConsumableCustomItem#setCancelRightClickBlock(boolean)}. This wont
+	 * have any effect unless the registered click types contains
+	 * {@link RegisteredClickType#RIGHT_CLICK_BLOCK}
+	 * 
+	 * @return <code>true</code> if the the event should be canceled when right
+	 *         clicking a block
+	 */
+	public boolean isCancelRightClickBlock() {
+		return cancelRightClickBlock;
+	}
+
+	/**
+	 * Set if the event will be canceled if the type is RightClickAir. The default
+	 * value is <code>true</code>. This wont have any effect unless the registered
+	 * click types contains {@link RegisteredClickType#RIGHT_CLICK_AIR}
+	 * 
+	 * @param cancelRightClickAir <code>true</code> if the the event should be
+	 *                            canceled when right clicking in air
+	 */
+	protected void setCancelRightClickAir(boolean cancelRightClickAir) {
+		this.cancelRightClickAir = cancelRightClickAir;
+	}
+
+	/**
+	 * Get if the event will be canceled if the type is RightClickAir. The default
+	 * value is <code>true</code>. This can be modified by calling
+	 * {@link ConsumableCustomItem#setCancelRightClickAir(boolean)}. This wont have
+	 * any effect unless the registered click types contains
+	 * {@link RegisteredClickType#RIGHT_CLICK_AIR}
+	 * 
+	 * @return <code>true</code> if the the event should be canceled when right
+	 *         clicking in air
+	 */
+	public boolean isCancelRightClickAir() {
+		return cancelRightClickAir;
 	}
 
 	/**
@@ -88,22 +144,25 @@ public abstract class ConsumableCustomItem extends CustomItem {
 		onPlayerInteractBeforeProcessing(event);
 
 		Player player = event.getPlayer();
-		if (this.canUseItem(player)) {
-			AllowedHand clickedHand = VersionIndependentUtils.get().isInteractEventMainHand(event) ? AllowedHand.MAIN_HAND : AllowedHand.OFF_HAND;
-			RegisteredClickType clickType = RegisteredClickType.fromEvent(event);
+		AllowedHand clickedHand = VersionIndependentUtils.get().isInteractEventMainHand(event) ? AllowedHand.MAIN_HAND : AllowedHand.OFF_HAND;
+		ItemStack handItem = clickedHand == AllowedHand.MAIN_HAND ? VersionIndependentUtils.get().getItemInMainHand(player) : VersionIndependentUtils.get().getItemInOffHand(player);
+		RegisteredClickType clickType = RegisteredClickType.fromEvent(event);
 
-			ItemStack handItem = clickedHand == AllowedHand.MAIN_HAND ? VersionIndependentUtils.get().getItemInMainHand(player) : VersionIndependentUtils.get().getItemInOffHand(player);
-			if (!CustomItemManager.getInstance().isCustomItem(handItem)) {
-				return;
-			}
+		if (!CustomItemManager.getInstance().isType(handItem, this.getClass())) {
+			return;
+		}
 
-			if (!CustomItemManager.getInstance().isType(handItem, this.getClass())) {
-				return;
-			}
+		if (clickType != null) {
+			if (registeredClickTypes.contains(clickType)) {
+				if (cancelRightClickAir && clickType == RegisteredClickType.RIGHT_CLICK_AIR) {
+					event.setCancelled(true);
+				}
 
-			if (clickType != null) {
-				if (registeredClickTypes.contains(clickType)) {
+				if (cancelRightClickBlock && clickType == RegisteredClickType.RIGHT_CLICK_BLOCK) {
+					event.setCancelled(true);
+				}
 
+				if (this.canUseItem(player)) {
 					if (allowedHand == AllowedHand.BOTH || allowedHand == clickedHand) {
 						boolean reduce = this.onItemConsume(player, event);
 						if (reduce) {

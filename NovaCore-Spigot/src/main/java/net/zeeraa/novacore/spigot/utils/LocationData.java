@@ -3,9 +3,14 @@ package net.zeeraa.novacore.spigot.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 import org.json.JSONObject;
+
+import net.zeeraa.novacore.commons.utils.Rotation;
 
 /**
  * Represents a location without a world. This can be used in config files for
@@ -24,7 +29,7 @@ public class LocationData {
 	protected float yaw;
 	protected float pitch;
 
-	public LocationData(JSONObject jsonObject) {
+	public LocationData(@Nonnull JSONObject jsonObject) {
 		this(0, 0, 0, 0F, 0F);
 
 		if (jsonObject.has("x")) {
@@ -49,6 +54,22 @@ public class LocationData {
 
 	public LocationData(double x, double y, double z) {
 		this(x, y, z, 0, 0);
+	}
+
+	public LocationData(@Nonnull Vector vector) {
+		this(vector.getX(), vector.getY(), vector.getZ());
+	}
+
+	public LocationData(@Nonnull Vector vector, float yaw, float pitch) {
+		this(vector.getX(), vector.getY(), vector.getZ(), yaw, pitch);
+	}
+
+	public LocationData(@Nonnull Vector vector, @Nonnull Rotation rotation) {
+		this(vector.getX(), vector.getY(), vector.getZ(), rotation.getYaw(), rotation.getPitch());
+	}
+
+	public Rotation getRotation() {
+		return new Rotation(this.getYaw(), this.getPitch());
 	}
 
 	public LocationData(double x, double y, double z, float yaw, float pitch) {
@@ -96,6 +117,10 @@ public class LocationData {
 		return yaw;
 	}
 
+	public Vector toVector() {
+		return new Vector(x, y, z);
+	}
+
 	/**
 	 * Get the pitch of the location
 	 * 
@@ -116,7 +141,7 @@ public class LocationData {
 	 * @param world The {@link World} the location should be in
 	 * @return the bukkit {@link Location}
 	 */
-	public Location toLocation(World world) {
+	public Location toLocation(@Nonnull World world) {
 		return new Location(world, x, y, z, yaw, pitch);
 	}
 
@@ -127,7 +152,7 @@ public class LocationData {
 	 * @param world         The {@link World} the location should be in
 	 * @return the bukkit {@link Location}
 	 */
-	public static Location toLocation(LocationData loacationData, World world) {
+	public static Location toLocation(@Nonnull LocationData loacationData, @Nonnull World world) {
 		return loacationData.toLocation(world);
 	}
 
@@ -138,7 +163,7 @@ public class LocationData {
 	 * @param world     The {@link World} the locations should be in
 	 * @return A {@link List} with bukkit {@link Location}s
 	 */
-	public static List<Location> toLocations(List<LocationData> locations, World world) {
+	public static List<Location> toLocations(@Nonnull List<LocationData> locations, @Nonnull World world) {
 		List<Location> result = new ArrayList<>();
 
 		for (LocationData locationData : locations) {
@@ -155,7 +180,7 @@ public class LocationData {
 	 * @return The {@link LocationData} object
 	 * @since 2.0.0
 	 */
-	public static LocationData fromJSON(JSONObject json) {
+	public static LocationData fromJSON(@Nonnull JSONObject json) {
 		double x = 0D;
 		double y = 0D;
 		double z = 0D;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
@@ -231,6 +232,20 @@ public class LootTableLoaderV1 implements LootTableLoader {
 				int level = enchantments.getInt(enchant);
 
 				item.addUnsafeEnchantment(Enchantment.getByName(enchant), level);
+			}
+		}
+
+		if (itemJson.has("stored_enchantments")) {
+			JSONObject enchantments = itemJson.getJSONObject("stored_enchantments");
+
+			for (String enchant : enchantments.keySet()) {
+				int level = enchantments.getInt(enchant);
+
+				EnchantmentStorageMeta storage = (EnchantmentStorageMeta) item.getItemMeta();
+
+				storage.addStoredEnchant(Enchantment.getByName(enchant), level, true);
+
+				item.setItemMeta(storage);
 			}
 		}
 

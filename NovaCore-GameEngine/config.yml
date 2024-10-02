@@ -1,0 +1,6 @@
+# Debug settings. You should not enable any of these settings unless you are developing
+# or trying to fix errors in a game
+Debug:
+  # Disable auto ending games. Can be useful if you need to test a game with a single account.
+  # This will not affect games that have their own auto end conditions
+  DisableAutoEndGame: false

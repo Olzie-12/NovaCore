@@ -11,9 +11,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.module.NovaModule;
 import net.zeeraa.novacore.spigot.module.modules.compass.event.CompassTrackingEvent;
+import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 
 /**
  * This module is used to set custom compass tracking targets
@@ -30,14 +32,50 @@ public class CompassTracker extends NovaModule implements Listener {
 	private CompassTrackerTarget compassTrackerTarget;
 	private boolean strictMode;
 
-	private int taskId;
+	private SimpleTask task;
 
 	@Override
 	public void onLoad() {
 		CompassTracker.instance = this;
 		this.compassTrackerTarget = null;
 		this.strictMode = false;
-		this.taskId = -1;
+
+		this.task = new SimpleTask(getPlugin(), () -> {
+			if (!hasCompassTrackerTarget()) {
+				return;
+			}
+
+			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+				if (strictMode) {
+					if (!p.getInventory().contains(Material.COMPASS)) {
+						continue;
+					}
+				}
+
+				CompassTarget target = compassTrackerTarget.getCompassTarget(p);
+
+				CompassTrackingEvent event = new CompassTrackingEvent(p, target);
+
+				Bukkit.getServer().getPluginManager().callEvent(event);
+
+				if (!event.isCancelled()) {
+					if (target != null) {
+						if (target.getTargetLocation() != null) {
+							p.setCompassTarget(target.getTargetLocation());
+						}
+					}
+				}
+			}
+		}, 5L);
+	}
+
+	/**
+	 * Update the refresh rate of the compass tracker
+	 * 
+	 * @param time The delay in ticks between each update
+	 */
+	public void setRefreshRate(long time) {
+		task.updateInterval(time, time);
 	}
 
 	public static CompassTracker getInstance() {
@@ -46,35 +84,12 @@ public class CompassTracker extends NovaModule implements Listener {
 
 	@Override
 	public void onEnable() {
-		if (this.taskId == -1) {
-			this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(NovaCore.getInstance(), () -> {
-				if (!hasCompassTrackerTarget()) {
-					return;
-				}
+		Task.tryStartTask(task);
+	}
 
-				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-					if (strictMode) {
-						if (!p.getInventory().contains(Material.COMPASS)) {
-							continue;
-						}
-					}
-
-					CompassTarget target = compassTrackerTarget.getCompassTarget(p);
-
-					CompassTrackingEvent event = new CompassTrackingEvent(p, target);
-
-					Bukkit.getServer().getPluginManager().callEvent(event);
-
-					if (!event.isCancelled()) {
-						if (target != null) {
-							if (target.getTargetLocation() != null) {
-								p.setCompassTarget(target.getTargetLocation());
-							}
-						}
-					}
-				}
-			}, 5L, 5L);
-		}
+	@Override
+	public void onDisable() {
+		Task.tryStopTask(task);
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
@@ -106,14 +121,6 @@ public class CompassTracker extends NovaModule implements Listener {
 					e.getPlayer().sendMessage(message);
 				}
 			}
-		}
-	}
-
-	@Override
-	public void onDisable() {
-		if (this.taskId != -1) {
-			Bukkit.getScheduler().cancelTask(this.taskId);
-			this.taskId = -1;
 		}
 	}
 

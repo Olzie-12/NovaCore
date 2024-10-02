@@ -65,13 +65,11 @@ public class MedicalSupplyDropMapModule extends MapModule {
 			maxDropTime = minDropTime;
 		}
 
-		this.timeToSpawn = 0;
-		if (json.has("time_to_descend")) {
-			this.timeToSpawn = json.getInt("time_to_descend");
-		}
+		this.timeToSpawn = json.optInt("time_to_descend", 0);
 
 		trigger = new DelayedGameTrigger("novacore.medicalsupplydrop", minDropTime, (trigger2, reason) -> onTrigger(reason));
 		trigger.addFlag(TriggerFlag.STOP_ON_GAME_END);
+		trigger.setDescription("Spawns a medical supply drop");
 	}
 
 	private void onTrigger(TriggerFlag reason) {

@@ -1,6 +1,5 @@
 package net.zeeraa.novacore.spigot.command.commands.novacore;
 
-import net.zeeraa.novacore.spigot.command.commands.novacore.packets.NovaCoreSubCommandPackets;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -39,7 +38,6 @@ public class NovaCoreCommand extends NovaCommand {
 		this.addSubCommand(new NovaCoreSubCommandWhereAmI());
 		this.addSubCommand(new NovaCoreSubCommandGoToWorld());
 		this.addSubCommand(new NovaCoreSubCommandGiveCustomItem());
-		this.addSubCommand(new NovaCoreSubCommandPackets());
 		this.addSubCommand(new NovaCoreDebugCommand());
 
 		this.setFilterAutocomplete(true);

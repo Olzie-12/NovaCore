@@ -1,5 +1,7 @@
 package net.zeeraa.novacore.spigot.utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
@@ -49,7 +51,7 @@ public class LocationOffset {
 	 *               {@link LocationOffset#LocationOffset(double, double, double)}
 	 *               with the vector values
 	 */
-	public LocationOffset(Vector vector) {
+	public LocationOffset(@Nonnull Vector vector) {
 		this(vector.getX(), vector.getY(), vector.getZ(), 0, 0);
 	}
 
@@ -155,7 +157,7 @@ public class LocationOffset {
 	 * @return the instance of this {@link LocationOffset} so that commands can be
 	 *         chained
 	 */
-	public LocationOffset setWorld(World world) {
+	public LocationOffset setWorld(@Nonnull World world) {
 		this.world = world;
 		return this;
 	}
@@ -238,7 +240,7 @@ public class LocationOffset {
 	 * @param location The location
 	 * @return The modified {@link Location}
 	 */
-	public Location apply(Location location) {
+	public Location apply(@Nonnull Location location) {
 		location.add(x, y, z);
 		location.setYaw(location.getYaw() + yaw);
 		location.setPitch(location.getPitch() + pitch);
@@ -260,7 +262,7 @@ public class LocationOffset {
 	 * @param location The location
 	 * @return The modified copy of the input {@link Location}
 	 */
-	public Location applyCopy(Location location) {
+	public Location applyCopy(@Nonnull Location location) {
 		return this.apply(location.clone());
 	}
 
@@ -277,7 +279,7 @@ public class LocationOffset {
 	 * @param location The location
 	 * @return The modified {@link Location}
 	 */
-	public Location applyWithRotation(Location location) {
+	public Location applyWithRotation(@Nonnull Location location) {
 		double rad = Math.toRadians(Math.abs(location.getYaw()));
 
 		double nx = (z * Math.sin(rad)) + (x * Math.cos(rad));
@@ -312,7 +314,7 @@ public class LocationOffset {
 	 * @param location The location
 	 * @return The modified copy of the input {@link Location}
 	 */
-	public Location applyWithRotationAsCopy(Location location) {
+	public Location applyWithRotationAsCopy(@Nonnull Location location) {
 		return this.applyWithRotation(location.clone());
 	}
 }

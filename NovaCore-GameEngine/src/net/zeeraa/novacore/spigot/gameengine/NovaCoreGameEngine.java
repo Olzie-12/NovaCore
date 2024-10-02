@@ -3,6 +3,10 @@ package net.zeeraa.novacore.spigot.gameengine;
 import java.io.File;
 import java.io.IOException;
 
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.buildlimit.BuildLimitMapModule;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,30 +18,30 @@ import net.zeeraa.novacore.spigot.gameengine.debugtriggers.GameEngineDebugTrigge
 import net.zeeraa.novacore.spigot.gameengine.lootdrop.medical.MedicalSupplyDropManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModuleManager;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.blockloot.BlockLoot;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.blockreplacer.BlockReplacer;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.chestloot.ChestLoot;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.chunkloader.ChunkLoader;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.disablespectatechests.DisableSpectateChests;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.farmlandprotection.FarmlandProtection;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.fireresistance.FireReistance;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.gamerule.Gamerule;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.giveitems.GiveItemInstant;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.giveitems.GiveItemSlow;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.blockloot.BlockLootMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.blockreplacer.BlockReplacerMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.chestloot.ChestLootMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.chunkloader.ChunkLoaderMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.disablespectatechests.DisableSpectateChestsMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.farmlandprotection.FarmlandProtectionMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.fireresistance.FireReistanceMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.gamerule.GameruleMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.giveitems.GiveItemInstantMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.giveitems.GiveItemSlowMapModule;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.falldamagegraceperiod.FallDamageGracePeriodMapModule;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.GracePeriodMapModule;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.handcraftingtable.HandCraftingTable;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.infinitefood.InfiniteFood;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.infiniteoxygen.InfiniteOxygen;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.instantvoidkill.InstantVoidKill;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.handcraftingtable.HandCraftingTableMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.infinitefood.InfiniteFoodMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.infiniteoxygen.InfiniteOxygenMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.instantvoidkill.InstantVoidKillMapModule;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.lootdrop.LootDropMapModule;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.lootdrop.medical.MedicalSupplyDropMapModule;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.mapprotection.MapProtection;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.noweather.NoWeather;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.potioneffect.AddPotionEffect;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.settime.SetTime;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.simplemapdecay.SimpleBoxDecay;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.startmessage.StartMessage;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.mapprotection.MapProtectionMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.noweather.NoWeatherMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.potioneffect.AddPotionEffectMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.settime.SetTimeMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.simplemapdecay.SimpleBoxDecayMapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.startmessage.StartMessageMapModule;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.worldborder.WorldborderMapModule;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby;
 import net.zeeraa.novacore.spigot.language.LanguageReader;
@@ -51,11 +55,21 @@ public class NovaCoreGameEngine extends NovaPlugin {
 		return instance;
 	}
 
+	private boolean debugDisableAutoEndGame;
 	private File requestedGameDataDirectory;
 
+	public boolean isDebugDisableAutoEndGame() {
+		return debugDisableAutoEndGame;
+	}
+	
 	@Override
 	public void onEnable() {
 		requestedGameDataDirectory = null;
+
+		saveDefaultConfig();
+
+		ConfigurationSection debugSettings = getConfig().getConfigurationSection("Debug");
+		debugDisableAutoEndGame = debugSettings.getBoolean("DisableAutoEndGame");
 
 		this.getDataFolder().mkdir();
 
@@ -75,33 +89,34 @@ public class NovaCoreGameEngine extends NovaPlugin {
 		ModuleManager.loadModule(this, GameManager.class);
 		ModuleManager.loadModule(this, GameLobby.class);
 		ModuleManager.loadModule(this, MedicalSupplyDropManager.class);
-		
+
 		Log.info("NovaCoreGameEngine", "Loading map modules...");
-		MapModuleManager.addMapModule("novacore.chestloot", ChestLoot.class);
+		MapModuleManager.addMapModule("novacore.chestloot", ChestLootMapModule.class);
 		MapModuleManager.addMapModule("novacore.lootdrop", LootDropMapModule.class);
 		MapModuleManager.addMapModule("novacore.lootdrop.medical", MedicalSupplyDropMapModule.class);
-		MapModuleManager.addMapModule("novacore.mapprotection", MapProtection.class);
-		MapModuleManager.addMapModule("novacore.handcraftingtable", HandCraftingTable.class);
+		MapModuleManager.addMapModule("novacore.mapprotection", MapProtectionMapModule.class);
+		MapModuleManager.addMapModule("novacore.handcraftingtable", HandCraftingTableMapModule.class);
 		MapModuleManager.addMapModule("novacore.worldborder", WorldborderMapModule.class);
-		MapModuleManager.addMapModule("novacore.settime", SetTime.class);
-		MapModuleManager.addMapModule("novacore.startmessage", StartMessage.class);
+		MapModuleManager.addMapModule("novacore.settime", SetTimeMapModule.class);
+		MapModuleManager.addMapModule("novacore.startmessage", StartMessageMapModule.class);
 		MapModuleManager.addMapModule("novacore.graceperiod", GracePeriodMapModule.class);
 		MapModuleManager.addMapModule("novacore.falldamagegraceperiod", FallDamageGracePeriodMapModule.class);
-		MapModuleManager.addMapModule("novacore.simpleboxdecay", SimpleBoxDecay.class);
-		MapModuleManager.addMapModule("novacore.blockloot", BlockLoot.class);
-		MapModuleManager.addMapModule("novacore.blockreplacer", BlockReplacer.class);
-		MapModuleManager.addMapModule("novacore.noweather", NoWeather.class);
-		MapModuleManager.addMapModule("novacore.gamerule", Gamerule.class);
-		MapModuleManager.addMapModule("novacore.addpotioneffect", AddPotionEffect.class);
-		MapModuleManager.addMapModule("novacore.giveitem.slow", GiveItemSlow.class);
-		MapModuleManager.addMapModule("novacore.giveitem.instant", GiveItemInstant.class);
-		MapModuleManager.addMapModule("novacore.instantvoidkill", InstantVoidKill.class);
-		MapModuleManager.addMapModule("novacore.fireresistance", FireReistance.class);
-		MapModuleManager.addMapModule("novacore.farmlandprotection", FarmlandProtection.class);
-		MapModuleManager.addMapModule("novacore.chunkloader", ChunkLoader.class);
-		MapModuleManager.addMapModule("novacore.infiniteoxygen", InfiniteOxygen.class);
-		MapModuleManager.addMapModule("novacore.infinitefood", InfiniteFood.class);
-		MapModuleManager.addMapModule("novacore.disablespectatechests", DisableSpectateChests.class);
+		MapModuleManager.addMapModule("novacore.simpleboxdecay", SimpleBoxDecayMapModule.class);
+		MapModuleManager.addMapModule("novacore.blockloot", BlockLootMapModule.class);
+		MapModuleManager.addMapModule("novacore.blockreplacer", BlockReplacerMapModule.class);
+		MapModuleManager.addMapModule("novacore.noweather", NoWeatherMapModule.class);
+		MapModuleManager.addMapModule("novacore.gamerule", GameruleMapModule.class);
+		MapModuleManager.addMapModule("novacore.addpotioneffect", AddPotionEffectMapModule.class);
+		MapModuleManager.addMapModule("novacore.giveitem.slow", GiveItemSlowMapModule.class);
+		MapModuleManager.addMapModule("novacore.giveitem.instant", GiveItemInstantMapModule.class);
+		MapModuleManager.addMapModule("novacore.instantvoidkill", InstantVoidKillMapModule.class);
+		MapModuleManager.addMapModule("novacore.fireresistance", FireReistanceMapModule.class);
+		MapModuleManager.addMapModule("novacore.farmlandprotection", FarmlandProtectionMapModule.class);
+		MapModuleManager.addMapModule("novacore.chunkloader", ChunkLoaderMapModule.class);
+		MapModuleManager.addMapModule("novacore.infiniteoxygen", InfiniteOxygenMapModule.class);
+		MapModuleManager.addMapModule("novacore.infinitefood", InfiniteFoodMapModule.class);
+		MapModuleManager.addMapModule("novacore.disablespectatechests", DisableSpectateChestsMapModule.class);
+		MapModuleManager.addMapModule("novacore.buildlimit", BuildLimitMapModule.class);
 
 		// Legacy modules
 		MapModuleManager.addMapModule("novauniverse.survivalgames.medicalsupplydrop", MedicalSupplyDropMapModule.class);
@@ -127,6 +142,15 @@ public class NovaCoreGameEngine extends NovaPlugin {
 		}
 
 		Log.success("NovaCoreGameEngine", "Game engine enabled");
+
+		if (debugDisableAutoEndGame) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					Log.warn("GameEngine", "DisableAutoEndGame set to true in config.yml. If this server is not a dev server disable this option immediately");
+				}
+			}.runTaskLater(this, 1L);
+		}
 	}
 
 	public File getRequestedGameDataDirectory() {

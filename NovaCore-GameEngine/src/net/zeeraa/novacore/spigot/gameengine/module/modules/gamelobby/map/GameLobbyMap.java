@@ -7,7 +7,7 @@ import net.zeeraa.novacore.spigot.gameengine.utils.AbstractMap;
 import net.zeeraa.novacore.spigot.gameengine.utils.AbstractMapData;
 
 public class GameLobbyMap extends AbstractMap {
-	private Location spawnLocation;
+	protected Location spawnLocation;
 
 	public GameLobbyMap(World world, AbstractMapData mapData, Location spawnLocation) {
 		super(world, mapData);

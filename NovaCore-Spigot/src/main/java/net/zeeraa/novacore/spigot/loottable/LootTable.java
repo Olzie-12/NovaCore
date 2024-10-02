@@ -5,7 +5,10 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+
+import net.zeeraa.novacore.spigot.loottable.event.LootTableGeneratedEvent;
 
 /**
  * Represents a loot table that can generate random loot
@@ -27,6 +30,18 @@ public abstract class LootTable {
 		this.displayName = displayName;
 		this.minItems = minItems;
 		this.maxItems = maxItems;
+
+		if (this.minItems < 0) {
+			this.minItems = 0;
+		}
+
+		if (this.maxItems < 0) {
+			this.maxItems = 0;
+		}
+
+		if (this.minItems > this.maxItems) {
+			this.minItems = this.maxItems;
+		}
 	}
 
 	/**
@@ -74,7 +89,7 @@ public abstract class LootTable {
 	 * 
 	 * @return {@link List} with {@link ItemStack}
 	 */
-	public List<ItemStack> generateLoot() {
+	public final List<ItemStack> generateLoot() {
 		return this.generateLoot(new Random());
 	}
 
@@ -84,7 +99,7 @@ public abstract class LootTable {
 	 * @param random instance of {@link Random} to use
 	 * @return {@link List} with {@link ItemStack}
 	 */
-	public List<ItemStack> generateLoot(Random random) {
+	public final List<ItemStack> generateLoot(Random random) {
 		int count = minItems + random.nextInt((maxItems - minItems) + 1);
 		return this.generateLoot(random, count);
 	}
@@ -95,7 +110,7 @@ public abstract class LootTable {
 	 * @param count amount of {@link ItemStack} to generate
 	 * @return {@link List} with {@link ItemStack}
 	 */
-	public List<ItemStack> generateLoot(int count) {
+	public final List<ItemStack> generateLoot(int count) {
 		return this.generateLoot(new Random(), count);
 	}
 
@@ -106,7 +121,14 @@ public abstract class LootTable {
 	 * @param count  amount of {@link ItemStack} to generate
 	 * @return {@link List} with {@link ItemStack}
 	 */
-	public abstract List<ItemStack> generateLoot(Random random, int count);
+	public final List<ItemStack> generateLoot(Random random, int count) {
+		List<ItemStack> loot = generate(random, count);
+		LootTableGeneratedEvent event = new LootTableGeneratedEvent(this, loot);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		return event.getGeneratedContent();
+	}
+
+	public abstract List<ItemStack> generate(Random random, int count);
 
 	/**
 	 * Get the name of a {@link LootTable}. The provided loot table can be

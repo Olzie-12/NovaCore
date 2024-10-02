@@ -7,12 +7,12 @@ public class ChunkLoaderImplementation extends ChunkLoader {
 	public ChunkLoaderImplementation() {
 		super();
 	}
-	
+
 	@Override
 	protected void onAdd(Chunk chunk) {
 		chunk.setForceLoaded(true);
 	}
-	
+
 	@Override
 	protected void onRemove(Chunk chunk) {
 		chunk.setForceLoaded(false);

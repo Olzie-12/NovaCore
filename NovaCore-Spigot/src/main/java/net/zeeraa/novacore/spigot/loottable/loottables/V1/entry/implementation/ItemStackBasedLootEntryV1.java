@@ -66,7 +66,7 @@ public class ItemStackBasedLootEntryV1 implements LootEntryV1 {
 			return min;
 		}
 
-		if (max > min) {
+		if (min > max) {
 			min = max;
 		}
 

@@ -1,5 +1,8 @@
 package net.zeeraa.novacore.spigot.world.worldgenerator.worldpregenerator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -64,7 +67,7 @@ public class WorldPreGenerator {
 	 * @param finishCallback          A {@link Callback} to be called when the
 	 *                                generation has finished
 	 */
-	public WorldPreGenerator(World world, int size, int chunksPerGenerationTick, int ticksPerGenerationTick, Callback finishCallback) {
+	public WorldPreGenerator(@Nonnull World world, int size, int chunksPerGenerationTick, int ticksPerGenerationTick, @Nullable Callback finishCallback) {
 		this(world, size, chunksPerGenerationTick, ticksPerGenerationTick, 0, 0, finishCallback);
 	}
 
@@ -87,7 +90,7 @@ public class WorldPreGenerator {
 	 * @param finishCallback          A {@link Callback} to be called when the
 	 *                                generation has finished
 	 */
-	public WorldPreGenerator(World world, int size, int chunksPerGenerationTick, int ticksPerGenerationTick, int centerX, int centerZ, Callback finishCallback) {
+	public WorldPreGenerator(@Nonnull World world, int size, int chunksPerGenerationTick, int ticksPerGenerationTick, int centerX, int centerZ, @Nullable Callback finishCallback) {
 		// Settings
 		this.world = world;
 		this.size = size;
