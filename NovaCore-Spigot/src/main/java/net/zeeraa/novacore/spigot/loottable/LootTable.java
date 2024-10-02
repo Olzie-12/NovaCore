@@ -30,6 +30,18 @@ public abstract class LootTable {
 		this.displayName = displayName;
 		this.minItems = minItems;
 		this.maxItems = maxItems;
+
+		if (this.minItems < 0) {
+			this.minItems = 0;
+		}
+
+		if (this.maxItems < 0) {
+			this.maxItems = 0;
+		}
+
+		if (this.minItems > this.maxItems) {
+			this.minItems = this.maxItems;
+		}
 	}
 
 	/**

@@ -38,8 +38,8 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
-import org.bukkit.potion.PotionEffect;
 
+import org.bukkit.potion.PotionEffect;
 import com.mojang.authlib.GameProfile;
 
 import java.awt.Color;
@@ -59,6 +59,8 @@ import javax.annotation.Nullable;
 public abstract class VersionIndependentUtils {
 	private static VersionIndependentUtils instance;
 	protected static List<String> BED_MATERIALS = new ArrayList<>();
+	
+	protected VersionIndependentLoader loader;
 
 	static {
 		BED_MATERIALS.add("BED");
@@ -81,6 +83,14 @@ public abstract class VersionIndependentUtils {
 		BED_MATERIALS.add("YELLOW_BED");
 	}
 
+	public VersionIndependentUtils(VersionIndependentLoader loader) {
+		this.loader = loader;
+	}
+	
+	public VersionIndependentLoader getLoader() {
+		return loader;
+	}
+	
 	public abstract NovaBossBar createBossBar(String text);
 
 	private VersionIndependenceLayerError lastError = VersionIndependenceLayerError.NONE;

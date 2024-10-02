@@ -31,9 +31,9 @@ public class ChestLootMapModule extends MapModule {
 
 		this.chestLootTable = json.optString("chest_loot");
 		this.enderChestLootTable = json.optString("ender_chest_loot");
-		this.minRefillTime =  json.optInt("min_refill_time", -1);
-		this.maxRefillTime =  json.optInt("min_refill_time", -1);
-		this.announceRefills =json.optBoolean("announce_refills", true);
+		this.minRefillTime = json.optInt("min_refill_time", -1);
+		this.maxRefillTime = json.optInt("min_refill_time", -1);
+		this.announceRefills = json.optBoolean("announce_refills", true);
 		this.trigger = null;
 
 		if (minRefillTime != -1 && maxRefillTime == -1) {
@@ -89,7 +89,7 @@ public class ChestLootMapModule extends MapModule {
 	public void onMapLoad(GameMap map) {
 		if (hasChestLootTable() || hasEnderChestLootTable()) {
 			if (ModuleManager.isDisabled(ChestLootManager.class)) {
-				Log.info("Loading ChestLootManager because the game map has a chest or ender chest loot table");
+				Log.info("ChestLootMapModule", "Loading ChestLootManager because the game map has a chest or ender chest loot table");
 				ModuleManager.enable(ChestLootManager.class);
 			}
 
@@ -119,7 +119,7 @@ public class ChestLootMapModule extends MapModule {
 	private void startTask() {
 		int delay = RandomGenerator.generate(minRefillTime, maxRefillTime);
 
-		Log.debug("Next chest refill in " + delay + " seconds");
+		Log.debug("ChestLootMapModule", "Next chest refill in " + delay + " seconds");
 
 		trigger.stop();
 		trigger.setDelay(delay * 20L);

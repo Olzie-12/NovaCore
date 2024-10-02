@@ -3,6 +3,7 @@ package net.zeeraa.novacore.spigot;
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
@@ -41,7 +42,7 @@ import net.zeeraa.novacore.commons.utils.JSONFileType;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.abstraction.CommandRegistrator;
 import net.zeeraa.novacore.spigot.abstraction.NovaCoreAbstraction;
-import net.zeeraa.novacore.spigot.abstraction.VersionIndependantLoader;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils;
 import net.zeeraa.novacore.spigot.abstraction.commons.AbstractBukkitConsoleSender;
 import net.zeeraa.novacore.spigot.abstraction.commons.AbstractBukkitPlayerMessageSender;
@@ -50,6 +51,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
+import net.zeeraa.novacore.spigot.abstraction.particle.NMSBasedParticleProvider;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleEffect;
 import net.zeeraa.novacore.spigot.abstraction.particle.NovaParticleProvider;
 import net.zeeraa.novacore.spigot.abstraction.particle.NullParticleProvider;
@@ -63,6 +65,10 @@ import net.zeeraa.novacore.spigot.debug.DebugCommandRegistrator;
 import net.zeeraa.novacore.spigot.debug.builtin.BuiltinDebugTriggers;
 import net.zeeraa.novacore.spigot.delayedrunner.DelayedRunnerImplementationSpigot;
 import net.zeeraa.novacore.spigot.language.LanguageReader;
+import net.zeeraa.novacore.spigot.librarymanagement.LibraryBlockedException;
+import net.zeeraa.novacore.spigot.librarymanagement.LibraryEntry;
+import net.zeeraa.novacore.spigot.librarymanagement.LibraryLoadCondition;
+import net.zeeraa.novacore.spigot.librarymanagement.NovaCoreLibraryManager;
 import net.zeeraa.novacore.spigot.logger.SpigotAbstractionLogger;
 import net.zeeraa.novacore.spigot.loottable.LootTableManager;
 import net.zeeraa.novacore.spigot.loottable.loottables.V1.LootTableLoaderV1;
@@ -84,7 +90,7 @@ import net.zeeraa.novacore.spigot.module.modules.jumppad.JumpPadManager;
 import net.zeeraa.novacore.spigot.module.modules.lootdrop.LootDropManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.MultiverseManager;
 import net.zeeraa.novacore.spigot.module.modules.multiverse.WorldOptions;
-import net.zeeraa.novacore.spigot.module.modules.scoreboard.NetherBoardScoreboard;
+import net.zeeraa.novacore.spigot.module.modules.scoreboard.NovaScoreboardManager;
 import net.zeeraa.novacore.spigot.module.modules.specialevents.NovaSpecialEventsManager;
 import net.zeeraa.novacore.spigot.permission.PermissionRegistrator;
 import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentBungeecordAPI;
@@ -92,7 +98,6 @@ import net.zeeraa.novacore.spigot.platformindependent.SpigotPlatformIndependentP
 import net.zeeraa.novacore.spigot.tasks.abstraction.BukkitSimpleTaskCreator;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.utils.CitizensUtils;
-import net.zeeraa.novacore.spigot.version.v1_8_R3.NMSParticleImplementation;
 
 public class NovaCore extends JavaPlugin implements Listener {
 	private static NovaCore instance;
@@ -114,8 +119,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	private CitizensUtils citizensUtils;
 
-	private boolean hologramsSupport;
-
 	private boolean loadingDone;
 
 	private boolean noNMSMode;
@@ -132,6 +135,25 @@ public class NovaCore extends JavaPlugin implements Listener {
 	private NovaCoreGameVersion novaCoreGameVersion;
 
 	private boolean disableUnregisteringCommands;
+
+	private NovaCoreLibraryManager libraryManager;
+
+	private static final List<LibraryEntry> BUILTIN_LIBRARIES = new ArrayList<>();
+
+	static {
+		LibraryLoadCondition kyoriLibraryConditions = new LibraryLoadCondition();
+		kyoriLibraryConditions.addPreventLoadCondition(() -> {
+			return Bukkit.getPluginManager().getPlugin("NovaCore1_17Plus") != null;
+		});
+
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.examination.Examinable", "examination-api-1.3.1-SNAPSHOT.jar", kyoriLibraryConditions));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.key.Keyed", "adventure-key-4.14.0.jar", kyoriLibraryConditions));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.Adventure", "adventure-api-4.14.0.jar", kyoriLibraryConditions));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.text.serializer.ComponentSerializer", "adventure-api-4.14.0.jar", kyoriLibraryConditions)); // Fix issue when packetevents is installed
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer", "adventure-text-serializer-legacy-4.14.0.jar", kyoriLibraryConditions));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.json.JSONComponentSerializer", "adventure-text-serializer-json-4.14.0.jar", kyoriLibraryConditions));
+		BUILTIN_LIBRARIES.add(new LibraryEntry("net.kyori.adventure.text.serializer.gson.GsonComponentSerializer", "adventure-text-serializer-gson-4.14.0.jar", kyoriLibraryConditions));
+	}
 
 	/**
 	 * Check if the NovaCoreGameEngine plugin is enabled
@@ -220,15 +242,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * Check in holographic displays is installed
-	 *
-	 * @return <code>true</code> if the holographic displays plugin is installed
-	 */
-	public boolean hasHologramsSupport() {
-		return hologramsSupport;
-	}
-
-	/**
 	 * Set the console log level
 	 *
 	 * @param logLevel Log level for the console
@@ -293,6 +306,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 		return novaParticleProvider;
 	}
 
+	public NovaCoreLibraryManager getLibraryManager() {
+		return libraryManager;
+	}
+
 	public void setNovaParticleProvider(NovaParticleProvider novaParticleProvider) {
 		this.novaParticleProvider = novaParticleProvider;
 		StaticParticleProviderInstance.setInstance(novaParticleProvider);
@@ -303,8 +320,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.error("NovaCore", "Cant run selftest in no nms mode");
 			return false;
 		}
-
-		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
 
 		try {
 			boolean ok = true;
@@ -350,8 +365,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 				Log.error("NovaCore", "Errors detected while running selftest: Particle provider is of type " + NullParticleProvider.class.getName() + ". This is probably caused by the version not yet supporting particles");
 				VersionIndependentUtils.get().resetLastError();
 				ok = false;
-			} else if (novaParticleProvider instanceof NMSParticleImplementation) {
-				NMSParticleImplementation nmsImplementation = (NMSParticleImplementation) novaParticleProvider;
+			} else if (novaParticleProvider instanceof NMSBasedParticleProvider) {
+				NMSBasedParticleProvider nmsImplementation = (NMSBasedParticleProvider) novaParticleProvider;
 				for (NovaParticleEffect effect : NovaParticleEffect.values()) {
 					if (!nmsImplementation.runNovaParticleEffectConversionTest(effect)) {
 						Log.warn("NMSBasedParticleProvider", "Failure to map NovaParticleEffect with name " + effect.name() + " to a valid particle. This version needs to be updated to support that effect");
@@ -379,17 +394,141 @@ public class NovaCore extends JavaPlugin implements Listener {
 		this.teamManager = null;
 		this.citizensUtils = null;
 		this.noNMSMode = false;
+		this.libraryManager = null;
+
+		DelayedRunner.setImplementation(new DelayedRunnerImplementationSpigot());
+
 		this.reflectionBasedCommandRegistrator = new ReflectionBasedCommandRegistrator();
 
 		this.disableUnregisteringCommands = false;
 
+		NovaCommons.setAbstractConsoleSender(new AbstractBukkitConsoleSender());
 		AbstractionLogger.setLogger(new SpigotAbstractionLogger());
+
+		Log.setConsoleLogLevel(LogLevel.INFO);
+
+		String cmdLineArgLogLevel = System.getProperty("novacoreConsoleLogLevel");
+
+		logSeverityConfigFile = new File(this.getDataFolder(), "log_severity.yml");
+		try {
+			if (!logSeverityConfigFile.exists()) {
+				Log.info("NovaCore", "Creating log_severity.yml");
+				FileUtils.touch(logSeverityConfigFile);
+			}
+			logSeverityConfig = YamlConfiguration.loadConfiguration(logSeverityConfigFile);
+
+			if (!logSeverityConfig.contains("severity")) {
+				logSeverityConfig.set("severity", LogLevel.INFO.name());
+				logSeverityConfig.save(logSeverityConfigFile);
+			}
+
+			String logLevelName = logSeverityConfig.getString("severity");
+
+			try {
+				LogLevel logLevel = LogLevel.valueOf(logLevelName);
+				Log.setConsoleLogLevel(logLevel);
+				Log.info("NovaCore", "Log level is " + logLevel.name());
+			} catch (Exception e) {
+				Log.warn("NovaCore", "The value " + logLevelName + " is not a valid LogLevel. Resetting it to " + LogLevel.INFO.name());
+				logSeverityConfig.set("severity", LogLevel.INFO.name());
+				logSeverityConfig.save(logSeverityConfigFile);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.fatal("NovaCore", "Failed to read log_severity.yml");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+
+		if (cmdLineArgLogLevel != null) {
+			try {
+				LogLevel logLevel = LogLevel.valueOf(cmdLineArgLogLevel.toUpperCase());
+				Log.setConsoleLogLevel(logLevel);
+				Log.info("NovaCore", "Setting log level to " + logLevel.name() + " due to -DnovaCoreLogLevel argument being present");
+			} catch (Exception e) {
+				Log.error("NovaCore", "The value of -DnovaCoreLogLevel=" + cmdLineArgLogLevel + " is not a valid LogLevel");
+			}
+		}
 
 		saveDefaultConfig();
 
+		ConfigurationSection libraryConfig = getConfig().getConfigurationSection("LibrarySettings");
+
+		boolean libLoaderVerboseMode = libraryConfig.getBoolean("Verbose", false);
+
+		File libraryFolder;
+		String libraryFolderOverride = libraryConfig.getString("LibraryDirectoryOverride", "");
+		if (libraryFolderOverride.trim().length() > 0) {
+			libraryFolder = new File(libraryFolderOverride);
+			Log.info("NovaCore", "Using custom library folder path: " + libraryFolder.getAbsolutePath());
+		} else {
+			libraryFolder = new File(getDataFolder().getAbsolutePath() + File.separator + "Lib");
+			Log.info("NovaCore", "Using default library folder path: " + libraryFolder.getAbsolutePath());
+		}
+
+		if (Boolean.getBoolean("novacoreClearLibraryFolder")) {
+			if (libraryFolder.exists()) {
+				try {
+					FileUtils.deleteDirectory(libraryFolder);
+				} catch (IOException e) {
+					Log.error("NovaCore", "Failed to delete library folder (auto delete enabled by -DnovacoreClearLibraryFolder=true)");
+					e.printStackTrace();
+				}
+			}
+		}
+
+		List<String> blockedLibraries = new ArrayList<>();
+		List<String> blockedLibNames = libraryConfig.getStringList("BlockedLibraries");
+		blockedLibNames.forEach(name -> {
+			if (libLoaderVerboseMode) {
+				Log.trace("NovaCore", "Adding library " + name + " to the block list");
+			}
+			blockedLibraries.add(name);
+		});
+
+		if (libLoaderVerboseMode) {
+			Log.info("NovaCore", "Verbose mode enabled for library loader");
+		}
+
+		libraryManager = new NovaCoreLibraryManager(this, libraryFolder, blockedLibraries, libLoaderVerboseMode, getClassLoader());
+
+		try {
+			libraryManager.extractLibrariesToDisk("libs");
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.fatal("NovaCore", "Failed to extract libraries");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+
+		boolean dontShutdownOnFail = libraryConfig.getBoolean("DoNotShutdownOnFail", false);
+		for (LibraryEntry lib : BUILTIN_LIBRARIES) {
+			if (!lib.shouldLoad()) {
+				Log.debug("NovaCore", "Skipping library " + lib.getLibraryName() + " dut to blocking load conditions");
+				continue;
+			}
+
+			// Log.debug("NovaCore", "Checking if library " + lib.getLibraryName() + " needs
+			// to be loaded. Class: " + lib.getClassName());
+			try {
+				if (libraryManager.loadIfClassIsMissing(lib.getLibraryName(), lib.getClassName())) {
+					Log.info("NovaCore", "Loaded library " + lib.getLibraryName());
+				}
+			} catch (LibraryBlockedException e) {
+				Log.error("NovaCore", "Could not load library " + lib.getLibraryName() + " since its blocked in config.yml");
+			} catch (IOException e) {
+				LogLevel level = dontShutdownOnFail ? LogLevel.ERROR : LogLevel.FATAL;
+				Log.log("NovaCore", "Failed to load library " + lib.getLibraryName() + ". " + e.getClass().getName() + " " + e.getMessage(), level);
+				e.printStackTrace();
+				if (!dontShutdownOnFail) {
+					Bukkit.getPluginManager().disablePlugin(this);
+					return;
+				}
+			}
+		}
+
 		ConfigurationSection commandRegistratorOptions = getConfig().getConfigurationSection("CommandRegistrator");
 
-		NovaCommons.setAbstractConsoleSender(new AbstractBukkitConsoleSender());
 		NovaCommons.setAbstractPlayerMessageSender(new AbstractBukkitPlayerMessageSender());
 		NovaCommons.setAbstractSimpleTaskCreator(new BukkitSimpleTaskCreator());
 		NovaCommons.setAbstractAsyncManager(new BukkitAsyncManager(this));
@@ -401,8 +540,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 			Log.setDisableColors(true);
 			Log.info("Logger", "Log colors disabled");
 		}
-
-		Log.setConsoleLogLevel(LogLevel.INFO);
 
 		ConfigurationSection webServicesSettings = getConfig().getConfigurationSection("WebServices");
 
@@ -438,7 +575,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		jumpPadFile = new File(this.getDataFolder().getPath() + File.separator + "jump_pads.json");
 
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
-		logSeverityConfigFile = new File(this.getDataFolder(), "log_severity.yml");
 
 		this.disableUnregisteringCommands = commandRegistratorOptions.getBoolean("DisableUnregistation");
 		if (disableUnregisteringCommands) {
@@ -446,33 +582,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 		}
 
 		try {
-			FileUtils.forceMkdir(this.getDataFolder());
 			FileUtils.forceMkdir(lootTableFolder);
 
 			if (!jumpPadFile.exists()) {
 				JSONFileUtils.createEmpty(jumpPadFile, JSONFileType.JSONArray);
-			}
-
-			if (!logSeverityConfigFile.exists()) {
-				Log.info("NovaCore", "Creating log_severity.yml");
-				FileUtils.touch(logSeverityConfigFile);
-			}
-			logSeverityConfig = YamlConfiguration.loadConfiguration(logSeverityConfigFile);
-
-			if (!logSeverityConfig.contains("severity")) {
-				logSeverityConfig.set("severity", LogLevel.INFO.name());
-				logSeverityConfig.save(logSeverityConfigFile);
-			}
-
-			String logLevelName = logSeverityConfig.getString("severity");
-
-			try {
-				LogLevel logLevel = LogLevel.valueOf(logLevelName);
-				Log.setConsoleLogLevel(logLevel);
-			} catch (Exception e) {
-				Log.warn("NovaCore", "The value " + logLevelName + " is not a valid LogLevel. Resetting it to " + LogLevel.INFO.name());
-				logSeverityConfig.set("severity", LogLevel.INFO.name());
-				logSeverityConfig.save(logSeverityConfigFile);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -489,8 +602,8 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		try {
 			Class<?> clazz = Class.forName("net.zeeraa.novacore.spigot.version." + version + ".VersionIndependentLoader");
-			if (VersionIndependantLoader.class.isAssignableFrom(clazz)) {
-				VersionIndependantLoader versionIndependantLoader = (VersionIndependantLoader) clazz.getConstructor().newInstance();
+			if (VersionIndependentLoader.class.isAssignableFrom(clazz)) {
+				VersionIndependentLoader versionIndependantLoader = (VersionIndependentLoader) clazz.getConstructor().newInstance();
 
 				if (!forceReflectionCommandRegistrator) {
 					bukkitCommandRegistrator = versionIndependantLoader.getCommandRegistrator();
@@ -519,7 +632,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 					this.novaParticleProvider = versionSpecificParticleProvider;
 				}
 			} else {
-				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependantLoader.class.getName());
+				throw new InvalidClassException(clazz.getName() + " is not assignable from " + VersionIndependentLoader.class.getName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -535,7 +648,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 			}
 		}
 
-		if(novaParticleProvider == null) {
+		if (novaParticleProvider == null) {
 			Log.warn("NovaCore", "No particle proivider was loaded during startup. Particles spawned by NovaCore will not be visible");
 			novaParticleProvider = new NullParticleProvider();
 		}
@@ -554,14 +667,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 		if (bukkitCommandRegistrator == null) {
 			Log.warn("NovaCore", "No command registrator defined. Using the reflection based fallback");
 			bukkitCommandRegistrator = reflectionBasedCommandRegistrator;
-		}
-
-		if (Bukkit.getServer().getPluginManager().getPlugin("HolographicDisplays") != null) {
-			this.hologramsSupport = true;
-			Log.info("NovaCore", "Hologram support enabled");
-		} else {
-			this.hologramsSupport = false;
-			Log.warn("NovaCore", "Hologram support disabled due to HolographicDisplays not being installed");
 		}
 
 		// Register permissions for log levels
@@ -623,7 +728,7 @@ public class NovaCore extends JavaPlugin implements Listener {
 		ModuleManager.loadModule(this, ChestLootManager.class);
 		ModuleManager.loadModule(this, MultiverseManager.class, true);
 		ModuleManager.loadModule(this, CompassTracker.class);
-		ModuleManager.loadModule(this, NetherBoardScoreboard.class);
+		ModuleManager.loadModule(this, NovaScoreboardManager.class);
 		ModuleManager.loadModule(this, JumpPadManager.class);
 		ModuleManager.loadModule(this, GlowManager.class);
 		ModuleManager.loadModule(this, CooldownManager.class);
@@ -703,7 +808,6 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		// VersionIndependentUtils.get().getPacketManager().removeOnlinePlayers();
 		// Cancel scheduler tasks
 		Bukkit.getScheduler().cancelTasks(this);
 
@@ -725,6 +829,10 @@ public class NovaCore extends JavaPlugin implements Listener {
 
 		// Unregister plugin channels
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
+
+		if (libraryManager != null) {
+			libraryManager.close();
+		}
 	}
 
 	/**

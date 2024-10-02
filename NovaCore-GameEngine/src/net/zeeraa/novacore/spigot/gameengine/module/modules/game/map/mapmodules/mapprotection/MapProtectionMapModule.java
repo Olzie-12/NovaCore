@@ -59,7 +59,7 @@ public class MapProtectionMapModule extends MapModule implements Listener {
 				try {
 					breakWhitelist.add(Material.valueOf(whitelistJson.getString(i)));
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 					Log.error("Could not find break whitelisted material " + whitelistJson.getString(i));
 				}
 			}
@@ -72,7 +72,7 @@ public class MapProtectionMapModule extends MapModule implements Listener {
 				try {
 					breakBlacklist.add(Material.valueOf(blacklistJson.getString(i)));
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 					Log.error("Could not find break blacklisted material " + blacklistJson.getString(i));
 				}
 			}
@@ -85,7 +85,7 @@ public class MapProtectionMapModule extends MapModule implements Listener {
 				try {
 					placeWhitelist.add(Material.valueOf(whitelistJson.getString(i)));
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 					Log.error("Could not find place whitelisted material " + whitelistJson.getString(i));
 				}
 			}
@@ -98,7 +98,7 @@ public class MapProtectionMapModule extends MapModule implements Listener {
 				try {
 					placeBlacklist.add(Material.valueOf(blacklistJson.getString(i)));
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 					Log.error("Could not find place blacklisted material " + blacklistJson.getString(i));
 				}
 			}

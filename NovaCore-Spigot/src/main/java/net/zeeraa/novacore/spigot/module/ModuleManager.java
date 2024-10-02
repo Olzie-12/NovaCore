@@ -44,6 +44,7 @@ public class ModuleManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends NovaModule> T getModule(Class<T> clazz) {
+		new HashMap<Class<? extends NovaModule>, NovaModule>();
 		return (T) modules.get(clazz.getName());
 	}
 

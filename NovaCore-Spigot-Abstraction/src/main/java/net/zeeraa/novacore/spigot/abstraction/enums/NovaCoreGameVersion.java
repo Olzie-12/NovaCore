@@ -13,7 +13,10 @@ public enum NovaCoreGameVersion {
 	V_1_18_R2(2300),
 	V_1_19_R1(2400),
 	V_1_19_R2(2500),
-	V_1_19_R3(2600);
+	V_1_19_R3(2600),
+	V_1_20_R1(3000),
+	V_1_20_R2(3100),
+	V_1_20_R4(3300);
 
 	private int versionId;
 
@@ -39,6 +42,15 @@ public enum NovaCoreGameVersion {
 
 	public boolean isAfterOrEqual(NovaCoreGameVersion version) {
 		return this.getVersionId() >= version.getVersionId();
+	}
+
+	public boolean matchesAny(NovaCoreGameVersion... versions) {
+		for (NovaCoreGameVersion version : versions) {
+			if (version.getVersionId() == this.versionId) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean hasOffhand() {

@@ -16,6 +16,24 @@ MapDisplayManager:
     # If true map displays wont be saved to the world file
     DisableWorldDataSaving: false
 
+# =============================
+# Library Loading Configuration
+# =============================
+LibrarySettings:
+   # Can be used to set a diffrent library folder than /plugins/NovaCore/Lib. Leave empty for default path
+   LibraryDirectoryOverride: ""
+   
+   # If a library is set to true here the library loader will not attempt to load it even it even if it detects that the library does not exist
+   # Note that blocking the built in libraries might cause some parts of NovaCore to not work
+   # Put the name of the ar files in here without .jar at the end
+   BlockedLibraries: [ "example_library_1" ]
+      
+   
+   # Set to true to not shutdown if a library fails to load
+   DoNotShutdownOnFail: false
+   
+   # Set to true to get extra debug messages
+   Verbose: false
 
 # =====================
 # Logging and Debugging

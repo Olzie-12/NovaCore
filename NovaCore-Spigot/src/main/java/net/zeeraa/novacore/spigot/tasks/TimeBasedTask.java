@@ -2,11 +2,15 @@ package net.zeeraa.novacore.spigot.tasks;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.tasks.Task;
 
 /**
@@ -27,6 +31,7 @@ public class TimeBasedTask extends Task {
 	protected TaskExecutionMode taskExecutionMode;
 	protected Instant lastExecution;
 	protected long actualTimeSinceLastRun;
+	protected List<TimeBasedTaskCallback> callbacks;
 
 	protected BukkitTask task;
 
@@ -120,12 +125,29 @@ public class TimeBasedTask extends Task {
 		this.taskExecutionMode = taskExecutionMode;
 		this.lastExecution = Instant.now();
 		this.actualTimeSinceLastRun = 0L;
+		this.callbacks = new ArrayList<>();
 
 		if (taskExecutionMode == null) {
 			throw new IllegalArgumentException("TaskExecutionMode cant be null");
 		}
 
 		this.task = null;
+	}
+
+	public List<TimeBasedTaskCallback> getCallbacks() {
+		return callbacks;
+	}
+
+	public boolean addCallback(TimeBasedTaskCallback callback) {
+		if (!this.callbacks.contains(callback)) {
+			this.callbacks.add(callback);
+			return true;
+		}
+		return false;
+	}
+
+	public long getMSElapsed() {
+		return Duration.between(lastExecution, Instant.now()).toMillis();
 	}
 
 	public long getMSLeft() {
@@ -137,7 +159,11 @@ public class TimeBasedTask extends Task {
 	}
 
 	private void tickCheck() {
-		long sinceLastExec = Duration.between(lastExecution, Instant.now()).toMillis();
+		final long sinceLastExec = getMSElapsed(); // Duration.between(lastExecution, Instant.now()).toMillis();
+		final long msLeft = targetTimeBetweenExectionMS - sinceLastExec;
+
+		callbacks.forEach(c -> c.processTick(this, sinceLastExec, msLeft));
+
 		if (sinceLastExec >= targetTimeBetweenExectionMS) {
 			if (autoCancel) {
 				stop();
@@ -153,7 +179,10 @@ public class TimeBasedTask extends Task {
 		if (isRunning()) {
 			return false;
 		}
+
 		lastExecution = Instant.now();
+
+		callbacks.forEach(TimeBasedTaskCallback::reset);
 
 		switch (taskExecutionMode) {
 		case ASYNCHRONOUS:
@@ -268,5 +297,85 @@ public class TimeBasedTask extends Task {
 	 */
 	public long getActualTimeSinceLastRun() {
 		return actualTimeSinceLastRun;
+	}
+
+	public static class TimeBasedTaskCallback {
+		protected Consumer<TimeBasedTask> callback;
+		protected TimeBasedTaskCallbackMode mode;
+		protected long timeMS;
+		protected boolean didRun;
+		protected boolean logExceptionsWithNovaLogger;
+
+		public TimeBasedTaskCallback(Consumer<TimeBasedTask> callback, TimeBasedTaskCallbackMode mode, long timeMS) {
+			this(callback, mode, timeMS, true);
+		}
+
+		public TimeBasedTaskCallback(Consumer<TimeBasedTask> callback, TimeBasedTaskCallbackMode mode, long timeMS, boolean logExceptionsWithNovaLogger) {
+			this.callback = callback;
+			this.mode = mode;
+			this.timeMS = timeMS;
+			this.didRun = false;
+
+		}
+
+		public Consumer<TimeBasedTask> getCallback() {
+			return callback;
+		}
+
+		public TimeBasedTaskCallbackMode getMode() {
+			return mode;
+		}
+
+		public boolean didRun() {
+			return this.didRun;
+		}
+
+		public long getTimeMS() {
+			return timeMS;
+		}
+
+		public boolean isLogExceptionsWithNovaLogger() {
+			return logExceptionsWithNovaLogger;
+		}
+
+		public void setLogExceptionsWithNovaLogger(boolean logExceptionsWithNovaLogger) {
+			this.logExceptionsWithNovaLogger = logExceptionsWithNovaLogger;
+		}
+
+		protected void reset() {
+			didRun = false;
+		}
+
+		protected void run(TimeBasedTask timeBasedTask) {
+			didRun = true;
+			try {
+				callback.accept(timeBasedTask);
+			} catch (Exception e) {
+				if (logExceptionsWithNovaLogger) {
+					Log.error("TimeBasedTaskCallback", "An error occured in " + this.toString() + " belonging to task " + timeBasedTask + ". " + e.getClass().getName() + " " + e.getMessage() + (e.getCause() == null ? "" : ". Caused by " + e.getCause().getClass().getName() + ". " + e.getCause().getMessage()));
+				}
+				e.printStackTrace();
+			}
+		}
+
+		protected void processTick(TimeBasedTask timeBasedTask, long sinceLastExec, long msLeft) {
+			if (didRun) {
+				return;
+			}
+
+			if (mode == TimeBasedTaskCallbackMode.RUN_AFTER_TIME) {
+				if (sinceLastExec > timeMS) {
+					this.run(timeBasedTask);
+				}
+			} else if (mode == TimeBasedTaskCallbackMode.RUN_WHEN_TIME_LEFT) {
+				if (msLeft < timeMS) {
+					this.run(timeBasedTask);
+				}
+			}
+		}
+	}
+
+	public static enum TimeBasedTaskCallbackMode {
+		RUN_AFTER_TIME, RUN_WHEN_TIME_LEFT;
 	}
 }

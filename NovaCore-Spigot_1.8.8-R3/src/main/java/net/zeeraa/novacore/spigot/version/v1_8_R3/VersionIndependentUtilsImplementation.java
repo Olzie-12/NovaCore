@@ -101,7 +101,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
-
 import java.lang.reflect.Field;
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -123,7 +122,7 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 	public NovaBossBar createBossBar(String text) {
 		return new NovaExternalBossBarImplementation(text);
 	}
-	
+
 	@Override
 	public ChunkLoader getChunkLoader() {
 		if (chunkLoader == null) {
@@ -132,7 +131,8 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation() {
+	public VersionIndependentUtilsImplementation(VersionIndependentLoader loader) {
+		super(loader);
 		itemBuilderRecordList = new ItemBuilderRecordList1_8();
 		materialNameList = MaterialNameList1_8.get();
 	}
@@ -205,6 +205,7 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 		// nothing to do here
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void sendTabList(Player player, String header, String footer) {
 		CraftPlayer craftplayer = (CraftPlayer) player;
@@ -414,10 +415,10 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 		case BLAZE_HIT:
 			return Sound.BLAZE_HIT;
-			
+
 		case BURP:
 			return Sound.BURP;
-			
+
 		case FUSE:
 			return Sound.FUSE;
 
@@ -464,7 +465,7 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 	@Override
 	public VersionIndependentItems getVersionIndependantItems() {
-		return new net.zeeraa.novacore.spigot.version.v1_8_R3.VersionIndependantItemsImplementation();
+		return new net.zeeraa.novacore.spigot.version.v1_8_R3.VersionIndependentItemsImplementation();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -560,7 +561,7 @@ public class VersionIndependentUtilsImplementation extends VersionIndependentUti
 
 		case GUNPOWDER:
 			return Material.SULPHUR;
-			
+
 		default:
 			setLastError(VersionIndependenceLayerError.MISSING_MATERIAL);
 			AbstractionLogger.getLogger().warning("VersionIndependentUtils", "Unknown version Independent material: " + material.name());

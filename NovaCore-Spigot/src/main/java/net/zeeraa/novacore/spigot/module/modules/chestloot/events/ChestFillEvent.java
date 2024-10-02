@@ -26,14 +26,18 @@ public class ChestFillEvent extends Event implements Cancellable {
 
 	private boolean cancelled;
 	private boolean lootTableChanged;
+	
+	private boolean clearOldItems;
 
-	public ChestFillEvent(Block block, LootTable lootTable, ChestType chestType) {
+	public ChestFillEvent(Block block, LootTable lootTable, ChestType chestType, boolean clearOldItems) {
 		this.block = block;
 		this.lootTable = lootTable;
 		this.chestType = chestType;
 
 		this.cancelled = false;
 		this.lootTableChanged = false;
+		
+		this.clearOldItems = clearOldItems;
 	}
 
 	public Block getBlock() {
@@ -59,6 +63,14 @@ public class ChestFillEvent extends Event implements Cancellable {
 
 	public boolean hasLootTableChanged() {
 		return lootTableChanged;
+	}
+	
+	public boolean isClearOldItems() {
+		return clearOldItems;
+	}
+	
+	public void setClearOldItems(boolean clearOldItems) {
+		this.clearOldItems = clearOldItems;
 	}
 
 	public void setLootTable(LootTable lootTable) {

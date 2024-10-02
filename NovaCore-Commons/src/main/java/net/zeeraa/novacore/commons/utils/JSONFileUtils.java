@@ -2,6 +2,7 @@ package net.zeeraa.novacore.commons.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -166,5 +167,32 @@ public class JSONFileUtils {
 		}
 
 		return lines.toString();
+	}
+
+	public static class JSONFileNameFilter implements FilenameFilter {
+		private Mode mode;
+
+		public JSONFileNameFilter() {
+			this(Mode.IGNORE_CASE);
+		}
+
+		public JSONFileNameFilter(Mode mode) {
+			this.mode = mode;
+		}
+
+		@Override
+		public boolean accept(File dir, String name) {
+			if (mode == Mode.LOWERCASE_ONLY) {
+				return name.endsWith(".json");
+			} else if (mode == Mode.UPPERCASE_ONLY) {
+				return name.endsWith(".JSON");
+			} else {
+				return name.toLowerCase().endsWith(".json");
+			}
+		}
+
+		public static enum Mode {
+			LOWERCASE_ONLY, UPPERCASE_ONLY, IGNORE_CASE;
+		}
 	}
 }

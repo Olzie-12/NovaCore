@@ -32,6 +32,7 @@ import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameStartFailureEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.GameLobbyMapActivatedEvent;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.GameLobbyStartingEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.PlayerJoinGameLobbyEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.map.GameLobbyMap;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.map.GameLobbyMapData;
@@ -244,18 +245,23 @@ public class GameLobby extends NovaModule implements Listener {
 		}
 
 		try {
+			GameLobbyStartingEvent event = new GameLobbyStartingEvent(waitingPlayers);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			if (event.isCancelled()) {
+				return false;
+			}
+
 			waitingPlayers.forEach(uuid -> PlayerUtils.ifOnline(uuid, (player) -> {
-				if (!ignoreNoTeam) {
-					if (NovaCore.getInstance().hasTeamManager()) {
-						Team team = NovaCore.getInstance().getTeamManager().getPlayerTeam(player);
-						if (team == null) {
-							player.sendMessage(LanguageManager.getString(player, "novacore.game.lobby.spectator_no_team"));
-							return;
+				if (!disableAutoAddPlayers) {
+					if (!ignoreNoTeam) {
+						if (NovaCore.getInstance().hasTeamManager()) {
+							Team team = NovaCore.getInstance().getTeamManager().getPlayerTeam(player);
+							if (team == null) {
+								player.sendMessage(LanguageManager.getString(player, "novacore.game.lobby.spectator_no_team"));
+								return;
+							}
 						}
 					}
-				}
-
-				if (!disableAutoAddPlayers) {
 					GameManager.getInstance().getActiveGame().addPlayer(player);
 				}
 			}));

@@ -96,6 +96,13 @@ public abstract class Team {
 		}
 		return result;
 	}
+	
+	/**
+	 * @return True if the entire team is offline
+	 */
+	public boolean isOffline() {
+		return this.getOnlinePlayers().size() == 0;
+	}
 
 	@Nullable
 	public Player getRandomOnlineMember() {

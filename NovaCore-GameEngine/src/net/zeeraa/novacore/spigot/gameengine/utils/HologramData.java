@@ -1,13 +1,13 @@
 package net.zeeraa.novacore.spigot.gameengine.utils;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-
-import net.zeeraa.novacore.spigot.NovaCore;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import net.zeeraa.novacore.spigot.utils.LocationData;
 
 /**
@@ -66,12 +66,13 @@ public class HologramData {
 	 * @return <code>true</code> on success
 	 */
 	public boolean create(World world) {
-		if (NovaCore.getInstance().hasHologramsSupport()) {
+		if (Bukkit.getServer().getPluginManager().getPlugin("DecentHolograms") != null) {
 			if (hologram != null) {
-				hologram = HologramsAPI.createHologram(NovaCore.getInstance(), location.toLocation(world));
+				hologram.delete();
 			}
+			hologram = DHAPI.createHologram(UUID.randomUUID().toString(),  location.toLocation(world), false);
+			lines.forEach(line -> DHAPI.addHologramLine(hologram, line));
 		}
-
 		return false;
 	}
 }

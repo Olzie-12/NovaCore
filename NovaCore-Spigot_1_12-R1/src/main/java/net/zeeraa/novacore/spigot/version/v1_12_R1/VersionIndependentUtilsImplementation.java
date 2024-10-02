@@ -34,6 +34,7 @@ import net.zeeraa.novacore.commons.utils.ReflectUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.bossbar.NovaBossBar;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
@@ -47,6 +48,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentMaterial;
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.abstraction.log.AbstractionLogger;
 import net.zeeraa.novacore.spigot.abstraction.manager.CustomSpectatorManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
@@ -127,7 +129,8 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation() {
+	public VersionIndependentUtilsImplementation(VersionIndependentLoader loader) {
+		super(loader);
 		itemBuilderRecordList = new ItemBuilderRecordList1_12();
 		materialNameList = MaterialNameList1_12.get();
 	}
@@ -145,7 +148,6 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		skull.setSkullType(SkullType.PLAYER);
 
 		block.getState().update(true);
-
 		// TODO: fix
 		block.setData((byte) 1);
 	}
@@ -203,6 +205,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 		player.getInventory().setItemInOffHand(item);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void sendTabList(Player player, String header, String footer) {
 		CraftPlayer craftplayer = (CraftPlayer) player;
@@ -463,7 +466,7 @@ public class VersionIndependentUtilsImplementation extends net.zeeraa.novacore.s
 
 	@Override
 	public VersionIndependentItems getVersionIndependantItems() {
-		return new net.zeeraa.novacore.spigot.version.v1_12_R1.VersionIndependantItemsImplementation();
+		return new net.zeeraa.novacore.spigot.version.v1_12_R1.VersionIndependentItemsImplementation();
 	}
 
 	@SuppressWarnings("deprecation")

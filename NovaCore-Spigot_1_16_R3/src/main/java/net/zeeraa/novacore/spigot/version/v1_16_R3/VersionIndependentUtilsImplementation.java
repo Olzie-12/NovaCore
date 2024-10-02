@@ -21,6 +21,7 @@ import net.zeeraa.novacore.commons.utils.ListUtils;
 import net.zeeraa.novacore.spigot.abstraction.ChunkLoader;
 import net.zeeraa.novacore.spigot.abstraction.ItemBuilderRecordList;
 import net.zeeraa.novacore.spigot.abstraction.MaterialNameList;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependentLoader;
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentItems;
 import net.zeeraa.novacore.spigot.abstraction.commons.AttributeInfo;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
@@ -92,8 +93,8 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 		return chunkLoader;
 	}
 
-	public VersionIndependentUtilsImplementation() {
-		super(new DyeColorToMaterialMapper_1_16());
+	public VersionIndependentUtilsImplementation(VersionIndependentLoader loader) {
+		super(loader, new DyeColorToMaterialMapper_1_16());
 		itemBuilderRecordList = new ItemBuilderRecordList1_16();
 	}
 
@@ -526,10 +527,10 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 		case BLAZE_HIT:
 			return Sound.ENTITY_BLAZE_HURT;
-			
+
 		case BURP:
 			return Sound.ENTITY_PLAYER_BURP;
-			
+
 		case FUSE:
 			return Sound.ENTITY_TNT_PRIMED;
 
@@ -543,7 +544,7 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 	@Override
 	public VersionIndependentItems getVersionIndependantItems() {
-		return new net.zeeraa.novacore.spigot.version.v1_16_R3.VersionIndependantItemsImplementation();
+		return new net.zeeraa.novacore.spigot.version.v1_16_R3.VersionIndependentItemsImplementation();
 	}
 
 	@Override
@@ -620,13 +621,13 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 
 		case EXP_BOTTLE:
 			return Material.EXPERIENCE_BOTTLE;
-			
+
 		case WOOL:
 			return Material.WHITE_WOOL;
-			
+
 		case FIREBALL:
 			return Material.FIRE_CHARGE;
-			
+
 		case GUNPOWDER:
 			return Material.GUNPOWDER;
 
@@ -1042,14 +1043,7 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 	public void setSource(TNTPrimed tnt, LivingEntity source) {
 		EntityTNTPrimed etp = ((CraftTNTPrimed) tnt).getHandle();
 		EntityLiving el = ((CraftLivingEntity) source).getHandle();
-		try {
-			Field f = etp.getClass().getDeclaredField("source");
-			f.setAccessible(true);
-			f.set(etp, el);
-		} catch (Exception e) {
-			AbstractionLogger.getLogger().error("VersionIndependentUtils", "Could not set TNT's source. Entity UUID: " + tnt.getUniqueId() + " Entity ID: " + tnt.getEntityId());
-			e.printStackTrace();
-		}
+		etp.source = el;
 	}
 
 	@Override
@@ -1081,7 +1075,7 @@ public class VersionIndependentUtilsImplementation extends BaseVersionIndependen
 			return 0;
 		}
 	}
-	
+
 	@Override
 	public GameProfile getGameProfile(Player player) {
 		return ((CraftPlayer) player).getHandle().getProfile();
